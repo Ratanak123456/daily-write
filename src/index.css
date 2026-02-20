@@ -1,0 +1,57 @@
+@import "tailwindcss";
+@import "flowbite-react/plugin/tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@source "../.flowbite-react/class-list.json";
+
+@theme {
+  /* Mapping Poppins to the default sans font */
+  --font-sans: "Poppins", "Inter", ui-sans-serif, system-ui, sans-serif;
+  
+  /* Mapping custom variables to Tailwind utilities */
+  --color-primary-orange: var(--primary-500);
+  --color-primary-orange-dark: var(--primary-700);
+  --color-bg-main: var(--bg-primary);
+  --color-bg-side: var(--bg-secondary);
+  --color-text-main: var(--text-primary);
+  --color-text-sub: var(--text-secondary);
+  --color-border-main: var(--border-color);
+}
+
+:root {
+  /* Hex Palette */
+  --primary-500: #f48024;
+  --primary-600: #d66a0c;
+  --primary-700: #a35009;
+  --secondary-800: #0d0e0f;
+  --accent-200: #dbdde0;
+
+  /* Light Theme Variables */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f5f5f7; /* Used for footer background */
+  --text-primary: #222426;
+  --text-secondary: #494f53;
+  --border-color: var(--accent-200);
+}
+
+.dark {
+  /* Dark Theme Variables */
+  --bg-primary: #000000;
+  --bg-secondary: #1b1d1e; /* Used for footer background */
+  --text-primary: #ffffff;
+  --text-secondary: #a5aaae;
+  --border-color: #2a2c2e;
+
+  /* Adjusted Orange for Dark Mode Contrast */
+  --primary-500: #f69838;
+  --primary-700: #ff9f43;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
+  min-height: 100vh;
+}
+
+@variant dark (&:where(.dark, .dark *));
