@@ -1,436 +1,319 @@
-import React, { useMemo, useState, useEffect } from "react";
-import { Icon } from "@iconify/react";
+import {
+  Search,
+  Eye,
+  MessageSquare,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 
-/**
- * NOTE:
- * - Tailwind CSS required
- * - Install Iconify: npm i @iconify/react
- * - Add Poppins in your index.css (Google Font) or via <link> in index.html
- */
-
-const CATEGORIES = [
-  { key: "moon", label: "moon", icon: "mdi:moon-waning-crescent" },
-  { key: "frontend", label: "Front-End", icon: "mdi:code-tags" },
-  { key: "arthistory", label: "Art-History", icon: "mdi:brush-variant" },
-  { key: "cyber", label: "Cyber Security", icon: "mdi:shield-check" },
-  { key: "mobile", label: "Mobile App", icon: "mdi:cellphone" },
-  { key: "programming", label: "Programming", icon: "mdi:code-braces" },
-];
-
-const MOCK_POSTS = [
-  {
-    id: 1,
-    author: "Rothanak",
-    category: "frontend",
-    categoryLabel: "Front-End",
-    title: "POV: You spent 3 hours on this Roblox character 😭",
-    excerpt:
-      "Me and my bro on the roblox, while we also have thousands of assignment, lmao too random...",
-    time: "16h ago",
-    likes: "41",
-    comments: "21",
-    cover:
-      "https://images.unsplash.com/photo-1627843240167-b1f147aa36bb?q=80&w=1200&auto=format&fit=crop",
-  },
-  {
-    id: 2,
-    author: "Sean",
-    category: "arthistory",
-    categoryLabel: "Art-History",
-    title: "The timeless beauty of The Starry Night",
-    excerpt:
-      "The emotional depth and swirling energy of The Starry Night go far beyond its glowing night sky...",
-    time: "2h ago",
-    likes: "411k",
-    comments: "21k",
-    cover:
-      "https://images.unsplash.com/photo-1541963463532-d68292c34b19?q=80&w=1200&auto=format&fit=crop",
-  },
-  {
-    id: 3,
-    author: "Mar",
-    category: "moon",
-    categoryLabel: "Astronomy",
-    title: "The giant mysteries of Jupiter of the Solar System",
-    excerpt:
-      "The massive power and swirling storms of Jupiter make it one of the most fascinating planets in our...",
-    time: "2 mins ago",
-    likes: "1M",
-    comments: "567k",
-    cover:
-      "https://images.unsplash.com/photo-1614728894747-a83421e2b9c9?q=80&w=1200&auto=format&fit=crop",
-  },
-  {
-    id: 4,
-    author: "Ian",
-    category: "programming",
-    categoryLabel: "Programming",
-    title: "Why C++ remains powerful in modern software development",
-    excerpt:
-      "C++ is one of the most influential and high-performance programming languages in the world.",
-    time: "1h ago",
-    likes: "677k",
-    comments: "456k",
-    cover:
-      "https://images.unsplash.com/photo-1518779578993-ec3579fee39f?q=80&w=1200&auto=format&fit=crop",
-  },
-  {
-    id: 5,
-    author: "Lisa",
-    category: "moon",
-    categoryLabel: "Winter",
-    title: "Small but mighty ☃️❄️",
-    excerpt:
-      "He's tiny, he's wobbly, and he's absolutely perfect. Little carrot nose, twig arms and all...",
-    time: "44s ago",
-    likes: "3",
-    comments: "2",
-    cover:
-      "https://images.unsplash.com/photo-1544273677-c433136021d4?q=80&w=1200&auto=format&fit=crop",
-  },
-  {
-    id: 6,
-    author: "kimhorng",
-    category: "mobile",
-    categoryLabel: "movie recommend",
-    title: "If you know, you know ✨",
-    excerpt:
-      "This little guy reminds me of that scene — calm, unbothered, just vibing while something wild is hea...",
-    time: "12h ago",
-    likes: "41k",
-    comments: "12k",
-    cover:
-      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1200&auto=format&fit=crop",
-  },
-  {
-    id: 7,
-    author: "Rosa",
-    category: "mobile",
-    categoryLabel: "Minecraft",
-    title: "Just a little guys chill in the Minecraft world ✨",
-    excerpt:
-      "Golden hour, good vibes, and some blocky adventures. Sometimes simple is best.",
-    time: "12h ago",
-    likes: "90",
-    comments: "17",
-    cover:
-      "https://images.unsplash.com/photo-1535909339361-9b7f5a1f4e2a?q=80&w=1200&auto=format&fit=crop",
-  },
-  {
-    id: 8,
-    author: "Sothea",
-    category: "moon",
-    categoryLabel: "Moon",
-    title: "This is the moon tonight",
-    excerpt:
-      "Today is the beautiful day, It's be long time since I have no idea what is going on with myself, but to...",
-    time: "4h ago",
-    likes: "400",
-    comments: "21",
-    cover:
-      "https://images.unsplash.com/photo-1444703686981-a3abbc4d4fe3?q=80&w=1200&auto=format&fit=crop",
-  },
-];
-
-const cn = (...classes) => classes.filter(Boolean).join(" ");
-
-export default function BlogsPage() {
-  const [search, setSearch] = useState("");
-  const [activeCategory, setActiveCategory] = useState("all");
-  const [sortBy, setSortBy] = useState("latest");
-  const [page, setPage] = useState(1);
-
-  const pageSize = 8;
-
-  const filtered = useMemo(() => {
-    let list = [...MOCK_POSTS];
-
-    if (activeCategory !== "all") {
-      list = list.filter((p) => p.category === activeCategory);
-    }
-
-    const q = search.trim().toLowerCase();
-    if (q) {
-      list = list.filter(
-        (p) =>
-          p.title.toLowerCase().includes(q) ||
-          p.excerpt.toLowerCase().includes(q) ||
-          p.author.toLowerCase().includes(q)
-      );
-    }
-
-    if (sortBy === "latest") list = list.sort((a, b) => b.id - a.id);
-    if (sortBy === "popular")
-      list = list.sort((a, b) => ("" + b.likes).localeCompare("" + a.likes));
-
-    return list;
-  }, [search, activeCategory, sortBy]);
-
-  const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
-
-  const paged = useMemo(() => {
-    const start = (page - 1) * pageSize;
-    return filtered.slice(start, start + pageSize);
-  }, [filtered, page]);
-
-  useEffect(() => {
-    setPage(1);
-  }, [search, activeCategory, sortBy]);
-
+export default function BlogList() {
   return (
-    <div className="min-h-screen bg-[#fbfbfb] text-slate-900 [font-family:Poppins,ui-sans-serif,system-ui]">
-      {/* decorative dots */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute left-10 top-16 h-3 w-3 rounded-full bg-orange-300/70" />
-        <div className="absolute left-64 top-32 h-2 w-2 rounded-full bg-slate-300/70" />
-        <div className="absolute right-16 top-24 h-2.5 w-2.5 rounded-full bg-slate-300/70" />
-        <div className="absolute right-40 top-40 h-3 w-3 rounded-full bg-orange-200/70" />
-        <div className="absolute left-1/2 top-[260px] -translate-x-1/2 text-4xl opacity-70">
-          🪐
-        </div>
-        <div className="absolute right-24 top-16 text-3xl opacity-80">💡</div>
-      </div>
+    <section className="bg-bg-main text-text-main">
+      <div className="relative overflow-hidden border-b border-border-main/80 bg-[#f4802405] px-4 py-12 sm:py-16">
+        <span className="absolute left-[13%] top-8 h-4 w-4 rounded-full bg-[#f7b078]" />
+        <span className="absolute left-[17%] top-2 h-4 w-4 rounded-full bg-[#c3c7c9]" />
+        <span className="absolute left-[16%] top-[70%] h-3 w-3 rounded-full bg-[#f7b078]" />
+        <span className="absolute right-[16%] top-[70%] h-3 w-3 rounded-full bg-[#a5aaae]" />
 
-      <div className="relative mx-auto w-full max-w-7xl px-5 pb-16 pt-10">
-        {/* HERO */}
-        <div className="text-center">
-          <h1 className="mx-auto max-w-3xl text-4xl font-extrabold leading-tight sm:text-5xl">
-            Discover <span className="text-[#ff7a00]">Inspiring Stories</span>
-            <br className="hidden sm:block" />{" "}
-            <span className="text-[#ff7a00]">&amp; Ideas</span>
+        <img
+          src="https://www.figma.com/api/mcp/asset/a71766b1-ca85-4600-8bb0-1e13f4912663"
+          alt="Idea lamp"
+          className="absolute right-[14%] top-8 hidden w-24 opacity-80 md:block"
+        />
+        <img
+          src="https://www.figma.com/api/mcp/asset/e57b8f23-51fd-4fe9-9a66-cad6b3a43d44"
+          alt="Planet"
+          className="absolute bottom-8 left-1/2 hidden w-20 -translate-x-1/2 opacity-80 md:block"
+        />
+
+        <div className="mx-auto max-w-5xl text-center">
+          <h1 className="text-3xl font-bold leading-tight sm:text-4xl md:text-5xl">
+            <span className="text-text-main">Discover </span>
+            <span className="text-primary-orange">
+              Inspiring Stories & Ideas
+            </span>
           </h1>
-
-          <p className="mx-auto mt-4 max-w-3xl text-sm leading-relaxed text-slate-600 sm:text-base">
+          <p className="mx-auto mt-5 max-w-3xl text-sm leading-6 text-[#5e6569] md:text-base">
             This space is dedicated to my daily writing — a collection of
             reflections, experiences, and quiet thoughts that might otherwise be
             forgotten. Writing every day keeps me grounded, mindful, and
             inspired.
           </p>
 
-          {/* Search */}
-          <div className="mx-auto mt-7 flex max-w-3xl items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
+          <div className="mx-auto mt-7 flex h-12 w-full max-w-3xl items-center rounded-2xl border border-[#a5aaae] bg-bg-main px-4">
             <input
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              type="text"
               placeholder="Search"
-              className="w-full bg-transparent text-sm outline-none placeholder:text-slate-400"
+              className="h-full w-full bg-transparent text-sm outline-none placeholder:text-[#797f84]"
             />
-            <span className="grid h-10 w-10 place-items-center rounded-xl border border-slate-200 bg-white">
-              <Icon icon="mdi:magnify" className="text-xl text-slate-500" />
-            </span>
+            <Search size={20} className="text-[#5e6569]" />
           </div>
+        </div>
+      </div>
 
-          {/* category chips */}
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <Chip
-              active={activeCategory === "moon"}
-              onClick={() => setActiveCategory("moon")}
-              icon="mdi:moon-waning-crescent"
-              label="moon"
-            />
-            {CATEGORIES.filter((c) => c.key !== "moon").map((c) => (
-              <Chip
-                key={c.key}
-                active={activeCategory === c.key}
-                onClick={() => setActiveCategory(c.key)}
-                icon={c.icon}
-                label={c.label}
-              />
-            ))}
+      <div className="mx-auto max-w-7xl px-4 py-6">
+        <div className="flex gap-3 overflow-x-auto pb-1">
+          {[
+            "moon",
+            "Front-End",
+            "Art-History",
+            "Front-End",
+            "Front-End",
+            "Cyber Security",
+            "Cyber Security",
+            "Mobile App",
+          ].map((chip, index) => (
             <button
-              onClick={() => setActiveCategory("all")}
-              className={cn(
-                "flex items-center gap-2 rounded-xl border px-4 py-2 text-sm shadow-sm transition",
-                activeCategory === "all"
-                  ? "border-[#ff7a00]/40 bg-[#ff7a00]/10 text-slate-900"
-                  : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
-              )}
+              key={`${chip}-${index}`}
+              className="shrink-0 rounded-md border border-border-main bg-bg-main px-5 py-2 text-xs text-primary-orange hover:bg-orange-50"
             >
-              <span className="font-medium">All</span>
+              {chip}
             </button>
-          </div>
-        </div>
-
-        {/* ALL BLOGS + SORT */}
-        <div className="mt-10 flex flex-wrap items-center justify-between gap-3">
-          <h2 className="text-3xl font-extrabold text-[#ff7a00]">All Blogs</h2>
-
-          <div className="flex items-center gap-2 text-sm">
-            <span className="font-semibold text-[#ff7a00]">Sort by:</span>
-            <div className="relative">
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-                className="appearance-none rounded-xl border border-slate-200 bg-white px-4 py-2 pr-10 text-sm outline-none shadow-sm"
-              >
-                <option value="latest">Latest</option>
-                <option value="popular">Popular</option>
-              </select>
-              <Icon
-                icon="mdi:chevron-down"
-                className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-lg text-[#ff7a00]"
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* GRID */}
-        <div className="mt-6 grid grid-cols-1 gap-7 sm:grid-cols-2 lg:grid-cols-4">
-          {paged.map((p) => (
-            <BlogCard key={p.id} post={p} />
           ))}
         </div>
 
-        {/* PAGINATION */}
-        <div className="mt-10 flex items-center justify-center gap-3">
-          <PageBtn
-            disabled={page === 1}
-            onClick={() => setPage((v) => Math.max(1, v - 1))}
-            icon="mdi:chevron-left"
-          />
-
-          <PageNumber active={page === 1} onClick={() => setPage(1)}>
-            1
-          </PageNumber>
-
-          {totalPages >= 2 && (
-            <PageNumber active={page === 2} onClick={() => setPage(2)}>
-              2
-            </PageNumber>
-          )}
-
-          {totalPages > 4 && <span className="px-2 text-slate-500">...</span>}
-
-          {totalPages > 2 && (
-            <PageNumber
-              active={page === totalPages}
-              onClick={() => setPage(totalPages)}
-            >
-              {totalPages}
-            </PageNumber>
-          )}
-
-          <PageBtn
-            disabled={page === totalPages}
-            onClick={() => setPage((v) => Math.min(totalPages, v + 1))}
-            icon="mdi:chevron-right"
-          />
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function Chip({ active, onClick, icon, label }) {
-  return (
-    <button
-      onClick={onClick}
-      className={cn(
-        "flex items-center gap-2 rounded-xl border px-4 py-2 text-sm shadow-sm transition",
-        active
-          ? "border-[#ff7a00]/40 bg-[#ff7a00]/10 text-slate-900"
-          : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
-      )}
-    >
-      <span
-        className={cn(
-          "grid h-8 w-8 place-items-center rounded-lg border",
-          active ? "border-[#ff7a00]/30 bg-white" : "border-slate-200 bg-white"
-        )}
-      >
-        <Icon
-          icon={icon}
-          className={cn("text-lg", active ? "text-[#ff7a00]" : "text-slate-700")}
-        />
-      </span>
-      <span className="font-medium">{label}</span>
-    </button>
-  );
-}
-
-function BlogCard({ post }) {
-  return (
-    <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-[0_10px_30px_rgba(15,23,42,0.08)]">
-      <div className="relative h-44 w-full">
-        <img
-          src={post.cover}
-          alt={post.title}
-          className="h-full w-full object-cover"
-          loading="lazy"
-        />
-
-        <div className="absolute left-3 top-3 flex items-center gap-2 rounded-full bg-white/95 px-3 py-1 text-xs shadow">
-          <span className="h-5 w-5 rounded-full bg-slate-200" />
-          <span className="font-semibold">{post.author}</span>
-        </div>
-
-        <div className="absolute bottom-3 left-3 rounded-full bg-white/95 px-3 py-1 text-[11px] font-semibold text-emerald-700 shadow">
-          {post.categoryLabel}
-        </div>
-      </div>
-
-      <div className="p-4">
-        <h3 className="line-clamp-2 text-[15px] font-bold leading-snug">
-          {post.title}
-        </h3>
-
-        <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-slate-500">
-          {post.excerpt}
-        </p>
-
-        <div className="mt-4 flex items-center justify-between">
-          <div className="flex items-center gap-4 text-xs text-slate-500">
-            <span>{post.time}</span>
-
-            <span className="flex items-center gap-1">
-              <Icon icon="mdi:heart-outline" className="text-base" />
-              {post.likes}
+        <div className="mt-7 flex flex-wrap items-center justify-between gap-3">
+          <h2 className="text-3xl font-bold text-primary-orange">All Blogs</h2>
+          <div className="flex items-center gap-3">
+            <span className="text-lg font-medium text-primary-orange">
+              Sort by:
             </span>
-
-            <span className="flex items-center gap-1">
-              <Icon icon="mdi:comment-outline" className="text-base" />
-              {post.comments}
-            </span>
+            <select className="rounded-lg border border-[#a5aaae] bg-bg-main px-3 py-2 text-sm text-[#5e6569] outline-none">
+              <option>Latest</option>
+              <option>Popular</option>
+              <option>Oldest</option>
+            </select>
           </div>
+        </div>
 
-          <button className="rounded-full bg-[#ff7a00] px-4 py-2 text-xs font-semibold text-white shadow-sm hover:brightness-95 active:brightness-90">
-            Read More
+        <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {[
+            {
+              id: 1,
+              author: "roblox",
+              tag: "UI/UX",
+              title: "POV: You spent 3 hours on this Roblox character",
+              summary:
+                "Me and my bro on Roblox while we still had a thousand assignments. Too random.",
+              time: "16h ago",
+              views: "42",
+              comments: "21",
+              image:
+                "https://www.figma.com/api/mcp/asset/717dd577-8058-480c-b866-aafc05c571b8",
+            },
+            {
+              id: 2,
+              author: "sopi",
+              tag: "Art-History",
+              title: "The timeless beauty of The Starry Night",
+              summary:
+                "An emotional depth and swirling energy from Van Gogh that still inspires.",
+              time: "1 day ago",
+              views: "47",
+              comments: "2",
+              image:
+                "https://www.figma.com/api/mcp/asset/49d1cce2-3ef5-43a2-9113-0093fb24275a",
+            },
+            {
+              id: 3,
+              author: "Ali",
+              tag: "Science",
+              title: "The giant mysteries of Jupiter of the Solar System",
+              summary:
+                "A massive gas giant with storms and secrets that keep astronomers curious.",
+              time: "1 day ago",
+              views: "56",
+              comments: "8",
+              image:
+                "https://www.figma.com/api/mcp/asset/fe590e21-9312-4243-9ac9-fdbb8b480919",
+            },
+            {
+              id: 4,
+              author: "Tia",
+              tag: "Programming",
+              title: "Why C++ remains powerful in modern software development",
+              summary:
+                "From game engines to systems-level tools, C++ still delivers top performance.",
+              time: "1 day ago",
+              views: "570",
+              comments: "46",
+              image:
+                "https://www.figma.com/api/mcp/asset/aa14e20a-2661-4d1e-bc4c-4ba0f113fb36",
+            },
+            {
+              id: 5,
+              author: "Zi",
+              tag: "React",
+              title: "Why ReactJS dominates modern web application",
+              summary:
+                "Component architecture and ecosystem make React a top pick for teams.",
+              time: "4 min ago",
+              views: "23",
+              comments: "29",
+              image:
+                "https://www.figma.com/api/mcp/asset/1cf5a4f7-fa13-4b78-9610-88443b8a1592",
+            },
+            {
+              id: 6,
+              author: "Pans",
+              tag: "Automobile",
+              title: "The timeless performance of the Porsche 911",
+              summary:
+                "Precision design and thrilling performance define a true icon.",
+              time: "1 day ago",
+              views: "89",
+              comments: "100",
+              image:
+                "https://www.figma.com/api/mcp/asset/9aa36d26-cda2-48d5-a5d5-6860b9804f91",
+            },
+            {
+              id: 7,
+              author: "Ney",
+              tag: "UX/UI",
+              title: "The new poster design inspiration by Aristotle",
+              summary:
+                "Contrast, hierarchy and typography choices that make concepts stand out.",
+              time: "4 days ago",
+              views: "120",
+              comments: "39",
+              image:
+                "https://www.figma.com/api/mcp/asset/6b904377-6be3-4af3-afee-3e824a577a94",
+            },
+            {
+              id: 8,
+              author: "Rin",
+              tag: "Classic Art",
+              title: "The Devil's Gambit",
+              summary:
+                "An iconic allegory painting that still sparks debate in modern culture.",
+              time: "7h ago",
+              views: "102",
+              comments: "21",
+              image:
+                "https://www.figma.com/api/mcp/asset/7484cf25-dff1-4e1d-84fc-1667197a0ce5",
+            },
+            {
+              id: 9,
+              author: "Lila",
+              tag: "Mini",
+              title: "Small but mighty",
+              summary:
+                "Tiny things with a huge impact, and why detail matters in daily creativity.",
+              time: "43 days ago",
+              views: "3",
+              comments: "8",
+              image:
+                "https://www.figma.com/api/mcp/asset/b71e1bcc-4da6-4a7b-9506-fd3907e9c8eb",
+            },
+            {
+              id: 10,
+              author: "Kinhorng",
+              tag: "Motivation",
+              title: "If you know, you know",
+              summary:
+                "The little moments of effort and consistency become the real success story.",
+              time: "1h ago",
+              views: "625",
+              comments: "15",
+              image:
+                "https://www.figma.com/api/mcp/asset/da78a647-3230-487c-8c95-5acde4615b10",
+            },
+            {
+              id: 11,
+              author: "Riza",
+              tag: "Minecraft",
+              title: "Just a little guy's chill in the Minecraft world",
+              summary:
+                "Simple scenes, warm sunset light, and peaceful exploration vibes.",
+              time: "4h ago",
+              views: "99",
+              comments: "7",
+              image:
+                "https://www.figma.com/api/mcp/asset/9d46242e-0857-4d7f-af7e-3dfc1abb1fcd",
+            },
+            {
+              id: 12,
+              author: "Sothea",
+              tag: "Moon",
+              title: "This is the moon tonight",
+              summary:
+                "Today it feels beautiful, as if the sky itself wrote a quiet poem.",
+              time: "4h ago",
+              views: "400",
+              comments: "21",
+              image:
+                "https://www.figma.com/api/mcp/asset/99fb4d52-3cd1-40e7-8108-8d7c5a38e3b7",
+            },
+          ].map((blog) => (
+            <article
+              key={blog.id}
+              className="overflow-hidden rounded-2xl border border-border-main bg-bg-main shadow-sm transition hover:shadow-md"
+            >
+              <div className="relative h-44 w-full">
+                <img
+                  src={blog.image}
+                  alt={blog.title}
+                  className="h-full w-full object-cover"
+                />
+                <span className="absolute left-3 top-3 rounded-full bg-white px-3 py-1 text-[10px] font-semibold text-[#00b33d]">
+                  {blog.author}
+                </span>
+                <span className="absolute bottom-3 left-3 rounded-full bg-emerald-50 px-3 py-1 text-[10px] font-semibold text-emerald-700">
+                  {blog.tag}
+                </span>
+              </div>
+
+              <div className="space-y-3 p-4">
+                <h3 className="line-clamp-2 text-sm font-semibold text-text-main">
+                  {blog.title}
+                </h3>
+                <p className="line-clamp-2 text-xs leading-5 text-[#a5aaae]">
+                  {blog.summary}
+                </p>
+
+                <div className="flex items-center justify-between text-[10px] text-[#797f84]">
+                  <div className="flex items-center gap-3">
+                    <span className="flex items-center gap-1">
+                      <Eye size={12} />
+                      {blog.views}
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <MessageSquare size={12} />
+                      {blog.comments}
+                    </span>
+                  </div>
+                  <span>{blog.time}</span>
+                </div>
+
+                <div className="flex justify-end">
+                  <button className="rounded-full bg-primary-orange px-3 py-1.5 text-[10px] font-semibold text-white hover:brightness-105">
+                    Read More
+                  </button>
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+
+        <div className="mt-8 flex items-center justify-center gap-2 text-sm">
+          <button className="rounded-md border border-border-main px-2 py-1 text-[#a5aaae] hover:bg-gray-100">
+            <ChevronLeft size={16} />
+          </button>
+          <button className="rounded-md bg-primary-orange px-3 py-1 text-white">
+            1
+          </button>
+          <button className="rounded-md border border-border-main px-3 py-1 text-[#5e6569]">
+            2
+          </button>
+          <span className="px-2 text-[#a5aaae]">...</span>
+          <button className="rounded-md border border-border-main px-3 py-1 text-[#5e6569]">
+            10
+          </button>
+          <button className="rounded-md border border-border-main px-2 py-1 text-[#a5aaae] hover:bg-gray-100">
+            <ChevronRight size={16} />
           </button>
         </div>
       </div>
-    </div>
-  );
-}
-
-function PageBtn({ onClick, disabled, icon }) {
-  return (
-    <button
-      disabled={disabled}
-      onClick={onClick}
-      className={cn(
-        "grid h-10 w-10 place-items-center rounded-xl border shadow-sm transition",
-        disabled
-          ? "cursor-not-allowed border-slate-200 bg-slate-100 text-slate-400"
-          : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
-      )}
-    >
-      <Icon icon={icon} className="text-xl" />
-    </button>
-  );
-}
-
-function PageNumber({ children, active, onClick }) {
-  return (
-    <button
-      onClick={onClick}
-      className={cn(
-        "grid h-10 w-10 place-items-center rounded-xl border text-sm font-semibold shadow-sm transition",
-        active
-          ? "border-[#ff7a00]/30 bg-[#ff7a00] text-white"
-          : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
-      )}
-    >
-      {children}
-    </button>
+    </section>
   );
 }
