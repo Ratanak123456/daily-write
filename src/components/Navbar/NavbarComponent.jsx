@@ -59,12 +59,6 @@ export default function NavbarComponent() {
           </button>
           </Link>
 
-          <Link to="/save-blog" className="flex items-center gap-2 text-primary-orange font-bold hover:opacity-80">
-            <button className="text-primary-orange hover:opacity-80">
-              <Bookmark />
-            </button>
-          </Link>
-
           <div className="h-6 w-px bg-border-main mx-1 hidden md:block" />
 
           {/* Theme Toggle */}

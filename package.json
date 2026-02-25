@@ -10,9 +10,16 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
     "@iconify/react": "^6.0.2",
+    "@mui/material": "^7.3.8",
     "flowbite-react": "^0.12.17",
     "lucide-react": "^0.575.0",
+<<<<<<< HEAD
+=======
+    "primereact": "^10.9.7",
+>>>>>>> 9c14614af8dd554b26345cbda7b15f616fce8d2b
     "quill": "^2.0.3",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
