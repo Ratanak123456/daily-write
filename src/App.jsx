@@ -1,4 +1,8 @@
+import { Link } from "react-router-dom";
 import "./App.css";
+import ListCard from "./components/homepage/BlogSection/ListCard";
+import Card from "./components/homepage/BlogSection/ListCard";
+import EncourageSection from "./components/homepage/EncourageSection/EncourageSection";
 import ImageSide from "./components/homepage/HeroSection/ImageSide";
 import Information from "./components/homepage/HeroSection/Information";
 
@@ -6,20 +10,128 @@ function App() {
   return (
     <main>
       {/* Hero Section */}
-      <section className="bg-[#FFF8ED] dark:bg-black relative overflow-hidden py-12 lg:py-0 ">
-        <div className="absolute -top-40 -left-40 md:-top-80 md:-left-80 w-100 h-100 md:w-200 md:h-200 rounded-full opacity-40 pointer-events-none animate-spin-slow bg-[radial-gradient(circle_at_center,#F48024_0%,transparent_70%)]" />
+      <section className="bg-[#FFF8ED] dark:bg-black relative overflow-hidden min-h-screen lg:min-h-0 py-12 lg:py-0 flex items-center">
+        {/* Animated background elements - optimized for mobile */}
+        <div className="absolute -top-20 -left-20 sm:-top-40 sm:-left-40 md:-top-80 md:-left-80 w-64 h-64 sm:w-100 sm:h-100 md:w-200 md:h-200 rounded-full opacity-30 sm:opacity-40 pointer-events-none animate-spin-slow bg-[radial-gradient(circle_at_center,#F48024_0%,transparent_70%)]" />
 
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-10 right-10 md:top-20 md:right-20 w-2 h-2 md:w-4 md:h-4 bg-primary-orange/20 rounded-full animate-float-slow" />
-          <div className="absolute bottom-20 left-10 md:bottom-40 md:left-20 w-3 h-3 md:w-6 md:h-6 bg-primary-orange/10 rounded-full animate-float-delayed" />
-          <div className="absolute top-20 left-1/4 md:top-40 w-2 h-2 md:w-3 md:h-3 bg-primary-orange/15 rounded-full animate-pulse-slow" />
+          <div className="absolute top-5 right-5 sm:top-10 sm:right-10 md:top-20 md:right-20 w-1.5 h-1.5 sm:w-2 sm:h-2 md:w-4 md:h-4 bg-primary-orange/20 rounded-full animate-float-slow" />
+          <div className="absolute bottom-10 left-5 sm:bottom-20 sm:left-10 md:bottom-40 md:left-20 w-2 h-2 sm:w-3 sm:h-3 md:w-6 md:h-6 bg-primary-orange/10 rounded-full animate-float-delayed" />
+          <div className="absolute top-10 left-1/4 sm:top-20 md:top-40 w-1.5 h-1.5 sm:w-2 sm:h-2 md:w-3 md:h-3 bg-primary-orange/15 rounded-full animate-pulse-slow" />
         </div>
 
-        <div className="container mx-auto px-4 sm:px-6 lg:px-20 grid lg:grid-cols-2 gap-8 md:gap-12 lg:gap-16 items-center relative z-10">
-          <Information />
-          <ImageSide />
+        {/* Main content grid */}
+        <div className="container mx-auto px-4 sm:px-6 lg:px-20 relative z-10">
+          <div className="grid lg:grid-cols-2 gap-6 sm:gap-8 md:gap-12 lg:gap-16 items-center">
+            <Information />
+            <ImageSide />
+          </div>
         </div>
-        <div className="absolute -bottom-100 -right-50 w-100 h-100 md:w-200 md:h-200 rounded-full opacity-40 pointer-events-none animate-spin-slow bg-[radial-gradient(circle_at_center,#F48024_0%,transparent_70%)]" />
+
+        {/* Bottom gradient element - optimized for mobile */}
+        <div className="absolute -bottom-20 -right-20 sm:-bottom-50 sm:-right-50 md:-bottom-100 md:-right-50 w-64 h-64 sm:w-100 sm:h-100 md:w-200 md:h-200 rounded-full opacity-30 sm:opacity-40 pointer-events-none animate-spin-slow bg-[radial-gradient(circle_at_center,#F48024_0%,transparent_70%)]" />
+      </section>
+
+      {/* Blog Section */}
+      <section className="max-w-7xl mx-auto p-6 bg-bg-main text-text-main font-sans min-h-screen">
+        <div className="flex flex-col lg:flex-row gap-12">
+          <div className="lg:w-2/3">
+            <div className="flex items-center gap-4 mb-6">
+              <h2 className="text-2xl font-bold whitespace-nowrap text-text-main">
+                Top Story
+              </h2>
+              <div className="h-0.5 w-full bg-primary-orange"></div>
+            </div>
+            <ListCard />
+          </div>
+          <aside className="lg:w-1/3">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-4 w-full">
+                <h2 className="text-2xl font-bold text-text-main">Latest</h2>
+                <div className="h-0.5 grow bg-primary-orange"></div>
+              </div>
+              <Link to="/blogs" className="text-primary-orange font-bold ml-4">
+                View&nbsp;All
+              </Link>
+            </div>
+
+            <div className="space-y-8">
+              <div className="flex gap-4 items-start group">
+                <div className="flex-1">
+                  <h4 className="text-primary-orange font-bold mb-1">
+                    Technology
+                  </h4>
+                  <p className="font-bold text-text-main leading-snug mb-2 group-hover:underline">
+                    The best AMD processor in 2025: top AMD CPUs for gaming...
+                  </p>
+                  <div className="flex items-center gap-4 text-xs text-text-sub uppercase tracking-widest font-bold">
+                    <span>NOV 24, 2025</span>
+                    <span className="flex items-center gap-1 capitalize">
+                      <span className="w-4 h-4 bg-primary-orange rounded-full inline-block"></span>{" "}
+                      Ratanak
+                    </span>
+                  </div>
+                </div>
+                <img
+                  src="https://placehold.co/120x80/333/white"
+                  className="w-28 h-20 rounded-xl object-cover"
+                  alt="Technology news thumbnail"
+                />
+              </div>
+
+              <div className="flex gap-4 items-start group">
+                <div className="flex-1">
+                  <h4 className="text-primary-orange font-bold mb-1">
+                    Artificial Intelligence
+                  </h4>
+                  <p className="font-bold text-text-main leading-snug mb-2 group-hover:underline">
+                    AI is teaching machines to "think" and solve problems like
+                    humans.
+                  </p>
+                  <div className="flex items-center gap-4 text-xs text-text-sub uppercase tracking-widest font-bold">
+                    <span>DEC 24, 2025</span>
+                    <span className="flex items-center gap-1 capitalize">
+                      <span className="w-4 h-4 bg-primary-orange rounded-full inline-block"></span>{" "}
+                      Seannn
+                    </span>
+                  </div>
+                </div>
+                <img
+                  src="https://placehold.co/120x80/333/white"
+                  className="w-28 h-20 rounded-xl object-cover"
+                  alt="AI news thumbnail"
+                />
+              </div>
+
+              <div className="flex gap-4 items-start group">
+                <div className="flex-1">
+                  <h4 className="text-primary-orange font-bold mb-1">
+                    Kaynes Technology
+                  </h4>
+                  <p className="font-bold text-text-main leading-snug mb-2 group-hover:underline">
+                    The stock has been declining from its recent high close to
+                    Rs 7,600.
+                  </p>
+                  <div className="flex items-center gap-4 text-xs text-text-sub uppercase tracking-widest font-bold">
+                    <span>MAY 24, 2022</span>
+                    <span className="flex items-center gap-1 capitalize">
+                      <span className="w-4 h-4 bg-primary-orange rounded-full inline-block"></span>{" "}
+                      Rodrigo
+                    </span>
+                  </div>
+                </div>
+                <img
+                  src="https://placehold.co/120x80/333/white"
+                  className="w-28 h-20 rounded-xl object-cover"
+                  alt="Kaynes Technology news thumbnail"
+                />
+              </div>
+            </div>
+          </aside>
+        </div>
+      </section>
+      <section className="relative pb-20 lg:pb-32 overflow-hidden">
+        <EncourageSection />
       </section>
     </main>
   );
