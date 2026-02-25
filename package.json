@@ -15,6 +15,7 @@
     "@iconify/react": "^6.0.2",
     "@mui/material": "^7.3.8",
     "flowbite-react": "^0.12.17",
+    "html-react-parser": "^5.2.17",
     "lucide-react": "^0.575.0",
     "primereact": "^10.9.7",
     "quill": "^2.0.3",

@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import "./App.css";
-import ListCard from "./components/homepage/BlogSection/ListCard";
+import ListCard, { SideBar } from "./components/homepage/BlogSection/ListCard";
 import Card from "./components/homepage/BlogSection/ListCard";
 import EncourageSection from "./components/homepage/EncourageSection/EncourageSection";
 import ImageSide from "./components/homepage/HeroSection/ImageSide";
@@ -33,7 +33,7 @@ function App() {
       </section>
 
       {/* Blog Section */}
-      <section className="max-w-7xl mx-auto p-6 bg-bg-main text-text-main font-sans min-h-screen">
+      <section className="max-w-7xl mx-auto p-6 text-text-main font-sans min-h-screen">
         <div className="flex flex-col lg:flex-row gap-12">
           <div className="lg:w-2/3">
             <div className="flex items-center gap-4 mb-6">
@@ -54,7 +54,7 @@ function App() {
                 View&nbsp;All
               </Link>
             </div>
-            
+            <SideBar/>
           </aside>
         </div>
       </section>

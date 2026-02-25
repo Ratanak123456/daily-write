@@ -1,6 +1,6 @@
 import React from "react";
-
-export function Card({ title, description, image }) {
+import parse from "html-react-parser";
+export function Card({ title, description, image, view, user, userImage }) {
   return (
     <section>
       <div className="rounded-3xl overflow-hidden mb-8">
@@ -10,7 +10,9 @@ export function Card({ title, description, image }) {
       <h1 className="text-5xl font-extrabold leading-tight mb-4 text-text-main">
         {title}
       </h1>
-      <p className="text-xl mb-8 text-text-sub line-clamp-2">{description}</p>
+      <p className="text-xl mb-8 text-text-sub line-clamp-1">
+        {parse(description)}
+      </p>
 
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
@@ -55,139 +57,58 @@ export function Card({ title, description, image }) {
                 d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
               ></path>
             </svg>
-            <span className="font-medium text-primary-orange">100K</span>
+            <span className="font-medium text-primary-orange">{view}K</span>
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-primary-orange rounded-full flex items-center justify-center text-white">
-            <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-              <path
-                fillRule="evenodd"
-                d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-                clipRule="evenodd"
-              ></path>
-            </svg>
+          <div className="w-10 h-10 bg-primary-orange rounded-full flex items-center justify-center overflow-hidden">
+            <img
+              src={userImage}
+              alt={user}
+              className="w-full h-full object-cover"
+            />
           </div>
-          <span className="font-bold text-text-sub">Ratanak</span>
+          <span className="font-bold text-text-sub">{user}</span>
         </div>
       </div>
     </section>
   );
 }
 
-export default function CardSidBar() {
+export function CardSidBar({
+  title,
+  image,
+  blogCategory,
+  createdAt,
+  user,
+  userImage,
+}) {
   return (
     <div className="space-y-8">
       <div className="flex gap-4 items-start group">
         <div className="flex-1">
-          <h4 className="text-primary-orange font-bold mb-1">Technology</h4>
-          <p className="font-bold text-text-main leading-snug mb-2 group-hover:underline">
-            The best AMD processor in 2025: top AMD CPUs for gaming...
+          <h4 className="text-primary-orange font-bold mb-1">{blogCategory}</h4>
+          <p className="font-bold text-text-main leading-snug mb-2 line-clamp-2 group-hover:underline">
+            {title}
           </p>
           <div className="flex items-center gap-4 text-xs text-text-sub uppercase tracking-widest font-bold">
-            <span>NOV 24, 2025</span>
+            <span>{createdAt}</span>
             <span className="flex items-center gap-1 capitalize">
-              <span className="w-4 h-4 bg-primary-orange rounded-full inline-block"></span>{" "}
-              Ratanak
+              <div className="w-4 h-4 bg-primary-orange rounded-full flex items-center justify-center overflow-hidden">
+                <img
+                  src={userImage}
+                  alt={user}
+                  className="w-full h-full object-cover"
+                />
+              </div>{" "}
+              {user}
             </span>
           </div>
         </div>
         <img
-          src="https://placehold.co/120x80/333/white"
+          src={image}
           className="w-28 h-20 rounded-xl object-cover"
-          alt="Technology news thumbnail"
-        />
-      </div>
-
-      <div className="flex gap-4 items-start group">
-        <div className="flex-1">
-          <h4 className="text-primary-orange font-bold mb-1">
-            Artificial Intelligence
-          </h4>
-          <p className="font-bold text-text-main leading-snug mb-2 group-hover:underline">
-            AI is teaching machines to "think" and solve problems like humans.
-          </p>
-          <div className="flex items-center gap-4 text-xs text-text-sub uppercase tracking-widest font-bold">
-            <span>DEC 24, 2025</span>
-            <span className="flex items-center gap-1 capitalize">
-              <span className="w-4 h-4 bg-primary-orange rounded-full inline-block"></span>{" "}
-              Seannn
-            </span>
-          </div>
-        </div>
-        <img
-          src="https://placehold.co/120x80/333/white"
-          className="w-28 h-20 rounded-xl object-cover"
-          alt="AI news thumbnail"
-        />
-      </div>
-
-      <div className="flex gap-4 items-start group">
-        <div className="flex-1">
-          <h4 className="text-primary-orange font-bold mb-1">
-            Kaynes Technology
-          </h4>
-          <p className="font-bold text-text-main leading-snug mb-2 group-hover:underline">
-            The stock has been declining from its recent high close to Rs 7,600.
-          </p>
-          <div className="flex items-center gap-4 text-xs text-text-sub uppercase tracking-widest font-bold">
-            <span>MAY 24, 2022</span>
-            <span className="flex items-center gap-1 capitalize">
-              <span className="w-4 h-4 bg-primary-orange rounded-full inline-block"></span>{" "}
-              Rodrigo
-            </span>
-          </div>
-        </div>
-        <img
-          src="https://placehold.co/120x80/333/white"
-          className="w-28 h-20 rounded-xl object-cover"
-          alt="Kaynes Technology news thumbnail"
-        />
-      </div>
-
-      <div className="flex gap-4 items-start group">
-        <div className="flex-1">
-          <h4 className="text-primary-orange font-bold mb-1">
-            Kaynes Technology
-          </h4>
-          <p className="font-bold text-text-main leading-snug mb-2 group-hover:underline">
-            The stock has been declining from its recent high close to Rs 7,600.
-          </p>
-          <div className="flex items-center gap-4 text-xs text-text-sub uppercase tracking-widest font-bold">
-            <span>MAY 24, 2022</span>
-            <span className="flex items-center gap-1 capitalize">
-              <span className="w-4 h-4 bg-primary-orange rounded-full inline-block"></span>{" "}
-              Rodrigo
-            </span>
-          </div>
-        </div>
-        <img
-          src="https://placehold.co/120x80/333/white"
-          className="w-28 h-20 rounded-xl object-cover"
-          alt="Kaynes Technology news thumbnail"
-        />
-      </div>
-
-      <div className="flex gap-4 items-start group">
-        <div className="flex-1">
-          <h4 className="text-primary-orange font-bold mb-1">
-            Kaynes Technology
-          </h4>
-          <p className="font-bold text-text-main leading-snug mb-2 group-hover:underline">
-            The stock has been declining from its recent high close to Rs 7,600.
-          </p>
-          <div className="flex items-center gap-4 text-xs text-text-sub uppercase tracking-widest font-bold">
-            <span>MAY 24, 2022</span>
-            <span className="flex items-center gap-1 capitalize">
-              <span className="w-4 h-4 bg-primary-orange rounded-full inline-block"></span>{" "}
-              Rodrigo
-            </span>
-          </div>
-        </div>
-        <img
-          src="https://placehold.co/120x80/333/white"
-          className="w-28 h-20 rounded-xl object-cover"
-          alt="Kaynes Technology news thumbnail"
+          alt={title}
         />
       </div>
     </div>
