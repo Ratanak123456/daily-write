@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import HomepageCard from '../../Card/HomepageCard';
 import SkeletonCard from '../../Card/Skeleton';
+import { Card } from '../../Card/HomepageCard';
 
 export default function ListCard() {
   const [data, setData] = useState([]);
@@ -29,7 +29,7 @@ export default function ListCard() {
   return (
     <>
       {data.map((item) => (
-        <HomepageCard
+        <Card
           key={item.uuid}
           title={item.title}
           description={item.content}
