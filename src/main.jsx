@@ -5,11 +5,13 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import About from "./pages/About.jsx";
 import BlogList from "./pages/BlogList.jsx";
 import BlogPost from "./pages/BlogPost.jsx";
-import Auth from "./pages/Auth.jsx";
 import Profile from "./pages/Profile.jsx";
 import BlogDetail from "./pages/BlogDetail.jsx";
-import SaveBlog from "./pages/SaveBlog.jsx";
 import Layout from "./layout.jsx";
+import { store } from "./app/store.js";
+import { Provider } from "react-redux";
+import LoginPage from "./pages/Auth.jsx";
+import Bloger from "./pages/Bloger.jsx";
 
 const router = createBrowserRouter([
   {
@@ -18,7 +20,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element:<App/>
+        element: <App />,
       },
       {
         path: "/about",
@@ -33,24 +35,26 @@ const router = createBrowserRouter([
         element: <BlogPost />,
       },
       {
-        path: "/profile",
-        element: <Profile />,
-      },
-      {
-        path: "/blog-detail",
+        path: "/blogs/:uuid",
         element: <BlogDetail />,
       },
+      {
+        path: "/blogers/:uuid",
+        element: <Bloger/>
+      }
     ],
   },
   {
     path: "/auth",
-    element: <Auth />,
+    element: <LoginPage />,
   },
   {
-    path: "/save-blog",
-    element: <SaveBlog />,
+    path: "/profile",
+    element: <Profile />,
   },
 ]);
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <RouterProvider router={router} />,
+  <Provider store={store}>
+    <RouterProvider router={router} />
+  </Provider>,
 );

@@ -1,11 +1,50 @@
+import { useState, useEffect, useRef } from "react";
 import heropic from "../../../assets/homepage/Untitled design.svg";
 
 export default function ImageSide() {
+  const [isVisible, setIsVisible] = useState(false);
+  const sectionRef = useRef(null);
+
+  // Intersection Observer for scroll in/out animations
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          // Set visibility state based on intersection
+          setIsVisible(entry.isIntersecting);
+        });
+      },
+      { 
+        threshold: 0.3, // Trigger when 30% of the section is visible
+        rootMargin: "0px"
+      }
+    );
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+
+    return () => {
+      if (sectionRef.current) {
+        observer.unobserve(sectionRef.current);
+      }
+    };
+  }, []);
+
   return (
-    <div className="relative flex items-center justify-center order-1 lg:order-2 mt-8 lg:mt-10 lg:mb-20">
+    <div 
+      ref={sectionRef}
+      className="relative flex items-center justify-center order-1 lg:order-2 mt-8 lg:mt-10 lg:mb-20"
+    >
       <div className="relative group w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl mx-auto">
-        {/* Main Image Container - responsive sizing */}
-        <div className="relative z-0 bg-[radial-gradient(circle_at_center,#F48024_0%,transparent_70%)] rounded-full w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 lg:w-120 lg:h-120 xl:w-150 xl:h-150 flex items-center justify-center p-4 sm:p-6 md:p-8 mx-auto animate-float-slow">
+        {/* Main Image Container - with pop animation */}
+        <div 
+          className={`relative z-0 bg-[radial-gradient(circle_at_center,#F48024_0%,transparent_70%)] rounded-full w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 lg:w-120 lg:h-120 xl:w-150 xl:h-150 flex items-center justify-center p-4 sm:p-6 md:p-8 mx-auto transition-all duration-1000 ease-out transform ${
+            isVisible 
+              ? 'opacity-100 scale-100 rotate-0 translate-y-0' 
+              : 'opacity-0 scale-50 rotate-12 translate-y-10'
+          }`}
+        >
           <img
             src={heropic}
             alt="Blogging Illustration"
@@ -13,8 +52,14 @@ export default function ImageSide() {
           />
         </div>
 
-        {/* Rating Card - responsive positioning */}
-        <div className="absolute -top-4 sm:-top-4 md:-top-6 right-0 sm:right-2 md:right-4 lg:right-10 bg-bg-main p-2 sm:p-3 md:p-4 rounded-xl sm:rounded-2xl shadow-xl flex items-center gap-1 sm:gap-2 md:gap-3 animate-bounce-in shadow-orange-100 dark:shadow-gray-800 dark:bg-gray-800 dark:border dark:border-gray-700 z-10 hover:scale-110 transition-transform duration-300">
+        {/* Rating Card - with pop animation from right */}
+        <div 
+          className={`absolute -top-4 sm:-top-4 md:-top-6 right-0 sm:right-2 md:right-4 lg:right-10 bg-bg-main p-2 sm:p-3 md:p-4 rounded-xl sm:rounded-2xl shadow-xl flex items-center gap-1 sm:gap-2 md:gap-3 shadow-orange-100 dark:shadow-gray-800 dark:bg-gray-800 dark:border dark:border-gray-700 z-10 transition-all duration-700 delay-200 ease-out transform ${
+            isVisible 
+              ? 'opacity-100 translate-x-0 scale-100' 
+              : 'opacity-0 translate-x-10 scale-75'
+          } hover:scale-110`}
+        >
           <div className="text-yellow-400 text-lg sm:text-xl md:text-2xl animate-pulse-slow">
             ★
           </div>
@@ -28,11 +73,21 @@ export default function ImageSide() {
           </div>
         </div>
 
-        {/* Background Glow - responsive sizing */}
-        <div className="absolute w-[120%] h-[120%] rounded-full bg-[radial-gradient(circle,rgba(255,237,213,1)_0%,rgba(255,251,247,0)_70%)] blur-xl sm:blur-2xl opacity-80 -z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 dark:bg-[radial-gradient(circle,rgba(55,65,81,0.8)_0%,rgba(31,41,55,0)_70%)] animate-pulse-slow"></div>
+        {/* Background Glow - with fade animation */}
+        <div 
+          className={`absolute w-[120%] h-[120%] rounded-full bg-[radial-gradient(circle,rgba(255,237,213,1)_0%,rgba(255,251,247,0)_70%)] blur-xl sm:blur-2xl opacity-80 -z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 dark:bg-[radial-gradient(circle,rgba(55,65,81,0.8)_0%,rgba(31,41,55,0)_70%)] transition-all duration-1000 delay-100 ${
+            isVisible ? 'opacity-80 scale-100' : 'opacity-0 scale-90'
+          }`}
+        ></div>
 
-        {/* User Card - responsive positioning */}
-        <div className="absolute -bottom-4 sm:-bottom-6 md:-bottom-8 left-0 sm:left-2 md:left-4 lg:-left-6 bg-bg-main p-2 sm:p-3 md:p-4 rounded-xl sm:rounded-2xl shadow-xl flex items-center gap-2 sm:gap-3 md:gap-4 border border-border-main dark:bg-gray-800 dark:border-gray-700 z-10 animate-slide-in-left hover:scale-110 transition-transform duration-300">
+        {/* User Card - with pop animation from left */}
+        <div 
+          className={`absolute -bottom-4 sm:-bottom-6 md:-bottom-8 left-0 sm:left-2 md:left-4 lg:-left-6 bg-bg-main p-2 sm:p-3 md:p-4 rounded-xl sm:rounded-2xl shadow-xl flex items-center gap-2 sm:gap-3 md:gap-4 border border-border-main dark:bg-gray-800 dark:border-gray-700 z-10 transition-all duration-700 delay-300 ease-out transform ${
+            isVisible 
+              ? 'opacity-100 translate-x-0 scale-100' 
+              : 'opacity-0 -translate-x-10 scale-75'
+          } hover:scale-110`}
+        >
           <div className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 bg-primary-orange rounded-lg sm:rounded-xl flex items-center justify-center text-white animate-bounce-subtle">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -59,8 +114,14 @@ export default function ImageSide() {
           </div>
         </div>
 
-        {/* Courses Blog - responsive positioning */}
-        <div className="absolute bottom-4 sm:bottom-6 md:bottom-10 -right-2 sm:right-0 md:-right-4 lg:-right-8 bg-bg-main p-2 sm:p-3 md:p-4 rounded-xl sm:rounded-2xl shadow-xl flex items-center gap-2 sm:gap-3 md:gap-4 border border-border-main dark:bg-gray-800 dark:border-gray-700 z-10 animate-slide-in-right hover:scale-110 transition-transform duration-300">
+        {/* Courses Blog - with pop animation from right */}
+        <div 
+          className={`absolute bottom-4 sm:bottom-6 md:bottom-10 -right-2 sm:right-0 md:-right-4 lg:-right-8 bg-bg-main p-2 sm:p-3 md:p-4 rounded-xl sm:rounded-2xl shadow-xl flex items-center gap-2 sm:gap-3 md:gap-4 border border-border-main dark:bg-gray-800 dark:border-gray-700 z-10 transition-all duration-700 delay-400 ease-out transform ${
+            isVisible 
+              ? 'opacity-100 translate-x-0 scale-100' 
+              : 'opacity-0 translate-x-10 scale-75'
+          } hover:scale-110`}
+        >
           <div className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 bg-text-sub rounded-lg sm:rounded-xl flex items-center justify-center text-white dark:bg-gray-600 animate-spin-slow">
             <svg
               xmlns="http://www.w3.org/2000/svg"

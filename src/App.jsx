@@ -1,10 +1,11 @@
 import { Link } from "react-router-dom";
-import "./App.css";
 import ListCard, { SideBar } from "./components/homepage/BlogSection/ListCard";
-import Card from "./components/homepage/BlogSection/ListCard";
 import EncourageSection from "./components/homepage/EncourageSection/EncourageSection";
 import ImageSide from "./components/homepage/HeroSection/ImageSide";
 import Information from "./components/homepage/HeroSection/Information";
+import FAQ from "./components/homepage/FAQ/FAQ";
+import ReviewSection from "./components/homepage/ReviewSection/ReviewSection";
+import ShareFeedback from "./components/homepage/ShareFeedBack/ShareFeedback";
 
 function App() {
   return (
@@ -33,7 +34,7 @@ function App() {
       </section>
 
       {/* Blog Section */}
-      <section className="max-w-7xl mx-auto p-6 text-text-main font-sans min-h-screen">
+      <section className="max-w-7xl mx-auto p-6 text-text-main font-sans h-auto">
         <div className="flex flex-col lg:flex-row gap-12">
           <div className="lg:w-2/3">
             <div className="flex items-center gap-4 mb-6">
@@ -54,13 +55,27 @@ function App() {
                 View&nbsp;All
               </Link>
             </div>
-            <SideBar/>
+            <SideBar />
           </aside>
         </div>
       </section>
-      <section className="relative pb-20 lg:pb-32 overflow-hidden">
+
+      {/* EncourageSection */}
+      <section className="relative pb-20 lg:pb-10 overflow-hidden">
         <EncourageSection />
       </section>
+
+      {/* FAQ Section*/}
+      <section className="py-20 lg:py-10">
+        <FAQ />
+      </section>
+
+      {/*Review Section*/}
+      <section className="py-20 lg:py-10 overflow-hidden">
+        <ReviewSection />
+      </section>
+        <ShareFeedback/>
+      <section className="py-20 px-6 lg:px-20"></section>
     </main>
   );
 }
