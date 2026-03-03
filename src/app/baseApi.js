@@ -1,7 +1,20 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { getDecryptedAccessToken } from "../util/tokenUtil";
 
-console.log("VITE_BASE_URL:", import.meta.env.VITE_BASE_URL);
+// Clean and validate the base URL
+const getBaseUrl = () => {
+    const url = import.meta.env.VITE_BASE_URL?.trim() || '';
+    // Remove any quotes if present
+    const cleanUrl = url.replace(/^["']|["']$/g, '');
+    // Ensure it starts with https://
+    if (!cleanUrl.startsWith('http')) {
+        console.error("Invalid VITE_BASE_URL:", cleanUrl);
+        return 'https://blog-api.bykh.org/api/v100'; // Fallback
+    }
+    return cleanUrl;
+};
+
+console.log("VITE_BASE_URL:", getBaseUrl());
 
 // Helper to check if a token looks valid (not empty/invalid)
 const isValidToken = (token) => {
@@ -10,7 +23,7 @@ const isValidToken = (token) => {
 
 // create customBaseQuery
 const customBaseQuery = fetchBaseQuery({
-    baseUrl: import.meta.env.VITE_BASE_URL,
+    baseUrl: getBaseUrl(),
     prepareHeaders: (headers) => {
         try {
             const accessToken = getDecryptedAccessToken();
