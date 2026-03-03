@@ -8,6 +8,8 @@ import {
 } from "lucide-react";
 import ListBlog from "../components/BlogPage/ListBlog";
 import { useGetAllProductQuery } from "../app/features/services/productApi";
+import idea from "../assets/blogpage/Idea lamp.png"
+import planet from "../assets/blogpage/Idea lamp.png"
 
 export default function BlogList() {
   const [page, setPage] = useState(0);
@@ -71,12 +73,12 @@ export default function BlogList() {
         <span className="absolute right-[16%] top-[70%] h-3 w-3 rounded-full bg-[#a5aaae]" />
 
         <img
-          src="../src/assets/blogpage/Idea lamp.png"
+          src={idea}
           alt="Idea lamp"
           className="absolute right-[14%] top-8 hidden w-24 opacity-80 md:block"
         />
         <img
-          src="https://www.figma.com/api/mcp/asset/e57b8f23-51fd-4fe9-9a66-cad6b3a43d44"
+          src={planet}
           alt="Planet"
           className="absolute bottom-8 left-1/2 hidden w-20 -translate-x-1/2 opacity-80 md:block"
         />
