@@ -4,36 +4,36 @@ export const productApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     // getallproducts
     getAllProduct: builder.query({
-      query: ({ pageNumber = 0, pageSize = 12, sortBy = "createdAt,desc" }) =>
-        `/blogs?pageNumber=${pageNumber}&pageSize=${pageSize}&sortBy=${sortBy}`,
+      query: ({ pageNumber = 0, pageSize = 10 }) =>
+        `/blogs?pageNumber=${pageNumber}&pageSize=${pageSize}`,
     }),
     getLatestBlogs: builder.query({
-      query: () => `/blogs?pageNumber=0&pageSize=6&sortBy=createdAt,desc`,
+      query: () => `/blogs?pageNumber=0&pageSize=10`,
     }),
     getTrendingBlogs: builder.query({
-      query: () => `/blogs?pageNumber=0&pageSize=6&sortBy=view,desc`,
+      query: () => `/blogs?pageNumber=0&pageSize=10`,
     }),
     getSignleProduct: builder.query({
-      query: () => `/blogs?pageSize=1&sortBy=view,desc`,
+      query: () => `/blogs?pageSize=1`,
     }),
     getBlogByUuid: builder.query({
       query: (uuid) => `/blogs/${uuid}`,
     }),
     getAllProductByCurrentUserUuid: builder.query({
-      query: ({ userUuid, pageNumber = 0, pageSize = 12 }) =>
+      query: ({ userUuid, pageNumber = 0, pageSize = 10 }) =>
         `/blogs/user/${userUuid}?pageNumber=${pageNumber}&pageSize=${pageSize}`,
     }),
     getAllUser: builder.query({
       query: () => `/users`,
     }),
     getCommentsByBlog: builder.query({
-      query: ({ blogUuid, pageNumber = 0, pageSize = 20 }) =>
+      query: ({ blogUuid, pageNumber = 0, pageSize = 10 }) =>
         `/comments?blogUuid=${blogUuid}&pageNumber=${pageNumber}&pageSize=${pageSize}`,
       providesTags: (result, error, { blogUuid }) => [
         { type: "Comment", id: blogUuid },
       ],
     }),
-    
+
     createComment: builder.mutation({
       query: ({ blogUuid, userUuid, content }) => ({
         url: "/comments",

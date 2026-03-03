@@ -8,7 +8,7 @@ import {
 } from "../../../app/features/services/productApi";
 
 export default function ListCard() {
-  const { data, isLoading, isError } = useGetAllProductQuery({ pageNumber: 0, pageSize: 20 });
+  const { data, isLoading, isError } = useGetAllProductQuery({ pageNumber: 0, pageSize: 10 });
   const { data: userData } = useGetAllUserQuery();
 
   if (isLoading || isError) return <SkeletonCard />;
@@ -17,7 +17,7 @@ export default function ListCard() {
   const user = userData?.data?.content;
 
   // Manually find the blog with the highest view count
-  const mostViewedBlog = productData && productData.length > 0 
+  const mostViewedBlog = productData && productData.length > 0
     ? [...productData].reduce((prev, current) => (prev.view > current.view) ? prev : current)
     : null;
 

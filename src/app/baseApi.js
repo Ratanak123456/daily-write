@@ -1,43 +1,65 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { getDecryptedAccessToken } from "../util/tokenUtil";
+import { getDecryptedAccessToken, isAccessTokenExpired, refreshAccessToken, clearTokens } from "../util/tokenUtil";
 
-// Clean and validate the base URL
-const getBaseUrl = () => {
-    const url = import.meta.env.VITE_BASE_URL?.trim() || '';
-    // Remove any quotes if present
-    const cleanUrl = url.replace(/^["']|["']$/g, '');
-    // Ensure it starts with https://
-    if (!cleanUrl.startsWith('http')) {
-        console.error("Invalid VITE_BASE_URL:", cleanUrl);
-        return 'https://blog-api.bykh.org/api/v100'; // Fallback
-    }
-    return cleanUrl;
-};
+// Hardcoded URL
+const BASE_URL = "https://blog-api.bykh.org/api/v100";
 
-console.log("VITE_BASE_URL:", getBaseUrl());
-
-// Helper to check if a token looks valid (not empty/invalid)
+// Helper to check if a token looks valid
 const isValidToken = (token) => {
     return token && typeof token === 'string' && token.length > 0 && token !== 'null' && token !== 'undefined';
 };
 
-// create customBaseQuery
-const customBaseQuery = fetchBaseQuery({
-    baseUrl: getBaseUrl(),
-    prepareHeaders: (headers) => {
-        try {
-            const accessToken = getDecryptedAccessToken();
-            // Only add Authorization header if token is valid
-            if (isValidToken(accessToken)) {
-                headers.set('Authorization', `Bearer ${accessToken}`)
-            }
-        } catch (error) {
-            // If token decryption fails, just skip adding the header
-            console.warn("Failed to get access token:", error);
+// Custom base query with token refresh logic
+const customBaseQuery = async (args, api, extraOptions) => {
+    // First, try to get a valid token
+    let accessToken = getDecryptedAccessToken();
+
+    // If access token is expired, try to refresh it
+    if (!isValidToken(accessToken) || isAccessTokenExpired()) {
+        accessToken = await refreshAccessToken();
+
+        // If refresh failed, user is logged out
+        if (!accessToken) {
+            return { error: { status: 401, data: "Session expired" } };
         }
-        return headers;
     }
-})
+
+    // Make the request with the valid token
+    const result = await fetchBaseQuery({
+        baseUrl: BASE_URL,
+        prepareHeaders: (headers) => {
+            try {
+                if (isValidToken(accessToken)) {
+                    headers.set('Authorization', `Bearer ${accessToken}`)
+                }
+            } catch (error) {
+                console.warn("Failed to set authorization header:", error);
+            }
+            return headers;
+        }
+    })(args, api, extraOptions);
+
+    // If we get 401, try to refresh the token once
+    if (result.error?.status === 401) {
+        const newAccessToken = await refreshAccessToken();
+
+        if (newAccessToken) {
+            // Retry the request with the new token
+            return fetchBaseQuery({
+                baseUrl: BASE_URL,
+                prepareHeaders: (headers) => {
+                    headers.set('Authorization', `Bearer ${newAccessToken}`)
+                    return headers;
+                }
+            })(args, api, extraOptions);
+        } else {
+            // Refresh failed, clear tokens
+            clearTokens();
+        }
+    }
+
+    return result;
+};
 
 export const baseApi = createApi({
     reducerPath: 'baseApi',
