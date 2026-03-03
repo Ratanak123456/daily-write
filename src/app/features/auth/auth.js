@@ -1,3 +1,4 @@
+import { getDecryptedAccessToken } from "../../../util/tokenUtil";
 import { baseApi } from "../../baseApi";
 
 export const auth = baseApi.injectEndpoints({
@@ -13,10 +14,14 @@ export const auth = baseApi.injectEndpoints({
 
     getCurrentUser: builder.query({
       query: () => {
+        const accessToken = getDecryptedAccessToken();
         return {
           url: "/auth/me",
           method: "POST",
-          body: {}, // Some APIs require a body for POST requests
+          body: {},
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
         };
       },
       providesTags: ["User"],
