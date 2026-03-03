@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageCircle, Phone, MapPin, Clock, Send, Check, X } from 'lucide-react';
-import { useScrollAnimation, animationVariants } from './hooks/useScrollAnimation';
+import { useScrollAnimation } from './hooks/useScrollAnimation';
 
 const ContactSection = () => {
   const [showSuccess, setShowSuccess] = useState(false);
-  const { controls, ref, isInView } = useScrollAnimation({ amount: 0.2 });
+  const { controls, ref } = useScrollAnimation({ amount: 0.2 });
 
   const contactDetails = [
     {

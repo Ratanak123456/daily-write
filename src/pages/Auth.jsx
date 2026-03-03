@@ -17,6 +17,39 @@ import GoogleButton from "../components/Button/Google";
 import DecorativeBlobs from "../components/DecorativeBlobs";
 import BackToHome from "../components/Button/BackHome";
 
+// Reusable error message - moved outside component
+const ErrorMessage = ({ error }) =>
+  error && (
+    <div
+      className="mb-4 p-3 text-xs sm:text-sm rounded-lg sm:rounded-xl text-center"
+      style={{
+        backgroundColor: "rgba(239, 68, 68, 0.1)",
+        border: "1px solid rgba(239, 68, 68, 0.2)",
+        color: "rgb(239, 68, 68)",
+      }}
+    >
+      {error}
+    </div>
+  );
+
+// Reusable divider - moved outside component
+const Divider = ({ text }) => (
+  <div
+    className="py-2 sm:py-4 flex items-center before:flex-1 before:border-t after:flex-1 after:border-t"
+    style={{
+      before: { borderColor: "var(--border-color)" },
+      after: { borderColor: "var(--border-color)" },
+    }}
+  >
+    <p
+      className="mx-3 sm:mx-4 text-xs font-medium uppercase"
+      style={{ color: "var(--text-secondary)" }}
+    >
+      {text}
+    </p>
+  </div>
+);
+
 /* ---------------------- Validation Schemas ---------------------- */
 const loginSchema = z.object({
   email: z.string().email("Please enter a valid email"),
@@ -136,39 +169,6 @@ const LoginPage = () => {
     }`;
   };
 
-  // Reusable error message
-  const ErrorMessage = () =>
-    error && (
-      <div
-        className="mb-4 p-3 text-xs sm:text-sm rounded-lg sm:rounded-xl text-center"
-        style={{
-          backgroundColor: "rgba(239, 68, 68, 0.1)",
-          border: "1px solid rgba(239, 68, 68, 0.2)",
-          color: "rgb(239, 68, 68)",
-        }}
-      >
-        {error}
-      </div>
-    );
-
-  // Reusable divider
-  const Divider = ({ text }) => (
-    <div
-      className="py-2 sm:py-4 flex items-center before:flex-1 before:border-t after:flex-1 after:border-t"
-      style={{
-        before: { borderColor: "var(--border-color)" },
-        after: { borderColor: "var(--border-color)" },
-      }}
-    >
-      <p
-        className="mx-3 sm:mx-4 text-xs font-medium uppercase"
-        style={{ color: "var(--text-secondary)" }}
-      >
-        {text}
-      </p>
-    </div>
-  );
-
   // Reusable input focus handlers
   const handleInputFocus = (e) => {
     e.target.style.boxShadow = `0 0 0 2px var(--primary-500)`;
@@ -247,7 +247,7 @@ const LoginPage = () => {
               </p>
             </div>
 
-            <ErrorMessage />
+            <ErrorMessage error={error} />
 
             {/* Login Form */}
             {view === "login" && (

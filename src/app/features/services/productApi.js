@@ -33,7 +33,16 @@ export const productApi = baseApi.injectEndpoints({
         { type: "Comment", id: blogUuid },
       ],
     }),
-    
+
+    patchUser: builder.mutation({
+      query: ({ uuid, payload }) => ({
+        url: `/users/${uuid}`,
+        method: "PATCH",
+        body: payload,
+      }),
+      invalidatesTags: ["User"],
+    }),
+
     createComment: builder.mutation({
       query: ({ blogUuid, userUuid, content }) => ({
         url: "/comments",
@@ -45,25 +54,20 @@ export const productApi = baseApi.injectEndpoints({
       ],
     }),
 
-    patchUser: builder.mutation({
-      query: ({ uuid, payload }) => ({
-        url: `/users/${uuid}`,
-        method: "PATCH",
-        body: payload,
+    uploadMedia: builder.mutation({
+      query: (formData) => ({
+        url: "/medias",
+        method: "POST",
+        body: formData,
       }),
-      invalidatesTags: ["User"],
     }),
 
-    uploadMedia: builder.mutation({
-      query: (file) => {
-        const formData = new FormData();
-        formData.append("file", file);
-        return {
-          url: "/medias",
-          method: "POST",
-          body: formData,
-        };
-      },
+    createBlog: builder.mutation({
+      query: (payload) => ({
+        url: "/blogs",
+        method: "POST",
+        body: payload,
+      }),
     }),
   }),
 });
@@ -81,4 +85,5 @@ export const {
   useCreateCommentMutation,
   usePatchUserMutation,
   useUploadMediaMutation,
+  useCreateBlogMutation,
 } = productApi;

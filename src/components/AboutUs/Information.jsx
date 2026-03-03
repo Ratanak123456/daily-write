@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { useScrollAnimation, animationVariants, blobAnimation } from './hooks/useScrollAnimation';
 
 const AboutSection = () => {
-  const { controls, ref, isInView } = useScrollAnimation({ amount: 0.3 });
+  const { controls, ref } = useScrollAnimation({ amount: 0.3 });
 
   const containerVariants = {
     hidden: { opacity: 0 },

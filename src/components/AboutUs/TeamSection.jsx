@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { useScrollAnimation, animationVariants } from './hooks/useScrollAnimation';
+import { useScrollAnimation } from './hooks/useScrollAnimation';
 
 const IntroSection = () => {
   const { controls, ref, isInView } = useScrollAnimation({ amount: 0.3 });
@@ -251,6 +251,7 @@ const IntroSection = () => {
                         />
                       ))}
                     </motion.div>
+                    
                   </motion.div>
 
                   {/* Card Bottom Text Placeholder */}

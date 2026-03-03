@@ -67,7 +67,7 @@ const tokenRefreshBaseQuery = async (args, api, extraOptions) => {
                         window.location.href = "/auth";
                         return { success: false };
                     }
-                } catch (e) {
+                } catch {
                     clearTokens();
                     window.location.href = "/auth";
                     return { success: false };
@@ -93,5 +93,5 @@ export const baseApi = createApi({
     reducerPath: 'baseApi',
     tagTypes: ["Comment", "User"],
     baseQuery: tokenRefreshBaseQuery,
-    endpoints: (builder) => ({})
+    endpoints: () => ({})
 })

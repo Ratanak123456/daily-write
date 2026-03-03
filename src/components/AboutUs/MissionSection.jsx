@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { BookOpen, MessageSquare, Lightbulb, FileText, Users, ShieldCheck } from 'lucide-react';
-import { useScrollAnimation, animationVariants, cardHoverVariants, iconVariants, blobAnimation } from './hooks/useScrollAnimation';
+import { useScrollAnimation, animationVariants, iconVariants, blobAnimation } from './hooks/useScrollAnimation';
 
 const MissionSection = () => {
   const { controls, ref, isInView } = useScrollAnimation({ amount: 0.2 });
