@@ -1,12 +1,12 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { getDecryptedAccessToken, getDecryptedRefreshToken, storeAccessToken, clearTokens } from "../util/tokenUtil";
+import { getDecryptedAccessToken, getDecryptedRefreshToken, storeAccessToken, storeRefreshToken, clearTokens } from "../util/tokenUtil";
 
 // create customBaseQuery
 const customBaseQuery = fetchBaseQuery({
     baseUrl: import.meta.env.VITE_BASE_URL,
     prepareHeaders: (header) => {
         const accessToken = getDecryptedAccessToken();
-        if(accessToken){
+        if(accessToken && !header.has('Authorization')){
            header.set(
              'Authorization', `Bearer ${accessToken}`
            )
@@ -42,15 +42,24 @@ const tokenRefreshBaseQuery = async (args, api, extraOptions) => {
                             url: "/auth/refresh",
                             method: "POST",
                             body: { refreshToken },
-                            headers: { "Content-Type": "application/json" },
+                            headers: { 
+                                "Content-Type": "application/json",
+                                // Explicitly don't send the expired Authorization header
+                                "Authorization": "" 
+                            },
                         },
                         api,
                         extraOptions
                     );
 
-                    if (refreshResult.data?.data?.accessToken) {
-                        // Store new access token
-                        storeAccessToken(refreshResult.data.data.accessToken);
+                    const data = refreshResult.data?.data || refreshResult.data;
+                    
+                    if (data?.accessToken) {
+                        // Store new tokens
+                        storeAccessToken(data.accessToken);
+                        if (data.refreshToken) {
+                            storeRefreshToken(data.refreshToken);
+                        }
                         return { success: true };
                     } else {
                         // Refresh failed, logout
