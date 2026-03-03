@@ -6,14 +6,17 @@ console.log("VITE_BASE_URL:", import.meta.env.VITE_BASE_URL);
 // create customBaseQuery
 const customBaseQuery = fetchBaseQuery({
     baseUrl: import.meta.env.VITE_BASE_URL,
-    prepareHeaders: (header) => {
-        const accessToken = getDecryptedAccessToken();
-        if(accessToken){
-           header.set(
-             'Authorization', `Bearer ${accessToken}`
-           )
+    prepareHeaders: (headers) => {
+        try {
+            const accessToken = getDecryptedAccessToken();
+            if (accessToken) {
+                headers.set('Authorization', `Bearer ${accessToken}`)
+            }
+        } catch (error) {
+            // If token decryption fails, just skip adding the header
+            console.warn("Failed to get access token:", error);
         }
-        return header;
+        return headers;
     }
 })
 
