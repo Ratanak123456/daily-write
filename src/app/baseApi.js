@@ -3,13 +3,19 @@ import { getDecryptedAccessToken } from "../util/tokenUtil";
 
 console.log("VITE_BASE_URL:", import.meta.env.VITE_BASE_URL);
 
+// Helper to check if a token looks valid (not empty/invalid)
+const isValidToken = (token) => {
+    return token && typeof token === 'string' && token.length > 0 && token !== 'null' && token !== 'undefined';
+};
+
 // create customBaseQuery
 const customBaseQuery = fetchBaseQuery({
     baseUrl: import.meta.env.VITE_BASE_URL,
     prepareHeaders: (headers) => {
         try {
             const accessToken = getDecryptedAccessToken();
-            if (accessToken) {
+            // Only add Authorization header if token is valid
+            if (isValidToken(accessToken)) {
                 headers.set('Authorization', `Bearer ${accessToken}`)
             }
         } catch (error) {
