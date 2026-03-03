@@ -12,6 +12,7 @@ import { store } from "./app/store.js";
 import { Provider } from "react-redux";
 import LoginPage from "./pages/Auth.jsx";
 import Bloger from "./pages/Bloger.jsx";
+import ProtectedRoute from "./components/ProtectedRoute.jsx";
 
 const router = createBrowserRouter([
   {
@@ -32,7 +33,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/blog-post",
-        element: <BlogPost />,
+        element: <ProtectedRoute><BlogPost /></ProtectedRoute>,
       },
       {
         path: "/blogs/:uuid",
@@ -50,7 +51,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/profile",
-    element: <Profile />,
+    element: <ProtectedRoute><Profile /></ProtectedRoute>,
   },
 ]);
 ReactDOM.createRoot(document.getElementById("root")).render(
