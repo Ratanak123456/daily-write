@@ -7,13 +7,14 @@ import SkeletonCard from "../Card/Skeleton";
 
 export default function ListBlog({
   page = 0,
-  pageSize = 10,
+  pageSize = 12,
   sortBy = "createdAt,desc",
   searchQuery = "",
 }) {
   const { data, isLoading, isError } = useGetAllProductQuery({
     pageNumber: page,
     pageSize,
+    sortBy,
   });
   const { data: userData } = useGetAllUserQuery();
 
@@ -67,7 +68,7 @@ export default function ListBlog({
       </div>
     );
   }
-
+  
   return (
     <>
       {displayData.map((blog) => {
