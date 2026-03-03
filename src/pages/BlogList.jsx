@@ -9,7 +9,7 @@ import {
 import ListBlog from "../components/BlogPage/ListBlog";
 import { useGetAllProductQuery } from "../app/features/services/productApi";
 import idea from "../assets/blogpage/Idea lamp.png"
-import planet from "../assets/blogpage/Idea lamp.png"
+import planet from "../assets/blogpage/Planet.png"
 
 export default function BlogList() {
   const [page, setPage] = useState(0);
