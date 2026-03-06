@@ -6,6 +6,7 @@ export const productApi = baseApi.injectEndpoints({
     getAllProduct: builder.query({
       query: ({ pageNumber = 0, pageSize = 12, sortBy = "createdAt,desc" }) =>
         `/blogs?pageNumber=${pageNumber}&pageSize=${pageSize}&sortBy=${sortBy}`,
+      providesTags: ["Blog"],
     }),
     getLatestBlogs: builder.query({
       query: () => `/blogs?pageNumber=0&pageSize=6&sortBy=createdAt,desc`,
@@ -22,6 +23,7 @@ export const productApi = baseApi.injectEndpoints({
     getAllProductByCurrentUserUuid: builder.query({
       query: ({ userUuid, pageNumber = 0, pageSize = 12 }) =>
         `/blogs/user/${userUuid}?pageNumber=${pageNumber}&pageSize=${pageSize}`,
+      providesTags: ["Blog"],
     }),
     getAllUser: builder.query({
       query: () => `/users`,
@@ -68,6 +70,24 @@ export const productApi = baseApi.injectEndpoints({
         method: "POST",
         body: payload,
       }),
+      invalidatesTags: ["Blog"],
+    }),
+
+    updateBlog: builder.mutation({
+      query: ({ uuid, payload }) => ({
+        url: `/blogs/${uuid}`,
+        method: "PATCH",
+        body: payload,
+      }),
+      invalidatesTags: ["Blog"],
+    }),
+
+    deleteBlog: builder.mutation({
+      query: (uuid) => ({
+        url: `/blogs/${uuid}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Blog"],
     }),
   }),
 });
@@ -86,4 +106,6 @@ export const {
   usePatchUserMutation,
   useUploadMediaMutation,
   useCreateBlogMutation,
+  useUpdateBlogMutation,
+  useDeleteBlogMutation,
 } = productApi;

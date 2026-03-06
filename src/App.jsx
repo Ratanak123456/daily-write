@@ -6,8 +6,11 @@ import Information from "./components/homepage/HeroSection/Information";
 import FAQ from "./components/homepage/FAQ/FAQ";
 import ReviewSection from "./components/homepage/ReviewSection/ReviewSection";
 import ShareFeedback from "./components/homepage/ShareFeedBack/ShareFeedback";
+import { useI18n } from "./i18n/useI18n";
 
 function App() {
+  const { t } = useI18n();
+
   return (
     <main>
       {/* Hero Section */}
@@ -39,7 +42,7 @@ function App() {
           <div className="lg:w-2/3">
             <div className="flex items-center gap-4 mb-6">
               <h2 className="text-2xl font-bold whitespace-nowrap text-text-main">
-                Top Story
+                {t("home.topStory")}
               </h2>
               <div className="h-0.5 w-full bg-primary-orange"></div>
             </div>
@@ -48,11 +51,13 @@ function App() {
           <aside className="lg:w-1/3">
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-4 w-full">
-                <h2 className="text-2xl font-bold text-text-main">Latest</h2>
+                <h2 className="text-2xl font-bold text-text-main">
+                  {t("home.latest")}
+                </h2>
                 <div className="h-0.5 grow bg-primary-orange"></div>
               </div>
               <Link to="/blogs" className="text-primary-orange font-bold ml-4">
-                View&nbsp;All
+                {t("home.viewAll")}
               </Link>
             </div>
             <SideBar />
@@ -74,7 +79,7 @@ function App() {
       <section className="py-20 lg:py-10 overflow-hidden">
         <ReviewSection />
       </section>
-        <ShareFeedback/>
+      <ShareFeedback />
       <section className="py-20 px-6 lg:px-20"></section>
     </main>
   );

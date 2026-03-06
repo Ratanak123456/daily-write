@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
-import { ArrowLeft, Loader2, ChevronDown } from "lucide-react";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { useUserLoginMutation } from "../app/features/auth/auth";
 import {
   storeAccessToken,
   storeRefreshToken,
   getDecryptedAccessToken,
 } from "../util/tokenUtil";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import { signInWithPopup } from "firebase/auth";
 import logo from "../assets/DaliyWriteLogo.svg";
 import logIn from "../assets/Auth/login.svg";
 import signUp from "../assets/Auth/sign-up-animate.svg";
@@ -16,6 +17,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import GoogleButton from "../components/Button/Google";
 import DecorativeBlobs from "../components/DecorativeBlobs";
 import BackToHome from "../components/Button/BackHome";
+import { firebaseAuth, googleProvider } from "../app/firebase";
+import { useI18n } from "../i18n/useI18n";
 
 // Reusable error message - moved outside component
 const ErrorMessage = ({ error }) =>
@@ -53,8 +56,7 @@ const Divider = ({ text }) => (
 /* ---------------------- Validation Schemas ---------------------- */
 const loginSchema = z.object({
   email: z.string().email("Please enter a valid email"),
-  password: z
-    .string(),
+  password: z.string(),
 });
 
 const registerSchema = z
@@ -77,9 +79,15 @@ const registerSchema = z
   });
 
 const LoginPage = () => {
+  const { t } = useI18n();
   const [view, setView] = useState("login");
   const [error, setError] = useState("");
+  const [showLoginPassword, setShowLoginPassword] = useState(false);
+  const [showRegisterPassword, setShowRegisterPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [
     loginUser,
@@ -120,12 +128,39 @@ const LoginPage = () => {
       }
       const realAccessToken = getDecryptedAccessToken();
       console.log("Real Access Token: ", realAccessToken);
+      setIsGoogleLoading(false);
       navigate("/");
     }
   }, [userResponse, navigate]);
 
   useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+
+    const accessToken =
+      searchParams.get("accessToken") || searchParams.get("token");
+    const refreshToken = searchParams.get("refreshToken");
+    const oauthError = searchParams.get("error") || searchParams.get("message");
+
+    if (accessToken) {
+      storeAccessToken(accessToken);
+      if (refreshToken) {
+        storeRefreshToken(refreshToken);
+      }
+      setIsGoogleLoading(false);
+      navigate("/", { replace: true });
+      return;
+    }
+
+    if (oauthError) {
+      setError(decodeURIComponent(oauthError));
+      setIsGoogleLoading(false);
+      navigate("/auth", { replace: true });
+    }
+  }, [location.search, navigate]);
+
+  useEffect(() => {
     if (isError) {
+      setIsGoogleLoading(false);
       setError(
         loginError?.data?.message ||
           "Login failed. Please check your credentials.",
@@ -136,6 +171,7 @@ const LoginPage = () => {
   /* ---------------------- Submit Handlers ---------------------- */
   const onLogin = async (data) => {
     setError("");
+    setIsGoogleLoading(false);
     try {
       await loginUser({ email: data.email, password: data.password }).unwrap();
     } catch (err) {
@@ -146,9 +182,10 @@ const LoginPage = () => {
 
   const onRegister = async (data) => {
     setError("");
+    setIsGoogleLoading(false);
     try {
       console.log("Register payload:", {
-        fullName: data.firstName + " " +data.lastName,
+        fullName: data.firstName + " " + data.lastName,
         email: data.email,
         password: data.password,
       });
@@ -161,6 +198,79 @@ const LoginPage = () => {
   const handleSwitch = () => {
     setView(view === "login" ? "register" : "login");
     setError("");
+    setIsGoogleLoading(false);
+  };
+
+  const handleGoogleLogin = () => {
+    setError("");
+    setIsGoogleLoading(true);
+
+    const requiredFirebaseEnv = [
+      "VITE_FIREBASE_API_KEY",
+      "VITE_FIREBASE_AUTH_DOMAIN",
+      "VITE_FIREBASE_PROJECT_ID",
+      "VITE_FIREBASE_APP_ID",
+    ];
+
+    const missingFirebaseEnv = requiredFirebaseEnv.filter(
+      (envKey) => !import.meta.env[envKey],
+    );
+
+    if (missingFirebaseEnv.length > 0) {
+      setError(`Missing Firebase env: ${missingFirebaseEnv.join(", ")}`);
+      setIsGoogleLoading(false);
+      return;
+    }
+
+    signInWithPopup(firebaseAuth, googleProvider)
+      .then(async (result) => {
+        const firebaseIdToken = await result.user.getIdToken();
+        const firebaseRefreshToken = result.user.refreshToken;
+
+        const exchangeUrl = import.meta.env.VITE_FIREBASE_AUTH_EXCHANGE_URL;
+
+        if (exchangeUrl) {
+          const response = await fetch(exchangeUrl, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              idToken: firebaseIdToken,
+            }),
+          });
+
+          if (!response.ok) {
+            throw new Error("Failed to exchange Firebase token with backend.");
+          }
+
+          const responseData = await response.json();
+          const tokenPayload = responseData?.data || responseData;
+
+          if (!tokenPayload?.accessToken) {
+            throw new Error(
+              "Backend token exchange did not return accessToken.",
+            );
+          }
+
+          storeAccessToken(tokenPayload.accessToken);
+          storeRefreshToken(tokenPayload.refreshToken || firebaseIdToken);
+        } else {
+          storeAccessToken(firebaseIdToken);
+          storeRefreshToken(firebaseRefreshToken || firebaseIdToken);
+        }
+
+        setIsGoogleLoading(false);
+        navigate("/");
+      })
+      .catch((firebaseError) => {
+        console.error("Firebase Google login failed:", firebaseError);
+        setError(
+          firebaseError?.message ||
+            "Google login failed. Please check Firebase config and try again.",
+        );
+        setIsGoogleLoading(false);
+      });
   };
 
   const getInputClassName = (isSelect = false) => {
@@ -235,15 +345,15 @@ const LoginPage = () => {
                 className="text-2xl sm:text-3xl font-bold"
                 style={{ color: "var(--primary-500)" }}
               >
-                {view === "login" ? "Login" : "Register"}
+                {view === "login" ? t("auth.login") : t("auth.register")}
               </h1>
               <p
                 className="mt-1 sm:mt-2 text-center text-xs sm:text-sm"
                 style={{ color: "var(--text-secondary)" }}
               >
                 {view === "login"
-                  ? "If you already a member, easily log in now."
-                  : "Write what in you mind with DailyWrite"}
+                  ? t("auth.loginSubtitle")
+                  : t("auth.registerSubtitle")}
               </p>
             </div>
 
@@ -260,12 +370,12 @@ const LoginPage = () => {
                     className="block text-xs sm:text-sm font-semibold mb-1"
                     style={{ color: "var(--text-primary)" }}
                   >
-                    Email
+                    {t("auth.email")}
                   </label>
                   <input
                     type="email"
                     {...loginRegister("email")}
-                    placeholder="Email"
+                    placeholder={t("auth.email")}
                     className={`${getInputClassName()} input-field`}
                     style={{
                       backgroundColor: "var(--bg-primary)",
@@ -286,20 +396,37 @@ const LoginPage = () => {
                     className="block text-xs sm:text-sm font-semibold mb-1"
                     style={{ color: "var(--text-primary)" }}
                   >
-                    Password
+                    {t("auth.password")}
                   </label>
-                  <input
-                    type="password"
-                    {...loginRegister("password")}
-                    placeholder="Password"
-                    className={`${getInputClassName()} input-field`}
-                    style={{
-                      backgroundColor: "var(--bg-primary)",
-                      color: "var(--text-primary)",
-                    }}
-                    onFocus={handleInputFocus}
-                    onBlur={handleInputBlur}
-                  />
+                  <div className="relative">
+                    <input
+                      type={showLoginPassword ? "text" : "password"}
+                      {...loginRegister("password")}
+                      placeholder={t("auth.password")}
+                      className={`${getInputClassName()} input-field pr-10`}
+                      style={{
+                        backgroundColor: "var(--bg-primary)",
+                        color: "var(--text-primary)",
+                      }}
+                      onFocus={handleInputFocus}
+                      onBlur={handleInputBlur}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowLoginPassword((prev) => !prev)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2"
+                      style={{ color: "var(--text-secondary)" }}
+                      aria-label={
+                        showLoginPassword ? "Hide password" : "Show password"
+                      }
+                    >
+                      {showLoginPassword ? (
+                        <EyeOff className="h-4 w-4" />
+                      ) : (
+                        <Eye className="h-4 w-4" />
+                      )}
+                    </button>
+                  </div>
                   {loginErrors.password && (
                     <p className="text-xs mt-1 text-red-600">
                       {loginErrors.password.message}
@@ -317,12 +444,12 @@ const LoginPage = () => {
                         (e.target.style.color = "var(--text-secondary)")
                       }
                     >
-                      Forgot Password?
+                      {t("auth.forgotPassword")}
                     </a>
                   </div>
                 </div>
 
-                <Divider text="Or login with" />
+                <Divider text={t("auth.orLoginWith")} />
 
                 <button
                   type="submit"
@@ -339,14 +466,18 @@ const LoginPage = () => {
                   {isLoading ? (
                     <>
                       <Loader2 className="mr-2 h-3 w-3 sm:h-4 sm:w-4 animate-spin" />
-                      Logging in...
+                      {t("auth.loggingIn")}
                     </>
                   ) : (
-                    "Login"
+                    t("auth.login")
                   )}
                 </button>
 
-                <GoogleButton text="Google" />
+                <GoogleButton
+                  text={t("auth.google")}
+                  onClick={handleGoogleLogin}
+                  isLoading={isGoogleLoading}
+                />
               </form>
             )}
 
@@ -362,11 +493,11 @@ const LoginPage = () => {
                       className="block text-xs sm:text-sm font-semibold mb-1"
                       style={{ color: "var(--text-primary)" }}
                     >
-                      Fist Name
+                      {t("auth.firstName")}
                     </label>
                     <input
                       type="text"
-                      placeholder="firstName"
+                      placeholder={t("auth.firstName")}
                       {...regRegister("firstName")}
                       className={`${getInputClassName()} input-field`}
                       style={{
@@ -388,11 +519,11 @@ const LoginPage = () => {
                       className="block text-xs sm:text-sm font-semibold mb-1"
                       style={{ color: "var(--text-primary)" }}
                     >
-                      Last Name
+                      {t("auth.lastName")}
                     </label>
                     <input
                       type="text"
-                      placeholder="lastName"
+                      placeholder={t("auth.lastName")}
                       {...regRegister("lastName")}
                       className={`${getInputClassName()} input-field`}
                       style={{
@@ -415,11 +546,11 @@ const LoginPage = () => {
                     className="block text-xs sm:text-sm font-semibold mb-1"
                     style={{ color: "var(--text-primary)" }}
                   >
-                    Email
+                    {t("auth.email")}
                   </label>
                   <input
                     type="email"
-                    placeholder="Email"
+                    placeholder={t("auth.email")}
                     {...regRegister("email")}
                     className={`${getInputClassName()} input-field`}
                     style={{
@@ -441,20 +572,37 @@ const LoginPage = () => {
                     className="block text-xs sm:text-sm font-semibold mb-1"
                     style={{ color: "var(--text-primary)" }}
                   >
-                    Password
+                    {t("auth.password")}
                   </label>
-                  <input
-                    type="password"
-                    placeholder="Password"
-                    {...regRegister("password")}
-                    className={`${getInputClassName()} input-field`}
-                    style={{
-                      backgroundColor: "var(--bg-primary)",
-                      color: "var(--text-primary)",
-                    }}
-                    onFocus={handleInputFocus}
-                    onBlur={handleInputBlur}
-                  />
+                  <div className="relative">
+                    <input
+                      type={showRegisterPassword ? "text" : "password"}
+                      placeholder={t("auth.password")}
+                      {...regRegister("password")}
+                      className={`${getInputClassName()} input-field pr-10`}
+                      style={{
+                        backgroundColor: "var(--bg-primary)",
+                        color: "var(--text-primary)",
+                      }}
+                      onFocus={handleInputFocus}
+                      onBlur={handleInputBlur}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowRegisterPassword((prev) => !prev)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2"
+                      style={{ color: "var(--text-secondary)" }}
+                      aria-label={
+                        showRegisterPassword ? "Hide password" : "Show password"
+                      }
+                    >
+                      {showRegisterPassword ? (
+                        <EyeOff className="h-4 w-4" />
+                      ) : (
+                        <Eye className="h-4 w-4" />
+                      )}
+                    </button>
+                  </div>
                   {regErrors.password && (
                     <p className="text-xs mt-1 text-red-600">
                       {regErrors.password.message}
@@ -467,20 +615,37 @@ const LoginPage = () => {
                     className="block text-xs sm:text-sm font-semibold mb-1"
                     style={{ color: "var(--text-primary)" }}
                   >
-                    Confirm Password
+                    {t("auth.confirmPassword")}
                   </label>
-                  <input
-                    type="password"
-                    placeholder="Confirm Password"
-                    {...regRegister("confirmPassword")}
-                    className={`${getInputClassName()} input-field`}
-                    style={{
-                      backgroundColor: "var(--bg-primary)",
-                      color: "var(--text-primary)",
-                    }}
-                    onFocus={handleInputFocus}
-                    onBlur={handleInputBlur}
-                  />
+                  <div className="relative">
+                    <input
+                      type={showConfirmPassword ? "text" : "password"}
+                      placeholder={t("auth.confirmPassword")}
+                      {...regRegister("confirmPassword")}
+                      className={`${getInputClassName()} input-field pr-10`}
+                      style={{
+                        backgroundColor: "var(--bg-primary)",
+                        color: "var(--text-primary)",
+                      }}
+                      onFocus={handleInputFocus}
+                      onBlur={handleInputBlur}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowConfirmPassword((prev) => !prev)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2"
+                      style={{ color: "var(--text-secondary)" }}
+                      aria-label={
+                        showConfirmPassword ? "Hide password" : "Show password"
+                      }
+                    >
+                      {showConfirmPassword ? (
+                        <EyeOff className="h-4 w-4" />
+                      ) : (
+                        <Eye className="h-4 w-4" />
+                      )}
+                    </button>
+                  </div>
                   {regErrors.confirmPassword && (
                     <p className="text-xs mt-1 text-red-600">
                       {regErrors.confirmPassword.message}
@@ -488,7 +653,7 @@ const LoginPage = () => {
                   )}
                 </div>
 
-                <Divider text="Or register with" />
+                <Divider text={t("auth.orRegisterWith")} />
 
                 <button
                   type="submit"
@@ -501,10 +666,14 @@ const LoginPage = () => {
                     (e.target.style.backgroundColor = "var(--primary-500)")
                   }
                 >
-                  Register
+                  {t("auth.register")}
                 </button>
 
-                <GoogleButton text="Google" />
+                <GoogleButton
+                  text={t("auth.google")}
+                  onClick={handleGoogleLogin}
+                  isLoading={isGoogleLoading}
+                />
               </form>
             )}
 
@@ -514,9 +683,7 @@ const LoginPage = () => {
                 className="text-xs sm:text-sm"
                 style={{ color: "var(--text-secondary)" }}
               >
-                {view === "login"
-                  ? "Don't have an account? "
-                  : "Already have an account? "}
+                {view === "login" ? t("auth.noAccount") : t("auth.haveAccount")}
                 <span
                   className="font-bold hover:underline cursor-pointer"
                   style={{ color: "var(--primary-500)" }}
@@ -528,7 +695,7 @@ const LoginPage = () => {
                   }
                   onClick={handleSwitch}
                 >
-                  {view === "login" ? "Register" : "Login"}
+                  {view === "login" ? t("auth.register") : t("auth.login")}
                 </span>
               </p>
             </div>

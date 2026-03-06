@@ -1,22 +1,21 @@
 import React from "react";
 import { useParams } from "react-router-dom";
 import BlogCard from "../components/Card/BlogCard";
-import { 
-  useGetAllUserQuery, 
-  useGetAllProductByCurrentUserUuidQuery 
+import {
+  useGetAllUserQuery,
+  useGetAllProductByCurrentUserUuidQuery,
 } from "../app/features/services/productApi";
 
 export default function Bloger() {
   const { uuid } = useParams();
+  const [activeTab, setActiveTab] = React.useState("blogs");
 
   // Fetch all users to find the specific blogger
   const { data: usersResult, isLoading: usersLoading } = useGetAllUserQuery();
-  
+
   // Fetch blogs by this specific author
-  const { 
-    data: blogsResult, 
-    isLoading: blogsLoading 
-  } = useGetAllProductByCurrentUserUuidQuery({ userUuid: uuid });
+  const { data: blogsResult, isLoading: blogsLoading } =
+    useGetAllProductByCurrentUserUuidQuery({ userUuid: uuid });
 
   // Handle both direct blog return and wrapped response
   const users = usersResult?.data?.content || usersResult || [];
@@ -26,7 +25,9 @@ export default function Bloger() {
   if (usersLoading || blogsLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-orange-50/30">
-        <p className="text-lg text-orange-500 animate-pulse font-semibold">Loading Blogger Profile...</p>
+        <p className="text-lg text-orange-500 animate-pulse font-semibold">
+          Loading Blogger Profile...
+        </p>
       </div>
     );
   }
@@ -35,8 +36,12 @@ export default function Bloger() {
     return (
       <div className="flex min-h-screen items-center justify-center bg-orange-50/30">
         <div className="text-center">
-          <p className="text-2xl font-bold text-gray-800 mb-2">Blogger Not Found</p>
-          <p className="text-gray-500">The user you are looking for does not exist or has been removed.</p>
+          <p className="text-2xl font-bold text-gray-800 mb-2">
+            Blogger Not Found
+          </p>
+          <p className="text-gray-500">
+            The user you are looking for does not exist or has been removed.
+          </p>
         </div>
       </div>
     );
@@ -65,20 +70,36 @@ export default function Bloger() {
               </div>
             </div>
 
-            <h2 className="text-xl font-bold text-gray-900">{blogger.fullName}</h2>
-            <p className="text-gray-500 text-sm mb-6 truncate w-full">{blogger.email}</p>
+            <h2 className="text-xl font-bold text-gray-900">
+              {blogger.fullName}
+            </h2>
+            <p className="text-gray-500 text-sm mb-6 truncate w-full">
+              {blogger.email}
+            </p>
 
             <div className="w-full border-t border-gray-100 pt-6 mb-6">
               <p className="text-gray-400 text-xs uppercase tracking-wider mb-1">
                 Member Since
               </p>
               <p className="text-lg font-bold text-gray-700">
-                {blogger.createdAt ? new Date(blogger.createdAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : "N/A"}
+                {blogger.createdAt
+                  ? new Date(blogger.createdAt).toLocaleDateString("en-US", {
+                      month: "long",
+                      year: "numeric",
+                    })
+                  : "N/A"}
               </p>
             </div>
 
             <div className="w-full space-y-3">
-              <div className="w-full bg-orange-500 text-white rounded-xl py-3 px-4 flex items-center justify-center gap-2 font-medium shadow-sm">
+              <button
+                onClick={() => setActiveTab("blogs")}
+                className={`w-full rounded-xl py-3 px-4 flex items-center justify-center gap-2 font-medium shadow-sm transition-colors ${
+                  activeTab === "blogs"
+                    ? "bg-orange-500 text-white"
+                    : "bg-orange-100 text-orange-700"
+                }`}
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-5 w-5"
@@ -92,63 +113,102 @@ export default function Bloger() {
                   />
                 </svg>
                 AUTHOR
-              </div>
+              </button>
+
+              <button
+                onClick={() => setActiveTab("about")}
+                className={`w-full rounded-xl py-3 px-4 font-medium shadow-sm transition-colors ${
+                  activeTab === "about"
+                    ? "bg-orange-500 text-white"
+                    : "bg-orange-100 text-orange-700"
+                }`}
+              >
+                ABOUT
+              </button>
             </div>
           </div>
         </aside>
 
         {/* Main Content: Blogger's Blogs */}
         <main className="w-full lg:w-3/4">
-          <div className="flex justify-between items-center mb-8">
-            <h1 className="text-3xl font-bold text-orange-500">
-              Blogs by {blogger.fullName.split(' ')[0]}
-            </h1>
-            <div className="flex items-center gap-2 text-sm">
-              <span className="text-gray-400">Total:</span>
-              <span className="font-bold text-orange-600">{blogs.length} Posts</span>
-            </div>
-          </div>
+          {activeTab === "blogs" ? (
+            <>
+              <div className="flex justify-between items-center mb-8">
+                <h1 className="text-3xl font-bold text-orange-500">
+                  Blogs by {blogger.fullName.split(" ")[0]}
+                </h1>
+                <div className="flex items-center gap-2 text-sm">
+                  <span className="text-gray-400">Total:</span>
+                  <span className="font-bold text-orange-600">
+                    {blogs.length} Posts
+                  </span>
+                </div>
+              </div>
 
-          {blogs.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-10">
-              {blogs.map((blog) => (
-                <BlogCard
-                  key={blog.uuid}
-                  image={blog.thumbnailUrl}
-                  author={blogger.fullName}
-                  tag={blog.blogCategory}
-                  title={blog.title}
-                  summary={blog.content}
-                  views={blog.view}
-                  time={new Date(blog.createdAt).toLocaleDateString()}
-                  userImage={blogger.profileUrl}
-                  uuid={blog.uuid}
-                />
-              ))}
-            </div>
+              {blogs.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-10">
+                  {blogs.map((blog) => (
+                    <BlogCard
+                      key={blog.uuid}
+                      image={blog.thumbnailUrl}
+                      author={blogger.fullName}
+                      tag={blog.blogCategory}
+                      title={blog.title}
+                      summary={blog.content}
+                      views={blog.view}
+                      time={new Date(blog.createdAt).toLocaleDateString()}
+                      userImage={blogger.profileUrl}
+                      uuid={blog.uuid}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <div className="bg-white rounded-2xl p-12 text-center border border-dashed border-gray-300">
+                  <svg
+                    className="mx-auto h-12 w-12 text-gray-300 mb-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={1}
+                      d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10l4 4v10a2 2 0 01-2 2z"
+                    />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={1}
+                      d="M14 4v4h4"
+                    />
+                  </svg>
+                  <p className="text-gray-500 font-medium">
+                    This author hasn't published any blogs yet.
+                  </p>
+                </div>
+              )}
+            </>
           ) : (
-            <div className="bg-white rounded-2xl p-12 text-center border border-dashed border-gray-300">
-              <svg 
-                className="mx-auto h-12 w-12 text-gray-300 mb-4" 
-                fill="none" 
-                viewBox="0 0 24 24" 
-                stroke="currentColor"
-              >
-                <path 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round" 
-                  strokeWidth={1} 
-                  d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10l4 4v10a2 2 0 01-2 2z" 
-                />
-                <path 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round" 
-                  strokeWidth={1} 
-                  d="M14 4v4h4" 
-                />
-              </svg>
-              <p className="text-gray-500 font-medium">This author hasn't published any blogs yet.</p>
-            </div>
+            <section className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8">
+              <h2 className="text-2xl font-bold text-orange-500 mb-6">
+                About {blogger.fullName}
+              </h2>
+
+              {blogger.coverUrl ? (
+                <div className="mb-6 overflow-hidden rounded-xl border border-orange-100">
+                  <img
+                    src={blogger.coverUrl}
+                    alt={`${blogger.fullName} cover`}
+                    className="w-full h-56 object-cover"
+                  />
+                </div>
+              ) : null}
+
+              <p className="text-gray-700 leading-relaxed text-base">
+                {blogger.bio || "This author has not added a biography yet."}
+              </p>
+            </section>
           )}
         </main>
       </div>

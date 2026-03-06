@@ -13,6 +13,7 @@ import { Provider } from "react-redux";
 import LoginPage from "./pages/Auth.jsx";
 import Bloger from "./pages/Bloger.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
+import { I18nProvider } from "./i18n/I18nProvider.jsx";
 
 const router = createBrowserRouter([
   {
@@ -33,7 +34,11 @@ const router = createBrowserRouter([
       },
       {
         path: "/blog-post",
-        element: <ProtectedRoute><BlogPost /></ProtectedRoute>,
+        element: (
+          <ProtectedRoute>
+            <BlogPost />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/blogs/:uuid",
@@ -41,8 +46,8 @@ const router = createBrowserRouter([
       },
       {
         path: "/blogers/:uuid",
-        element: <Bloger/>
-      }
+        element: <Bloger />,
+      },
     ],
   },
   {
@@ -51,11 +56,17 @@ const router = createBrowserRouter([
   },
   {
     path: "/profile",
-    element: <ProtectedRoute><Profile /></ProtectedRoute>,
+    element: (
+      <ProtectedRoute>
+        <Profile />
+      </ProtectedRoute>
+    ),
   },
 ]);
 ReactDOM.createRoot(document.getElementById("root")).render(
   <Provider store={store}>
-    <RouterProvider router={router} />
+    <I18nProvider>
+      <RouterProvider router={router} />
+    </I18nProvider>
   </Provider>,
 );

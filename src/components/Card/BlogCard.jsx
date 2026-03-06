@@ -1,4 +1,4 @@
-import { Eye, MessageSquare, User } from "lucide-react";
+import { Eye, MessageSquare, User, X } from "lucide-react";
 import parse from "html-react-parser";
 import { Link } from "react-router-dom";
 
@@ -13,14 +13,22 @@ export default function BlogCard({
   time,
   userImage,
   uuid,
-  status
+  status,
+  mode = "view",
+  onCardClick,
+  onDelete,
 }) {
   const isDraft = status?.toUpperCase() === "DRAFT" || tag === "DRAFT";
   const linkTo = isDraft ? `/blog-post?uuid=${uuid}` : `/blogs/${uuid}`;
+  const isInteractiveMode = mode === "update" || mode === "delete";
 
-  return (
-    <Link to={linkTo}>
-        <article className="overflow-hidden rounded-2xl border border-border-main bg-bg-main shadow-sm transition hover:shadow-md">
+  const cardContent = (
+    <article
+      className={`overflow-hidden rounded-2xl border border-border-main bg-bg-main shadow-sm transition hover:shadow-md ${
+        mode === "update" ? "cursor-pointer" : ""
+      }`}
+      onClick={isInteractiveMode ? onCardClick : undefined}
+    >
       <div className="relative h-44 w-full">
         <img src={image} alt={title} className="h-full w-full object-cover" />
         <div className="absolute left-3 top-3 rounded-full bg-white px-2 py-1 text-[10px] font-semibold text-[#00b33d]">
@@ -42,6 +50,22 @@ export default function BlogCard({
             </span>
           </div>
         </div>
+
+        {mode === "delete" && (
+          <button
+            type="button"
+            onClick={(event) => {
+              event.preventDefault();
+              event.stopPropagation();
+              onDelete?.();
+            }}
+            className="absolute right-3 top-3 rounded-full bg-white p-1 text-primary-orange shadow hover:bg-orange-50"
+            aria-label="Delete post"
+          >
+            <X size={16} />
+          </button>
+        )}
+
         <span className="absolute bottom-3 left-3 rounded-full bg-emerald-50 px-3 py-1 text-[10px] font-semibold text-emerald-700">
           {tag}
         </span>
@@ -54,6 +78,12 @@ export default function BlogCard({
         <p className="line-clamp-2 text-xs leading-5 text-[#a5aaae]">
           {parse(summary)}
         </p>
+
+        {mode === "update" && (
+          <p className="text-xs font-semibold text-primary-orange">
+            Select this post to update
+          </p>
+        )}
 
         <div className="flex items-center justify-between text-[10px] text-[#797f84]">
           <div className="flex items-center gap-3">
@@ -76,6 +106,11 @@ export default function BlogCard({
         </div>
       </div>
     </article>
-    </Link>
   );
+
+  if (isInteractiveMode) {
+    return cardContent;
+  }
+
+  return <Link to={linkTo}>{cardContent}</Link>;
 }

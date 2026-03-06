@@ -1,40 +1,54 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { BookOpen, MessageSquare, Lightbulb, FileText, Users, ShieldCheck } from 'lucide-react';
-import { useScrollAnimation, animationVariants, iconVariants, blobAnimation } from './hooks/useScrollAnimation';
+import React from "react";
+import { motion } from "framer-motion";
+import {
+  BookOpen,
+  MessageSquare,
+  Lightbulb,
+  FileText,
+  Users,
+  ShieldCheck,
+} from "lucide-react";
+import {
+  useScrollAnimation,
+  animationVariants,
+  iconVariants,
+  blobAnimation,
+} from "./hooks/useScrollAnimation";
+import { useI18n } from "../../i18n/useI18n";
 
 const MissionSection = () => {
   const { controls, ref, isInView } = useScrollAnimation({ amount: 0.2 });
+  const { t } = useI18n();
 
   const missions = [
     {
-      title: "Quality Content",
-      description: "We publish well-researched, thoughtfully crafted articles that provide real value to our readers.",
+      title: t("about.mission.qualityTitle"),
+      description: t("about.mission.qualityDesc"),
       icon: <BookOpen className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8" />,
     },
     {
-      title: "Community Voice",
-      description: "We foster meaningful discussions and welcome diverse perspectives from our engaged community.",
+      title: t("about.mission.communityTitle"),
+      description: t("about.mission.communityDesc"),
       icon: <MessageSquare className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8" />,
     },
     {
-      title: "Fresh Perspectives",
-      description: "We bring you unique insights and fresh ideas that challenge conventional thinking.",
+      title: t("about.mission.freshTitle"),
+      description: t("about.mission.freshDesc"),
       icon: <Lightbulb className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8" />,
     },
     {
-      title: "Regular Publishing",
-      description: "New articles every week to keep you informed, inspired, and coming back for more.",
+      title: t("about.mission.regularTitle"),
+      description: t("about.mission.regularDesc"),
       icon: <FileText className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8" />,
     },
     {
-      title: "Diverse Voices",
-      description: "We feature guest writers and experts from various fields to bring you multifaceted viewpoints.",
+      title: t("about.mission.diverseTitle"),
+      description: t("about.mission.diverseDesc"),
       icon: <Users className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8" />,
     },
     {
-      title: "Trusted Information",
-      description: "We verify our sources and fact-check all content to maintain the highest standards of accuracy.",
+      title: t("about.mission.trustedTitle"),
+      description: t("about.mission.trustedDesc"),
       icon: <ShieldCheck className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8" />,
     },
   ];
@@ -46,7 +60,7 @@ const MissionSection = () => {
       opacity: 1,
       y: 0,
       transition: {
-        type: 'spring',
+        type: "spring",
         stiffness: 100,
         damping: 12,
         delay: i * 0.1,
@@ -57,13 +71,13 @@ const MissionSection = () => {
   return (
     <section
       className="py-12 px-4 sm:py-16 sm:px-6 md:py-20 md:px-6 lg:px-8"
-      style={{ backgroundColor: 'var(--bg-primary)' }}
+      style={{ backgroundColor: "var(--bg-primary)" }}
       ref={ref}
     >
       {/* Decorative Background Elements */}
       <motion.div
         className="absolute top-20 right-10 w-64 h-64 rounded-full blur-3xl opacity-10"
-        style={{ backgroundColor: 'var(--primary-500)' }}
+        style={{ backgroundColor: "var(--primary-500)" }}
         animate={{
           ...blobAnimation,
           x: [0, 30, 0],
@@ -72,7 +86,7 @@ const MissionSection = () => {
       />
       <motion.div
         className="absolute bottom-20 left-10 w-48 h-48 rounded-full blur-3xl opacity-10"
-        style={{ backgroundColor: 'var(--primary-700)' }}
+        style={{ backgroundColor: "var(--primary-700)" }}
         animate={{
           ...blobAnimation,
           scale: [1, 1.3, 1],
@@ -91,22 +105,22 @@ const MissionSection = () => {
         >
           <motion.h2
             className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4"
-            style={{ color: 'var(--text-primary)' }}
+            style={{ color: "var(--text-primary)" }}
             variants={animationVariants.fadeInUp}
           >
-            Our{' '}
+            {t("about.mission.headingPrefix")}{" "}
             <motion.span
               className="relative inline-block"
-              style={{ color: 'var(--primary-500)' }}
+              style={{ color: "var(--primary-500)" }}
               whileHover={{ scale: 1.05 }}
-              transition={{ type: 'spring', stiffness: 300 }}
+              transition={{ type: "spring", stiffness: 300 }}
             >
-              Mission
+              {t("about.mission.headingHighlight")}
               <motion.div
                 className="absolute -bottom-1 left-0 h-1 rounded-full"
-                style={{ backgroundColor: 'var(--primary-500)' }}
+                style={{ backgroundColor: "var(--primary-500)" }}
                 initial={{ width: 0 }}
-                animate={isInView ? { width: '100%' } : { width: 0 }}
+                animate={isInView ? { width: "100%" } : { width: 0 }}
                 transition={{ duration: 0.8, delay: 0.5 }}
               />
             </motion.span>
@@ -114,12 +128,10 @@ const MissionSection = () => {
 
           <motion.p
             className="text-sm sm:text-base md:text-lg max-w-3xl mx-auto leading-relaxed px-4"
-            style={{ color: 'var(--text-secondary)' }}
+            style={{ color: "var(--text-secondary)" }}
             variants={animationVariants.fadeInUp}
           >
-            To become the most trusted source for insightful content and authentic storytelling,
-            delivering valuable knowledge, diverse perspectives, and engaging narratives that
-            inform, inspire, and connect readers from all walks of life.
+            {t("about.mission.intro")}
           </motion.p>
         </motion.div>
 
@@ -135,7 +147,7 @@ const MissionSection = () => {
               key={index}
               className="p-5 sm:p-6 md:p-8 rounded-xl sm:rounded-2xl flex flex-col items-center text-center cursor-pointer"
               style={{
-                backgroundColor: 'var(--bg-secondary)',
+                backgroundColor: "var(--bg-secondary)",
               }}
               variants={cardVariants}
               custom={index}
@@ -147,28 +159,28 @@ const MissionSection = () => {
               <motion.div
                 className="w-12 h-12 sm:h-14 md:w-14 sm:w-16 md:h-16 rounded-full flex items-center justify-center shadow-sm mb-4 sm:mb-5 md:mb-6"
                 style={{
-                  backgroundColor: 'var(--bg-primary)',
+                  backgroundColor: "var(--bg-primary)",
                 }}
                 variants={iconVariants}
                 whileHover="hover"
               >
-                <motion.div style={{ color: 'var(--primary-500)' }}>
+                <motion.div style={{ color: "var(--primary-500)" }}>
                   {item.icon}
                 </motion.div>
               </motion.div>
 
               <motion.h3
                 className="text-lg sm:text-xl md:text-2xl font-bold mb-2 sm:mb-3 md:mb-4"
-                style={{ color: 'var(--primary-500)' }}
+                style={{ color: "var(--primary-500)" }}
                 whileHover={{ scale: 1.05 }}
-                transition={{ type: 'spring', stiffness: 300 }}
+                transition={{ type: "spring", stiffness: 300 }}
               >
                 {item.title}
               </motion.h3>
 
               <motion.p
                 className="text-xs sm:text-sm md:text-base leading-relaxed"
-                style={{ color: 'var(--text-secondary)' }}
+                style={{ color: "var(--text-secondary)" }}
                 initial={{ opacity: 0.8 }}
                 whileHover={{ opacity: 1 }}
               >
@@ -179,13 +191,13 @@ const MissionSection = () => {
               <motion.div
                 className="absolute top-0 right-0 w-0 h-0 rounded-tr-xl"
                 style={{
-                  borderTop: '3px solid var(--primary-500)',
-                  borderRight: '3px solid var(--primary-500)',
+                  borderTop: "3px solid var(--primary-500)",
+                  borderRight: "3px solid var(--primary-500)",
                 }}
                 initial={{ width: 0, height: 0, opacity: 0 }}
                 whileHover={{
-                  width: '20px',
-                  height: '20px',
+                  width: "20px",
+                  height: "20px",
                   opacity: 1,
                   transition: { duration: 0.2 },
                 }}
@@ -193,13 +205,13 @@ const MissionSection = () => {
               <motion.div
                 className="absolute bottom-0 left-0 w-0 h-0 rounded-bl-xl"
                 style={{
-                  borderBottom: '3px solid var(--primary-500)',
-                  borderLeft: '3px solid var(--primary-500)',
+                  borderBottom: "3px solid var(--primary-500)",
+                  borderLeft: "3px solid var(--primary-500)",
                 }}
                 initial={{ width: 0, height: 0, opacity: 0 }}
                 whileHover={{
-                  width: '20px',
-                  height: '20px',
+                  width: "20px",
+                  height: "20px",
                   opacity: 1,
                   transition: { duration: 0.2, delay: 0.1 },
                 }}
@@ -216,25 +228,25 @@ const MissionSection = () => {
           transition={{ duration: 0.8, delay: 1 }}
         >
           {[
-            { value: '500+', label: 'Articles Published' },
-            { value: '10k+', label: 'Monthly Readers' },
-            { value: '50+', label: 'Expert Writers' },
-            { value: '4.8', label: 'Reader Rating' },
+            { value: "500+", label: t("about.mission.statArticles") },
+            { value: "10k+", label: t("about.mission.statReaders") },
+            { value: "50+", label: t("about.mission.statWriters") },
+            { value: "4.8", label: t("about.mission.statRating") },
           ].map((stat, index) => (
             <motion.div
               key={index}
               className="text-center p-3 sm:p-4 rounded-lg"
-              style={{ backgroundColor: 'var(--bg-secondary)' }}
+              style={{ backgroundColor: "var(--bg-secondary)" }}
               whileHover={{ scale: 1.05, y: -5 }}
-              transition={{ type: 'spring', stiffness: 400 }}
+              transition={{ type: "spring", stiffness: 400 }}
             >
               <motion.div
                 className="text-xl sm:text-2xl md:text-3xl font-bold"
-                style={{ color: 'var(--primary-500)' }}
+                style={{ color: "var(--primary-500)" }}
                 initial={{ scale: 0 }}
                 animate={isInView ? { scale: 1 } : {}}
                 transition={{
-                  type: 'spring',
+                  type: "spring",
                   stiffness: 200,
                   delay: 1.2 + index * 0.1,
                 }}
@@ -243,7 +255,7 @@ const MissionSection = () => {
               </motion.div>
               <motion.div
                 className="text-xs sm:text-sm"
-                style={{ color: 'var(--text-secondary)' }}
+                style={{ color: "var(--text-secondary)" }}
               >
                 {stat.label}
               </motion.div>

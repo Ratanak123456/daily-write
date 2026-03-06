@@ -3,21 +3,54 @@ import {
   useGetAllUserQuery,
 } from "../../app/features/services/productApi";
 import { useGetCurrentUserQuery } from "../../app/features/auth/auth";
+import { useEffect } from "react";
 import BlogCard from "../Card/BlogCard";
 import SkeletonCard from "../Card/Skeleton";
 
-export default function DraftBlog({ page = 0, pageSize = 12 }) {
+export default function DraftBlog({
+  page = 0,
+  pageSize = 12,
+  mode = "view",
+  sortBy = "latest",
+  onTotalPagesChange,
+  onRequestDelete,
+}) {
   const { data: currentUserData } = useGetCurrentUserQuery();
   const currentUser = currentUserData?.data;
 
   const { data, isLoading, isError } = useGetAllProductByCurrentUserUuidQuery(
-    { userUuid: currentUser?.uuid, pageNumber: page, pageSize },
-    { skip: !currentUser?.uuid }
+    { userUuid: currentUser?.uuid, pageNumber: 0, pageSize: 1000 },
+    { skip: !currentUser?.uuid },
   );
   const { data: userData } = useGetAllUserQuery();
 
   const productData = data?.data?.content || data?.data || data || [];
   const user = userData?.data?.content || userData?.data || userData || [];
+
+  const userDraftBlogs = productData.filter(
+    (blog) => blog.status?.toUpperCase() === "DRAFT",
+  );
+
+  const sortedDraftBlogs = [...userDraftBlogs].sort((a, b) => {
+    const dateA = new Date(a?.createdAt || 0).getTime();
+    const dateB = new Date(b?.createdAt || 0).getTime();
+
+    if (sortBy === "oldest") {
+      return dateA - dateB;
+    }
+
+    return dateB - dateA;
+  });
+
+  const totalPages = Math.ceil(sortedDraftBlogs.length / pageSize);
+  const paginatedBlogs = sortedDraftBlogs.slice(
+    page * pageSize,
+    page * pageSize + pageSize,
+  );
+
+  useEffect(() => {
+    onTotalPagesChange?.(totalPages);
+  }, [onTotalPagesChange, totalPages]);
 
   if (isError) {
     return <div>Error loading drafts</div>;
@@ -33,12 +66,7 @@ export default function DraftBlog({ page = 0, pageSize = 12 }) {
     );
   }
 
-  const userDraftBlogs = productData.filter(
-    (blog) =>
-      blog.status?.toUpperCase() === "DRAFT",
-  );
-
-  if (userDraftBlogs.length === 0) {
+  if (sortedDraftBlogs.length === 0) {
     return (
       <div className="col-span-full py-10 text-center text-gray-500 text-lg">
         No draft blogs found.
@@ -48,7 +76,7 @@ export default function DraftBlog({ page = 0, pageSize = 12 }) {
 
   return (
     <>
-      {userDraftBlogs.map((blog) => {
+      {paginatedBlogs.map((blog) => {
         const author = user?.find((u) => u.uuid === blog.authorUuid);
         return (
           <BlogCard
@@ -63,6 +91,8 @@ export default function DraftBlog({ page = 0, pageSize = 12 }) {
             views={blog.view}
             time={new Date(blog.createdAt).toLocaleDateString()}
             userImage={author?.profileUrl || currentUser?.profileUrl}
+            mode={mode}
+            onDelete={() => onRequestDelete?.(blog)}
           />
         );
       })}

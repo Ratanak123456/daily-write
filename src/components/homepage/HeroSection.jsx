@@ -18,13 +18,15 @@ export default function HeroSection() {
         {/* Left Content */}
         <div className="max-w-2xl">
           <h1 className="text-4xl lg:text-6xl font-extrabold text-text-main leading-tight animate-fade-in-up">
-            <span className="text-primary-orange inline-block animate-wave">A</span> Community-Driven
+            <span className="inline-flex items-baseline gap-2 whitespace-nowrap">
+              <span className="text-primary-orange">A</span>
+              <span>Community-Driven</span>
+            </span>
             <span className="text-primary-orange block mt-2 animate-slide-in-right">
-              {" "}
               Platform for Sharing Ideas, Engaging in Discussion
             </span>
           </h1>
-          
+
           <p className="mt-6 text-text-sub text-lg leading-relaxed animate-fade-in-up-delay animate-slide-in-bottom">
             DailyWrite is an open blogging platform where users share insights
             on technology, daily life, and general topics while engaging in
@@ -60,7 +62,9 @@ export default function HeroSection() {
 
             {/* Rating Card */}
             <div className="absolute -top-6 right-4 lg:right-10 bg-bg-main p-4 rounded-2xl shadow-xl flex items-center gap-3 animate-bounce-in shadow-orange-100 dark:shadow-gray-800 dark:bg-gray-800 dark:border dark:border-gray-700 z-10 hover:scale-110 transition-transform duration-300">
-              <div className="text-yellow-400 text-xl animate-pulse-slow">★</div>
+              <div className="text-yellow-400 text-xl animate-pulse-slow">
+                ★
+              </div>
               <div>
                 <p className="text-sm font-bold text-text-main dark:text-white">
                   4.8

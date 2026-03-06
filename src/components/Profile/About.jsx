@@ -1,25 +1,37 @@
 import React, { useState, useEffect } from "react";
-import { 
-  usePatchUserMutation, 
-  useUploadMediaMutation 
+import {
+  usePatchUserMutation,
+  useUploadMediaMutation,
 } from "../../app/features/services/productApi";
 import { Camera, Edit2, Save, X } from "lucide-react";
 import Toast from "../Toast";
+import { resolveMediaPreviewUrl } from "../../util/mediaUrl";
 
-export default function About({ uuid, fullName, email, profileUrl, coverUrl, createdAt, bio }) {
+export default function About({
+  uuid,
+  fullName,
+  email,
+  profileUrl,
+  coverUrl,
+  createdAt,
+  bio,
+}) {
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     fullName: fullName || "",
     email: email || "",
     profileUrl: profileUrl || "",
     coverUrl: coverUrl || "",
-    bio: bio || ""
+    bio: bio || "",
   });
 
   const [toast, setToast] = useState(null);
   const [patchUser, { isLoading: isSaving }] = usePatchUserMutation();
   const [uploadMedia] = useUploadMediaMutation();
-  const [isUploading, setIsUploading] = useState({ profile: false, cover: false });
+  const [isUploading, setIsUploading] = useState({
+    profile: false,
+    cover: false,
+  });
 
   useEffect(() => {
     setFormData({
@@ -27,7 +39,7 @@ export default function About({ uuid, fullName, email, profileUrl, coverUrl, cre
       email: email || "",
       profileUrl: profileUrl || "",
       coverUrl: coverUrl || "",
-      bio: bio || ""
+      bio: bio || "",
     });
   }, [fullName, email, profileUrl, coverUrl, bio]);
 
@@ -37,30 +49,40 @@ export default function About({ uuid, fullName, email, profileUrl, coverUrl, cre
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleFileChange = async (e, type) => {
     const file = e.target.files[0];
     if (!file) return;
 
-    setIsUploading(prev => ({ ...prev, [type]: true }));
+    setIsUploading((prev) => ({ ...prev, [type]: true }));
     try {
-      const result = await uploadMedia(file).unwrap();
-      const fileName = result?.data?.fileName || result?.fileName || result?.name;
-      const fileUrl = `${import.meta.env.VITE_BASE_URL}/files/${fileName}`;
-      
-      setFormData(prev => ({
+      const uploadFormData = new FormData();
+      uploadFormData.append("files", file, file.name);
+
+      const result = await uploadMedia(uploadFormData).unwrap();
+      const fileUrl = resolveMediaPreviewUrl(result, file.name);
+
+      if (!fileUrl) {
+        throw new Error("Upload succeeded but preview URL is missing.");
+      }
+
+      setFormData((prev) => ({
         ...prev,
-        [type === "profile" ? "profileUrl" : "coverUrl"]: fileUrl
+        [type === "profile" ? "profileUrl" : "coverUrl"]: fileUrl,
       }));
       showToast(`${type === "profile" ? "Profile" : "Cover"} image uploaded!`);
     } catch (error) {
-      console.error("FULL ERROR RESPONSE:", error); // This will show you exactly why the server said 400
-      const message = error?.data?.message || "Failed to upload image. Please check console for details.";
+      console.error("FULL ERROR RESPONSE:", error);
+      const message =
+        error?.data?.message ||
+        (typeof error?.data === "string" ? error.data : "") ||
+        error?.message ||
+        "Failed to upload image. Please check console for details.";
       showToast(message, "error");
     } finally {
-      setIsUploading(prev => ({ ...prev, [type]: false }));
+      setIsUploading((prev) => ({ ...prev, [type]: false }));
     }
   };
 
@@ -68,7 +90,7 @@ export default function About({ uuid, fullName, email, profileUrl, coverUrl, cre
     try {
       await patchUser({
         uuid,
-        payload: formData
+        payload: formData,
       }).unwrap();
       setIsEditing(false);
       showToast("Profile updated successfully!");
@@ -81,10 +103,10 @@ export default function About({ uuid, fullName, email, profileUrl, coverUrl, cre
   return (
     <div className="min-h-screen p-4 md:p-8 font-sans text-(--text-primary)">
       {toast && (
-        <Toast 
-          message={toast.message} 
-          type={toast.type} 
-          onClose={() => setToast(null)} 
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
         />
       )}
 
@@ -93,7 +115,7 @@ export default function About({ uuid, fullName, email, profileUrl, coverUrl, cre
           About
         </h2>
       </div>
-      
+
       <div className="max-w-4xl mx-auto bg-(--bg-primary) rounded-3xl p-8 border border-(--border-color) shadow-sm">
         <div className="flex justify-between items-start mb-10">
           <div className="text-left">
@@ -101,28 +123,36 @@ export default function About({ uuid, fullName, email, profileUrl, coverUrl, cre
               <span className="text-(--primary-500)">Profile</span> Overview
             </h2>
             <p className="text-(--text-secondary) text-sm">
-              {isEditing ? "Edit your personal information" : "Manage your personal information"}
+              {isEditing
+                ? "Edit your personal information"
+                : "Manage your personal information"}
             </p>
           </div>
           <div className="flex gap-2">
             {isEditing ? (
               <>
-                <button 
+                <button
                   onClick={() => setIsEditing(false)}
                   className="flex items-center gap-2 border border-(--border-color) text-(--text-primary) px-4 py-2 rounded-xl text-sm font-medium hover:bg-(--bg-secondary) transition"
                 >
                   <X size={16} /> Cancel
                 </button>
-                <button 
+                <button
                   onClick={handleSave}
                   disabled={isSaving}
                   className="flex items-center gap-2 bg-(--primary-500) text-white px-4 py-2 rounded-xl text-sm font-medium hover:brightness-110 transition disabled:opacity-50"
                 >
-                  {isSaving ? "Saving..." : <><Save size={16} /> Save Changes</>}
+                  {isSaving ? (
+                    "Saving..."
+                  ) : (
+                    <>
+                      <Save size={16} /> Save Changes
+                    </>
+                  )}
                 </button>
               </>
             ) : (
-              <button 
+              <button
                 onClick={() => setIsEditing(true)}
                 className="flex items-center gap-2 bg-(--primary-500) text-white px-4 py-2 rounded-xl text-sm font-medium hover:brightness-110 transition"
               >
@@ -154,16 +184,18 @@ export default function About({ uuid, fullName, email, profileUrl, coverUrl, cre
             {isEditing && (
               <label className="absolute bottom-1 right-1 bg-(--primary-500) p-2 rounded-full cursor-pointer shadow-lg hover:scale-110 transition-transform">
                 <Camera size={18} className="text-white" />
-                <input 
-                  type="file" 
-                  className="hidden" 
+                <input
+                  type="file"
+                  className="hidden"
                   accept="image/*"
                   onChange={(e) => handleFileChange(e, "profile")}
                 />
               </label>
             )}
           </div>
-          <p className="mt-2 text-xs text-(--text-secondary)">Profile Picture</p>
+          <p className="mt-2 text-xs text-(--text-secondary)">
+            Profile Picture
+          </p>
         </div>
 
         <div className="mb-12">
@@ -173,7 +205,9 @@ export default function About({ uuid, fullName, email, profileUrl, coverUrl, cre
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-1">
-              <label className="text-(--text-secondary) text-xs ml-1">Full Name</label>
+              <label className="text-(--text-secondary) text-xs ml-1">
+                Full Name
+              </label>
               {isEditing ? (
                 <input
                   type="text"
@@ -184,13 +218,17 @@ export default function About({ uuid, fullName, email, profileUrl, coverUrl, cre
                 />
               ) : (
                 <div className="bg-(--bg-secondary) bg-opacity-30 p-4 rounded-xl border border-transparent">
-                  <p className="font-bold text-(--text-primary)">{formData.fullName}</p>
+                  <p className="font-bold text-(--text-primary)">
+                    {formData.fullName}
+                  </p>
                 </div>
               )}
             </div>
 
             <div className="space-y-1">
-              <label className="text-(--text-secondary) text-xs ml-1">Email Address</label>
+              <label className="text-(--text-secondary) text-xs ml-1">
+                Email Address
+              </label>
               {isEditing ? (
                 <input
                   type="email"
@@ -201,13 +239,17 @@ export default function About({ uuid, fullName, email, profileUrl, coverUrl, cre
                 />
               ) : (
                 <div className="bg-(--bg-secondary) bg-opacity-30 p-4 rounded-xl border border-transparent">
-                  <p className="font-bold text-(--text-primary)">{formData.email}</p>
+                  <p className="font-bold text-(--text-primary)">
+                    {formData.email}
+                  </p>
                 </div>
               )}
             </div>
 
             <div className="space-y-1">
-              <label className="text-(--text-secondary) text-xs ml-1">Member Since</label>
+              <label className="text-(--text-secondary) text-xs ml-1">
+                Member Since
+              </label>
               <div className="bg-(--bg-secondary) bg-opacity-30 p-4 rounded-xl border border-transparent">
                 <p className="font-bold text-(--text-primary)">{createdAt}</p>
               </div>
@@ -241,11 +283,11 @@ export default function About({ uuid, fullName, email, profileUrl, coverUrl, cre
             </div>
             {isEditing && (
               <label className="absolute bottom-4 right-4 bg-white/90 backdrop-blur-sm p-3 rounded-xl cursor-pointer shadow-lg hover:bg-white transition flex items-center gap-2 text-sm font-medium text-gray-800">
-                <Camera size={18} className="text-(--primary-500)" /> 
+                <Camera size={18} className="text-(--primary-500)" />
                 Change Cover
-                <input 
-                  type="file" 
-                  className="hidden" 
+                <input
+                  type="file"
+                  className="hidden"
                   accept="image/*"
                   onChange={(e) => handleFileChange(e, "cover")}
                 />
@@ -267,7 +309,11 @@ export default function About({ uuid, fullName, email, profileUrl, coverUrl, cre
             ) : (
               <div className="bg-(--bg-secondary) bg-opacity-30 p-6 rounded-2xl border border-transparent">
                 <p className="text-(--text-primary) leading-relaxed">
-                  {formData.bio || <span className="text-(--text-secondary) italic">No biography provided yet.</span>}
+                  {formData.bio || (
+                    <span className="text-(--text-secondary) italic">
+                      No biography provided yet.
+                    </span>
+                  )}
                 </p>
               </div>
             )}

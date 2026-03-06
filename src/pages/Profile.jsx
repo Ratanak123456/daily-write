@@ -3,30 +3,42 @@ import {
   User,
   Info,
   Bookmark,
-  LogOut,
   ChevronDown,
   ChevronLeft,
   ChevronRight,
-  Heart,
-  Bookmark as BookmarkIcon,
+  Pencil,
+  Trash2,
+  X,
+  Moon,
+  Sun,
 } from "lucide-react";
 import { useGetCurrentUserQuery } from "../app/features/auth/auth";
 import { getDecryptedRefreshToken, clearTokens } from "../util/tokenUtil";
 import { useNavigate } from "react-router-dom";
-import { useGetAllProductQuery } from "../app/features/services/productApi";
-import ListBlog from "../components/BlogPage/ListBlog";
+import { useDeleteBlogMutation } from "../app/features/services/productApi";
 import About from "../components/Profile/About";
 import Blog from "../components/Profile/Blog";
 import DraftBlog from "../components/Profile/DraftBlog";
+import DaliyWriteLogo from "../assets/DaliyWriteLogo.svg";
+import { useI18n } from "../i18n/useI18n";
 
 const Profile = () => {
+  const { t } = useI18n();
   const navigate = useNavigate();
   const token = getDecryptedRefreshToken();
   const [page, setPage] = useState(0);
   const pageSize = 12;
+  const [totalPages, setTotalPages] = useState(0);
+  const [blogMode, setBlogMode] = useState("view");
+  const [draftMode, setDraftMode] = useState("view");
+  const [blogSortBy, setBlogSortBy] = useState("latest");
+  const [draftSortBy, setDraftSortBy] = useState("latest");
+  const [blogToDelete, setBlogToDelete] = useState(null);
+  const [isDark, setIsDark] = useState(() =>
+    document.documentElement.classList.contains("dark"),
+  );
+  const [deleteBlog, { isLoading: isDeleting }] = useDeleteBlogMutation();
 
-  const { data } = useGetAllProductQuery({ pageNumber: page, pageSize });
-  const totalPages = data?.data?.totalPages || 0;
   const [activeTab, setActiveTab] = useState("blogs");
 
   const { data: userData, isLoading } = useGetCurrentUserQuery(undefined, {
@@ -41,10 +53,49 @@ const Profile = () => {
     }
   }, [token, navigate]);
 
+  React.useEffect(() => {
+    if (isDark) {
+      document.documentElement.classList.add("dark");
+      localStorage.setItem("theme", "dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+      localStorage.setItem("theme", "light");
+    }
+  }, [isDark]);
+
+  React.useEffect(() => {
+    const lastValidPage = Math.max(0, totalPages - 1);
+    if (page > lastValidPage) {
+      setPage(lastValidPage);
+    }
+  }, [page, totalPages]);
+
   const handleLogout = () => {
     clearTokens();
     navigate("/");
     window.location.reload();
+  };
+
+  const handleSwitchTab = (tab) => {
+    setActiveTab(tab);
+    setPage(0);
+    if (tab !== "blogs") {
+      setBlogMode("view");
+    }
+    if (tab !== "draft") {
+      setDraftMode("view");
+    }
+    setBlogToDelete(null);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!blogToDelete?.uuid) return;
+    try {
+      await deleteBlog(blogToDelete.uuid).unwrap();
+      setBlogToDelete(null);
+    } catch (error) {
+      console.error("Delete blog failed", error);
+    }
   };
 
   if (!token) {
@@ -101,8 +152,12 @@ const Profile = () => {
           className="flex items-center gap-2 mb-12 cursor-pointer"
           onClick={() => navigate("/")}
         >
-          <div className="w-8 h-8 bg-(--primary-500) bg-opacity-10 rounded-lg flex items-center justify-center">
-            <span className="text-(--primary-500) text-xl">🖋️</span>
+          <div className="w-8 h-8 bg-opacity-10 rounded-lg flex items-center justify-center">
+            <img
+              src={DaliyWriteLogo}
+              alt="DailyWrite logo"
+              className="w-8 h-8 object-contain"
+            />
           </div>
           <h1 className="font-bold text-xl text-(--text-primary)">
             DailyWrite
@@ -111,7 +166,7 @@ const Profile = () => {
 
         <nav className="space-y-2">
           <button
-            onClick={() => setActiveTab("blogs")}
+            onClick={() => handleSwitchTab("blogs")}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${
               activeTab === "blogs"
                 ? "bg-(--primary-500) text-white shadow-md"
@@ -123,10 +178,11 @@ const Profile = () => {
                 : {}
             }
           >
-            <User size={18} /> Profile
+            <User size={18} /> {t("profile.profile")}
           </button>
+
           <button
-            onClick={() => setActiveTab("about")}
+            onClick={() => handleSwitchTab("about")}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${
               activeTab === "about"
                 ? "bg-(--primary-500) text-white shadow-md"
@@ -138,10 +194,10 @@ const Profile = () => {
                 : {}
             }
           >
-            <Info size={18} /> About
+            <Info size={18} /> {t("profile.about")}
           </button>
           <button
-            onClick={() => setActiveTab("draft")}
+            onClick={() => handleSwitchTab("draft")}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${
               activeTab === "draft"
                 ? "bg-(--primary-500) text-white shadow-md"
@@ -153,7 +209,7 @@ const Profile = () => {
                 : {}
             }
           >
-            <Bookmark size={18} /> Draft
+            <Bookmark size={18} /> {t("profile.draft")}
           </button>
         </nav>
       </aside>
@@ -184,18 +240,28 @@ const Profile = () => {
               </div>
             </div>
             <h2 className="mt-4 text-2xl font-bold text-(--text-primary)">
-              {user?.fullName || "User"}
+              {user?.fullName || t("profile.user")}
             </h2>
             <p className="text-(--text-secondary) text-sm">
-              {user?.email || "email@example.com"}
+              {user?.email || t("profile.emailFallback")}
             </p>
           </div>
-          <button
-            onClick={handleLogout}
-            className="bg-red-600 text-white px-6 py-2 rounded-lg font-bold text-sm hover:bg-red-700 transition-colors"
-          >
-            Log Out
-          </button>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setIsDark((prev) => !prev)}
+              className="flex items-center gap-2 rounded-lg border border-(--border-color) bg-(--bg-primary) px-4 py-2 text-sm font-bold text-(--text-primary) hover:bg-(--bg-secondary) transition-colors"
+              aria-label="Toggle Theme"
+            >
+              {isDark ? <Sun size={16} /> : <Moon size={16} />}
+              {isDark ? t("profile.light") : t("profile.dark")}
+            </button>
+            <button
+              onClick={handleLogout}
+              className="bg-red-600 text-white px-6 py-2 rounded-lg font-bold text-sm hover:bg-red-700 transition-colors"
+            >
+              {t("profile.logOut")}
+            </button>
+          </div>
         </header>
 
         {activeTab === "blogs" && (
@@ -203,19 +269,82 @@ const Profile = () => {
             <section className="max-w-6xl mx-auto">
               <div className="flex justify-center items-center my-8  relative">
                 <h2 className="text-4xl font-black text-(--primary-500) tracking-tight">
-                  Blogs
+                  {t("profile.blogs")}
                 </h2>
-                <div className="absolute right-0 flex items-center gap-2 text-sm">
-                  <span className="text-(--text-secondary)">Sort by:</span>
-                  <button className="flex items-center gap-1 border border-(--border-color) rounded-lg px-3 py-1 bg-(--bg-primary) text-(--text-primary)">
-                    Latest <ChevronDown size={14} />
+                <div className="absolute left-0 flex items-center gap-2">
+                  <button
+                    onClick={() =>
+                      setBlogMode((prev) =>
+                        prev === "update" ? "view" : "update",
+                      )
+                    }
+                    className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+                      blogMode === "update"
+                        ? "bg-(--primary-500) text-white"
+                        : "text-(--primary-500) border border-(--border-color)"
+                    }`}
+                  >
+                    <Pencil size={14} /> {t("profile.update")}
                   </button>
+                  <button
+                    onClick={() =>
+                      setBlogMode((prev) =>
+                        prev === "delete" ? "view" : "delete",
+                      )
+                    }
+                    className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+                      blogMode === "delete"
+                        ? "bg-(--primary-500) text-white"
+                        : "text-(--primary-500) border border-(--border-color)"
+                    }`}
+                  >
+                    <Trash2 size={14} /> {t("profile.delete")}
+                  </button>
+                </div>
+                {blogMode === "update" && (
+                  <p className="absolute left-0 top-12 text-sm font-semibold text-(--text-secondary)">
+                    {t("profile.selectBlogUpdate")}
+                  </p>
+                )}
+                {blogMode === "delete" && (
+                  <p className="absolute left-0 top-12 text-sm font-semibold text-(--primary-500)">
+                    {t("profile.selectBlogDelete")}
+                  </p>
+                )}
+                <div className="absolute right-0 flex items-center gap-2 text-sm">
+                  <span className="text-(--text-secondary)">
+                    {t("profile.sortBy")}
+                  </span>
+                  <div className="relative">
+                    <select
+                      value={blogSortBy}
+                      onChange={(event) => {
+                        setBlogSortBy(event.target.value);
+                        setPage(0);
+                      }}
+                      className="appearance-none border border-(--border-color) rounded-lg pl-3 pr-8 py-1 bg-(--bg-primary) text-(--text-primary)"
+                    >
+                      <option value="latest">{t("profile.latest")}</option>
+                      <option value="oldest">{t("profile.oldest")}</option>
+                    </select>
+                    <ChevronDown
+                      size={14}
+                      className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-(--text-secondary)"
+                    />
+                  </div>
                 </div>
               </div>
 
               <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {/* Card blog */}
-                <Blog page={page} pageSize={pageSize} />
+                <Blog
+                  page={page}
+                  pageSize={pageSize}
+                  mode={blogMode}
+                  sortBy={blogSortBy}
+                  onTotalPagesChange={setTotalPages}
+                  onRequestDelete={(blog) => setBlogToDelete(blog)}
+                />
               </div>
 
               <div className="mt-8 flex items-center justify-center gap-2 text-sm">
@@ -279,19 +408,63 @@ const Profile = () => {
             <section className="max-w-6xl mx-auto">
               <div className="flex justify-center items-center my-8  relative">
                 <h2 className="text-4xl font-black text-(--primary-500) tracking-tight">
-                  Drafts
+                  {t("profile.drafts")}
                 </h2>
-                <div className="absolute right-0 flex items-center gap-2 text-sm">
-                  <span className="text-(--text-secondary)">Sort by:</span>
-                  <button className="flex items-center gap-1 border border-(--border-color) rounded-lg px-3 py-1 bg-(--bg-primary) text-(--text-primary)">
-                    Latest <ChevronDown size={14} />
+                <div className="absolute left-0 flex items-center gap-2">
+                  <button
+                    onClick={() =>
+                      setDraftMode((prev) =>
+                        prev === "delete" ? "view" : "delete",
+                      )
+                    }
+                    className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+                      draftMode === "delete"
+                        ? "bg-(--primary-500) text-white"
+                        : "text-(--primary-500) border border-(--border-color)"
+                    }`}
+                  >
+                    <Trash2 size={14} /> {t("profile.delete")}
                   </button>
+                </div>
+                {draftMode === "delete" && (
+                  <p className="absolute left-0 top-12 text-sm font-semibold text-(--primary-500)">
+                    {t("profile.selectDraftDelete")}
+                  </p>
+                )}
+                <div className="absolute right-0 flex items-center gap-2 text-sm">
+                  <span className="text-(--text-secondary)">
+                    {t("profile.sortBy")}
+                  </span>
+                  <div className="relative">
+                    <select
+                      value={draftSortBy}
+                      onChange={(event) => {
+                        setDraftSortBy(event.target.value);
+                        setPage(0);
+                      }}
+                      className="appearance-none border border-(--border-color) rounded-lg pl-3 pr-8 py-1 bg-(--bg-primary) text-(--text-primary)"
+                    >
+                      <option value="latest">{t("profile.latest")}</option>
+                      <option value="oldest">{t("profile.oldest")}</option>
+                    </select>
+                    <ChevronDown
+                      size={14}
+                      className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-(--text-secondary)"
+                    />
+                  </div>
                 </div>
               </div>
 
               <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {/* Draft blogs */}
-                <DraftBlog page={page} pageSize={pageSize} />
+                <DraftBlog
+                  page={page}
+                  pageSize={pageSize}
+                  mode={draftMode}
+                  sortBy={draftSortBy}
+                  onTotalPagesChange={setTotalPages}
+                  onRequestDelete={(blog) => setBlogToDelete(blog)}
+                />
               </div>
 
               <div className="mt-8 flex items-center justify-center gap-2 text-sm">
@@ -333,6 +506,47 @@ const Profile = () => {
           </>
         )}
       </main>
+
+      {blogToDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
+          <div className="w-full max-w-md rounded-xl bg-(--bg-primary) p-6 shadow-xl border border-(--border-color)">
+            <div className="flex items-start justify-between">
+              <h3 className="text-lg font-bold text-(--text-primary)">
+                {t("profile.confirmDelete")}
+              </h3>
+              <button
+                type="button"
+                onClick={() => setBlogToDelete(null)}
+                className="rounded-full p-1 text-(--text-secondary) hover:bg-(--bg-secondary)"
+                aria-label="Close"
+              >
+                <X size={18} />
+              </button>
+            </div>
+            <p className="mt-3 text-sm text-(--text-secondary)">
+              {t("profile.deleteConfirmText")}
+            </p>
+            <div className="mt-6 flex justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => setBlogToDelete(null)}
+                disabled={isDeleting}
+                className="rounded-lg border border-(--border-color) px-4 py-2 text-sm font-semibold text-(--text-secondary) hover:bg-(--bg-secondary)"
+              >
+                {t("profile.cancel")}
+              </button>
+              <button
+                type="button"
+                onClick={handleConfirmDelete}
+                disabled={isDeleting}
+                className="rounded-lg bg-(--primary-500) px-4 py-2 text-sm font-semibold text-white hover:brightness-110 disabled:opacity-60"
+              >
+                {isDeleting ? t("profile.deleting") : t("profile.delete")}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

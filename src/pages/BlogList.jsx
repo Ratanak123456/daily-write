@@ -1,23 +1,30 @@
 import { useState } from "react";
-import {
-  Search,
-  Eye,
-  MessageSquare,
-  ChevronLeft,
-  ChevronRight,
-} from "lucide-react";
+import { Search, ChevronLeft, ChevronRight } from "lucide-react";
 import ListBlog from "../components/BlogPage/ListBlog";
 import { useGetAllProductQuery } from "../app/features/services/productApi";
-import idea from "../assets/blogpage/Idea lamp.png"
-import planet from "../assets/blogpage/Planet.png"
+import { useI18n } from "../i18n/useI18n";
 
 export default function BlogList() {
   const [page, setPage] = useState(0);
   const [sortBy, setSortBy] = useState("createdAt,desc");
   const [searchQuery, setSearchQuery] = useState("");
+  const { t } = useI18n();
   const pageSize = 12;
 
-  const { data } = useGetAllProductQuery({ pageNumber: page, pageSize, sortBy });
+  const mainCategories = [
+    { label: "Front-End", value: "front-end" },
+    { label: "Back-End", value: "back-end" },
+    { label: "Cyber Security", value: "cyber-security" },
+    { label: "UXUI Design", value: "ux-ui-design" },
+    { label: "Mobile App", value: "mobile-app" },
+    { label: "Art History", value: "art-history" },
+  ];
+
+  const { data } = useGetAllProductQuery({
+    pageNumber: page,
+    pageSize,
+    sortBy,
+  });
   const totalPages = data?.data?.totalPages || 0;
 
   const handleSortChange = (e) => {
@@ -73,34 +80,31 @@ export default function BlogList() {
         <span className="absolute right-[16%] top-[70%] h-3 w-3 rounded-full bg-[#a5aaae]" />
 
         <img
-          src={idea}
+          src="../src/assets/blogpage/Idea lamp.png"
           alt="Idea lamp"
           className="absolute right-[14%] top-8 hidden w-24 opacity-80 md:block"
         />
         <img
-          src={planet}
+          src="../src/assets/blogpage/Planet.png"
           alt="Planet"
           className="absolute bottom-8 left-1/2 hidden w-20 -translate-x-1/2 opacity-80 md:block"
         />
 
         <div className="mx-auto max-w-5xl text-center">
           <h1 className="text-3xl font-bold leading-tight sm:text-4xl md:text-5xl">
-            <span className="text-text-main">Discover </span>
+            <span className="text-text-main">{t("blogList.titleLead")} </span>
             <span className="text-primary-orange">
-              Inspiring Stories & Ideas
+              {t("blogList.titleHighlight")}
             </span>
           </h1>
           <p className="mx-auto mt-5 max-w-3xl text-sm leading-6 text-[#5e6569] md:text-base">
-            This space is dedicated to my daily writing — a collection of
-            reflections, experiences, and quiet thoughts that might otherwise be
-            forgotten. Writing every day keeps me grounded, mindful, and
-            inspired.
+            {t("blogList.description")}
           </p>
 
           <div className="mx-auto mt-7 flex h-12 w-full max-w-3xl items-center rounded-2xl border border-[#a5aaae] bg-bg-main px-4">
             <input
               type="text"
-              placeholder="Search"
+              placeholder={t("blogList.search")}
               value={searchQuery}
               onChange={handleSearchChange}
               className="h-full w-full bg-transparent text-sm outline-none placeholder:text-[#797f84]"
@@ -112,55 +116,69 @@ export default function BlogList() {
 
       <div className="mx-auto max-w-7xl px-4 py-6">
         <div className="flex gap-3 overflow-x-auto pb-1">
-          {[
-            "moon",
-            "Front-End",
-            "Art-History",
-            "Front-End",
-            "Front-End",
-            "Cyber Security",
-            "Cyber Security",
-            "Mobile App",
-          ].map((chip, index) => (
+          <button
+            key="all"
+            onClick={() => {
+              setSearchQuery("");
+              setPage(0);
+            }}
+            className={`shrink-0 rounded-md border border-border-main px-5 py-2 text-xs transition-colors hover:bg-orange-50 ${
+              !searchQuery
+                ? "bg-primary-orange text-white"
+                : "bg-bg-main text-primary-orange"
+            }`}
+          >
+            All
+          </button>
+
+          {mainCategories.map((category) => (
             <button
-              key={`${chip}-${index}`}
+              key={category.value}
               onClick={() => {
-                setSearchQuery(chip === searchQuery ? "" : chip);
+                setSearchQuery(
+                  category.value === searchQuery ? "" : category.value,
+                );
                 setPage(0);
               }}
               className={`shrink-0 rounded-md border border-border-main px-5 py-2 text-xs transition-colors hover:bg-orange-50 ${
-                searchQuery.toLowerCase() === chip.toLowerCase()
+                searchQuery.toLowerCase() === category.value.toLowerCase()
                   ? "bg-primary-orange text-white"
                   : "bg-bg-main text-primary-orange"
               }`}
             >
-              {chip}
+              {category.label}
             </button>
           ))}
         </div>
 
         <div className="mt-7 flex flex-wrap items-center justify-between gap-3">
-          <h2 className="text-3xl font-bold text-primary-orange">All Blogs</h2>
+          <h2 className="text-3xl font-bold text-primary-orange">
+            {t("blogList.allBlogs")}
+          </h2>
           <div className="flex items-center gap-3">
             <span className="text-lg font-medium text-primary-orange">
-              Sort by:
+              {t("blogList.sortBy")}
             </span>
             <select
               value={sortBy}
               onChange={handleSortChange}
               className="rounded-lg border border-[#a5aaae] bg-bg-main px-3 py-2 text-sm text-[#5e6569] outline-none"
             >
-              <option value="createdAt,desc">Latest</option>
-              <option value="view,desc">Popular</option>
-              <option value="createdAt,asc">Oldest</option>
+              <option value="createdAt,desc">{t("blogList.latest")}</option>
+              <option value="view,desc">{t("blogList.popular")}</option>
+              <option value="createdAt,asc">{t("blogList.oldest")}</option>
             </select>
           </div>
         </div>
 
         <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-
           {/* Card blog */}
-          <ListBlog page={page} pageSize={pageSize} sortBy={sortBy} searchQuery={searchQuery} />
+          <ListBlog
+            page={page}
+            pageSize={pageSize}
+            sortBy={sortBy}
+            searchQuery={searchQuery}
+          />
         </div>
 
         <div className="mt-8 flex items-center justify-center gap-2 text-sm">
@@ -171,9 +189,11 @@ export default function BlogList() {
           >
             <ChevronLeft size={16} />
           </button>
-          {getPageNumbers().map((pageNum, idx) => (
+          {getPageNumbers().map((pageNum, idx) =>
             pageNum === "..." ? (
-              <span key={idx} className="px-2 text-[#a5aaae]">...</span>
+              <span key={idx} className="px-2 text-[#a5aaae]">
+                ...
+              </span>
             ) : (
               <button
                 key={idx}
@@ -186,8 +206,8 @@ export default function BlogList() {
               >
                 {pageNum + 1}
               </button>
-            )
-          ))}
+            ),
+          )}
           <button
             onClick={() => setPage((p) => p + 1)}
             disabled={page >= totalPages - 1}
