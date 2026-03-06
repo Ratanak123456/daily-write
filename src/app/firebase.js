@@ -12,7 +12,19 @@ const firebaseConfig = {
   measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 };
 
-const firebaseApp = getApps().length ? getApp() : initializeApp(firebaseConfig);
+// Validate config to prevent Firebase initialization errors in production
+const requiredKeys = ["apiKey", "authDomain", "projectId", "appId"];
+const missingKeys = requiredKeys.filter((key) => !firebaseConfig[key]);
+
+if (missingKeys.length > 0 && import.meta.env.PROD) {
+  console.error(
+    "Firebase initialization failed: Missing required environment variables: " +
+      missingKeys.map((k) => `VITE_FIREBASE_${k.toUpperCase()}`).join(", "),
+  );
+}
+
+const firebaseApp =
+  getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
 
 export const firebaseAuth = getAuth(firebaseApp);
 export const googleProvider = new GoogleAuthProvider();
