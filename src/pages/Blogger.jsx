@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import BlogCard from "../components/Card/BlogCard";
 import {
   useGetAllUserQuery,
+  useGetUserByUuidQuery,
   useGetAllProductByCurrentUserUuidQuery,
 } from "../app/features/services/productApi";
 
@@ -10,19 +11,26 @@ export default function Blogger() {
   const { uuid } = useParams();
   const [activeTab, setActiveTab] = React.useState("blogs");
 
-  // Fetch all users to find the specific blogger
+  // Fetch all users (as a fallback or for lists)
   const { data: usersResult, isLoading: usersLoading } = useGetAllUserQuery();
+
+  // Fetch this specific blogger directly by UUID
+  const { data: userResult, isLoading: userLoading } = useGetUserByUuidQuery(
+    uuid,
+    {
+      skip: !uuid,
+    },
+  );
 
   // Fetch blogs by this specific author
   const { data: blogsResult, isLoading: blogsLoading } =
     useGetAllProductByCurrentUserUuidQuery({ userUuid: uuid });
 
   // Handle both direct blog return and wrapped response
-  const users = usersResult?.data?.content || usersResult || [];
-  const blogger = users.find((u) => u.uuid === uuid);
-  const blogs = blogsResult?.data?.content || blogsResult || [];
+  const users = usersResult?.data?.content || [];
+  const blogger = userResult?.data || users.find((u) => u.uuid === uuid);
 
-  if (usersLoading || blogsLoading) {
+  if (usersLoading || userLoading || blogsLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-orange-50/30">
         <p className="text-lg text-orange-500 animate-pulse font-semibold">

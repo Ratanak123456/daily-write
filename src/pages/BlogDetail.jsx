@@ -5,6 +5,7 @@ import parse from "html-react-parser";
 import {
   useGetBlogByUuidQuery,
   useGetAllUserQuery,
+  useGetUserByUuidQuery,
   useGetLatestBlogsQuery,
 } from "../app/features/services/productApi";
 import CommentSection from "../components/Comment/CommentSection";
@@ -25,19 +26,27 @@ export default function BlogDetail() {
     isError: blogError,
   } = useGetBlogByUuidQuery(uuid, { skip: !uuid });
 
-  const { data: usersResult, error: usersError } = useGetAllUserQuery();
-  const { data: latestResult, error: latestError } = useGetLatestBlogsQuery();
-  console.log("usersResult:", usersResult, "usersError:", usersError);
-  console.log("latestResult:", latestResult, "latestError:", latestError);
+  const { data: usersResult } = useGetAllUserQuery();
+  const { data: latestResult } = useGetLatestBlogsQuery();
 
-  // Handle both direct blog return and wrapped response
-  const blog = blogResult?.data || blogResult;
-  const users = usersResult?.data?.content || usersResult || [];
-  const latest = latestResult?.data?.content || latestResult || [];
+  // Safely extract data from API response wrappers
+  const blog = blogResult?.data || null;
+  const users = Array.isArray(usersResult?.data?.content)
+    ? usersResult.data.content
+    : [];
+  const latest = Array.isArray(latestResult?.data?.content)
+    ? latestResult.data.content
+    : [];
 
-  const author = blog
-    ? users.find((u) => u.uuid === blog.authorUuid) || null
+  // Try to find author in the users list first, otherwise fetch by UUID directly
+  const authorFromList = blog
+    ? users.find((u) => u.uuid === blog.authorUuid)
     : null;
+  const { data: authorResult } = useGetUserByUuidQuery(blog?.authorUuid, {
+    skip: !!authorFromList || !blog?.authorUuid,
+  });
+
+  const author = authorFromList || authorResult?.data || null;
   const latestBlogs = blog
     ? latest.filter((item) => item.uuid !== blog.uuid).slice(0, 4)
     : [];
