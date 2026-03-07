@@ -22,7 +22,7 @@ export default function BlogCard({
 
   const cardContent = (
     <article
-      className={`overflow-hidden rounded-2xl border border-border-main bg-bg-main shadow-sm transition hover:shadow-md ${
+      className={`overflow-hidden rounded-2xl border border-border-main bg-bg-main transition hover:shadow-md ${
         mode === "update" ? "cursor-pointer" : ""
       }`}
       onClick={isInteractiveMode ? onCardClick : undefined}
