@@ -56,7 +56,7 @@ export default function Blog({
 
   if (isLoading || !data || !currentUser) {
     return (
-      <div className="flex gap-8 p-4 max-w-2xl mx-auto">
+      <div className="contents">
         {[...Array(pageSize)].map((_, i) => (
           <SkeletonCard key={i} />
         ))}

@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Bookmark, Clock3, Eye, Heart, Link2 } from "lucide-react";
+import { Bookmark, Clock3, Eye, Heart, Link2, User } from "lucide-react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import parse from "html-react-parser";
 import {
@@ -113,11 +113,17 @@ export default function BlogDetail() {
               to={`/bloggers/${author?.uuid}`}
               className="flex items-center gap-2 hover:opacity-80 transition-opacity"
             >
-              <img
-                src={author?.profileUrl}
-                alt={author?.fullName || "Author"}
-                className="h-8 w-8 rounded-full object-cover border border-(--border-color)"
-              />
+              <div className="h-8 w-8 rounded-full border border-(--border-color) overflow-hidden bg-(--bg-secondary) flex items-center justify-center">
+                {author?.profileUrl ? (
+                  <img
+                    src={author.profileUrl}
+                    alt={author.fullName || "Author"}
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  <User size={16} className="text-(--text-secondary)" />
+                )}
+              </div>
               <div>
                 <p className="font-medium leading-none text-(--text-primary)">
                   {author?.fullName || "Unknown Author"}

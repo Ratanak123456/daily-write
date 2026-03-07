@@ -1,6 +1,8 @@
 import React from "react";
 import { useParams } from "react-router-dom";
+import { User } from "lucide-react";
 import BlogCard from "../components/Card/BlogCard";
+import SkeletonCard from "../components/Card/Skeleton";
 import {
   useGetAllUserQuery,
   useGetUserByUuidQuery,
@@ -29,25 +31,40 @@ export default function Blogger() {
   // Handle both direct blog return and wrapped response
   const users = usersResult?.data?.content || [];
   const blogger = userResult?.data || users.find((u) => u.uuid === uuid);
+  const blogs = blogsResult?.data?.content || blogsResult || [];
 
   if (usersLoading || userLoading || blogsLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-orange-50/30">
-        <p className="text-lg text-orange-500 animate-pulse font-semibold">
-          Loading Blogger Profile...
-        </p>
+      <div className="bg-[var(--bg-secondary)] min-h-screen p-6 md:p-12">
+        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-8">
+          <aside className="w-full lg:w-1/4">
+            <div className="bg-[var(--bg-primary)] rounded-2xl p-8 border border-[var(--border-color)] animate-pulse">
+              <div className="w-24 h-24 rounded-full bg-gray-200 mx-auto mb-4" />
+              <div className="h-6 bg-gray-200 rounded w-3/4 mx-auto mb-2" />
+              <div className="h-4 bg-gray-200 rounded w-1/2 mx-auto" />
+            </div>
+          </aside>
+          <main className="w-full lg:w-3/4">
+            <div className="h-10 bg-gray-200 rounded w-1/3 mb-8 animate-pulse" />
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+              {[...Array(6)].map((_, i) => (
+                <SkeletonCard key={i} />
+              ))}
+            </div>
+          </main>
+        </div>
       </div>
     );
   }
 
   if (!blogger) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-orange-50/30">
+      <div className="flex min-h-screen items-center justify-center bg-[var(--bg-secondary)]">
         <div className="text-center">
-          <p className="text-2xl font-bold text-gray-800 mb-2">
+          <p className="text-2xl font-bold mb-2 text-[var(--text-primary)]">
             Blogger Not Found
           </p>
-          <p className="text-gray-500">
+          <p className="text-[var(--text-secondary)]">
             The user you are looking for does not exist or has been removed.
           </p>
         </div>
@@ -56,40 +73,51 @@ export default function Blogger() {
   }
 
   return (
-    <div className="bg-orange-50/30 min-h-screen p-6 md:p-12 font-sans text-gray-800 relative overflow-hidden">
-      {/* Decorative Background */}
-      <div className="absolute -top-20 -left-20 w-64 h-64 border border-orange-200 rounded-full opacity-50"></div>
-      <div className="absolute -top-10 -left-10 w-64 h-64 border border-orange-200 rounded-full opacity-50"></div>
-
+    <div className="min-h-screen p-6 md:p-12 font-sans relative overflow-hidden bg-bg-main">
+      <div className="flex justify-between w-[70%] items-center mb-8 m-auto">
+        <h1 className="text-3xl font-bold text-[var(--primary-500)] text-right w-[60%]">
+          Blogs by {blogger.fullName.split(" ")[0]}
+        </h1>
+        <div className="flex items-center gap-2 text-sm">
+          <span className="text-[var(--text-secondary)]">Total:</span>
+          <span className="font-bold text-[var(--primary-500)]">
+            {blogs.length} Posts
+          </span>
+        </div>
+      </div>
       <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-8 relative z-10">
         {/* Sidebar: Blogger Profile */}
         <aside className="w-full lg:w-1/4">
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 flex flex-col items-center text-center">
+          <div className="rounded-2xl shadow-sm p-8 flex flex-col items-center text-center bg-[var(--bg-primary)] border border-[var(--border-color)]">
             <div className="relative mb-4">
-              <div className="w-24 h-24 rounded-full border-4 border-orange-400 overflow-hidden">
-                <img
-                  src={blogger.profileUrl || "https://via.placeholder.com/150"}
-                  alt={blogger.fullName}
-                  className="w-full h-full object-cover"
-                />
+              <div className="w-24 h-24 rounded-full border-4 border-[var(--primary-500)] overflow-hidden flex items-center justify-center bg-[var(--bg-secondary)]">
+                {blogger.profileUrl ? (
+                  <img
+                    src={blogger.profileUrl}
+                    alt={blogger.fullName}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <User size={40} className="text-[var(--primary-500)]" />
+                )}
               </div>
-              <div className="absolute bottom-1 right-1 bg-white rounded-full p-1 shadow-sm">
+              <div className="absolute bottom-1 right-1 rounded-full p-1 shadow-sm bg-[var(--bg-primary)]">
                 <span className="text-xs">✌️</span>
               </div>
             </div>
 
-            <h2 className="text-xl font-bold text-gray-900">
+            <h2 className="text-xl font-bold text-[var(--text-primary)]">
               {blogger.fullName}
             </h2>
-            <p className="text-gray-500 text-sm mb-6 truncate w-full">
+            <p className="text-sm mb-6 truncate w-full text-[var(--text-secondary)]">
               {blogger.email}
             </p>
 
-            <div className="w-full border-t border-gray-100 pt-6 mb-6">
-              <p className="text-gray-400 text-xs uppercase tracking-wider mb-1">
+            <div className="w-full pt-6 mb-6 border-t border-[var(--border-color)]">
+              <p className="text-xs uppercase tracking-wider mb-1 text-[var(--text-secondary)]">
                 Member Since
               </p>
-              <p className="text-lg font-bold text-gray-700">
+              <p className="text-lg font-bold text-[var(--text-primary)]">
                 {blogger.createdAt
                   ? new Date(blogger.createdAt).toLocaleDateString("en-US", {
                       month: "long",
@@ -104,8 +132,8 @@ export default function Blogger() {
                 onClick={() => setActiveTab("blogs")}
                 className={`w-full rounded-xl py-3 px-4 flex items-center justify-center gap-2 font-medium shadow-sm transition-colors ${
                   activeTab === "blogs"
-                    ? "bg-orange-500 text-white"
-                    : "bg-orange-100 text-orange-700"
+                    ? "text-white bg-[var(--primary-500)]"
+                    : "bg-[var(--bg-secondary)] text-[var(--primary-500)]"
                 }`}
               >
                 <svg
@@ -127,8 +155,8 @@ export default function Blogger() {
                 onClick={() => setActiveTab("about")}
                 className={`w-full rounded-xl py-3 px-4 font-medium shadow-sm transition-colors ${
                   activeTab === "about"
-                    ? "bg-orange-500 text-white"
-                    : "bg-orange-100 text-orange-700"
+                    ? "text-white bg-[var(--primary-500)]"
+                    : "bg-[var(--bg-secondary)] text-[var(--primary-500)]"
                 }`}
               >
                 ABOUT
@@ -141,18 +169,6 @@ export default function Blogger() {
         <main className="w-full lg:w-3/4">
           {activeTab === "blogs" ? (
             <>
-              <div className="flex justify-between items-center mb-8">
-                <h1 className="text-3xl font-bold text-orange-500">
-                  Blogs by {blogger.fullName.split(" ")[0]}
-                </h1>
-                <div className="flex items-center gap-2 text-sm">
-                  <span className="text-gray-400">Total:</span>
-                  <span className="font-bold text-orange-600">
-                    {blogs.length} Posts
-                  </span>
-                </div>
-              </div>
-
               {blogs.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-10">
                   {blogs.map((blog) => (
@@ -171,9 +187,9 @@ export default function Blogger() {
                   ))}
                 </div>
               ) : (
-                <div className="bg-white rounded-2xl p-12 text-center border border-dashed border-gray-300">
+                <div className="rounded-2xl p-12 text-center border border-dashed bg-[var(--bg-primary)] border-[var(--border-color)]">
                   <svg
-                    className="mx-auto h-12 w-12 text-gray-300 mb-4"
+                    className="mx-auto h-12 w-12 mb-4 text-[var(--text-secondary)]"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -191,20 +207,20 @@ export default function Blogger() {
                       d="M14 4v4h4"
                     />
                   </svg>
-                  <p className="text-gray-500 font-medium">
+                  <p className="font-medium text-[var(--text-secondary)]">
                     This author hasn't published any blogs yet.
                   </p>
                 </div>
               )}
             </>
           ) : (
-            <section className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8">
-              <h2 className="text-2xl font-bold text-orange-500 mb-6">
+            <section className="rounded-2xl shadow-sm p-6 md:p-8 bg-[var(--bg-primary)] border border-[var(--border-color)]">
+              <h2 className="text-2xl font-bold mb-6 text-[var(--primary-500)]">
                 About {blogger.fullName}
               </h2>
 
               {blogger.coverUrl ? (
-                <div className="mb-6 overflow-hidden rounded-xl border border-orange-100">
+                <div className="mb-6 overflow-hidden rounded-xl border border-[var(--border-color)]">
                   <img
                     src={blogger.coverUrl}
                     alt={`${blogger.fullName} cover`}
@@ -213,7 +229,7 @@ export default function Blogger() {
                 </div>
               ) : null}
 
-              <p className="text-gray-700 leading-relaxed text-base">
+              <p className="leading-relaxed text-base text-[var(--text-primary)]">
                 {blogger.bio || "This author has not added a biography yet."}
               </p>
             </section>

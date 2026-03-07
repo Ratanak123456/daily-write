@@ -3,7 +3,6 @@ import SkeletonCard, { Skeleton } from "../../Card/Skeleton";
 import {
   useGetAllProductQuery,
   useGetAllUserQuery,
-  useGetLatestBlogsQuery,
   useGetTrendingBlogsQuery,
 } from "../../../app/features/services/productApi";
 

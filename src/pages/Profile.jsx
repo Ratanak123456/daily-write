@@ -9,6 +9,8 @@ import {
   Pencil,
   Trash2,
   X,
+  LogOut,
+  Menu,
 } from "lucide-react";
 import { useGetCurrentUserQuery } from "../app/features/auth/auth";
 import { getDecryptedRefreshToken, clearTokens } from "../util/tokenUtil";
@@ -33,6 +35,7 @@ const Profile = () => {
   const [blogToDelete, setBlogToDelete] = useState(null);
 
   const [activeTab, setActiveTab] = useState("blogs");
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const { data: userData, isLoading } = useGetCurrentUserQuery(undefined, {
     skip: !token,
@@ -71,6 +74,7 @@ const Profile = () => {
       setDraftMode("view");
     }
     setBlogToDelete(null);
+    setIsSidebarOpen(false); // Close sidebar on mobile after selection
   };
 
   const handleConfirmDelete = async () => {
@@ -130,13 +134,44 @@ const Profile = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-(--bg-primary) relative flex-col lg:flex-row">
-      {/* Sidebar - Adjusted for Layout integration */}
-      <aside className="w-full lg:w-64 border-r border-(--border-color) flex flex-row lg:flex-col p-4 lg:p-6 lg:fixed lg:h-[calc(100vh-64px)] bg-(--bg-primary) z-20">
-        <nav className="flex flex-row lg:flex-col gap-2 w-full overflow-x-auto lg:overflow-x-visible">
+    <div className="flex min-h-screen bg-(--bg-primary) relative flex-col lg:flex-row overflow-x-hidden">
+      {/* Mobile Header with Toggle */}
+      <div className="lg:hidden flex items-center justify-between p-4 border-b border-(--border-color) bg-(--bg-primary) sticky top-0 z-30">
+        <h1 className="text-xl font-bold text-(--primary-500) ">
+          {t("profile.profile")}
+        </h1>
+        <button
+          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+          className="p-2 rounded-lg text-(--primary-500) hover:bg-(--primary-500) hover:bg-opacity-10 transition-colors"
+        >
+          {isSidebarOpen ? <X size={24} /> : <Menu size={24} />}
+        </button>
+      </div>
+
+      {/* Sidebar Backdrop (Mobile Only) */}
+      {isSidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-40 lg:hidden transition-opacity"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
+      {/* Sidebar */}
+      <aside
+        className={`fixed inset-y-0 left-0 w-64 border-r border-(--border-color) bg-(--bg-primary) z-50 transform transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 ${
+          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+        } h-full lg:h-lvh p-6`}
+      >
+        <nav className="flex flex-col gap-2 h-full">
+          <div className="hidden lg:block mb-8">
+            <h1 className="text-2xl font-bold text-(--primary-500) text-center">
+              {t("profile.profile")}
+            </h1>
+          </div>
+
           <button
             onClick={() => handleSwitchTab("blogs")}
-            className={`flex-1 lg:flex-none flex items-center justify-center lg:justify-start gap-3 px-4 py-3 rounded-xl font-medium transition-all whitespace-nowrap ${
+            className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${
               activeTab === "blogs"
                 ? "bg-(--primary-500) text-white shadow-md"
                 : "text-(--primary-500) hover:bg-(--primary-500) hover:text-white hover:bg-opacity-10"
@@ -147,7 +182,7 @@ const Profile = () => {
 
           <button
             onClick={() => handleSwitchTab("about")}
-            className={`flex-1 lg:flex-none flex items-center justify-center lg:justify-start gap-3 px-4 py-3 rounded-xl font-medium transition-all whitespace-nowrap ${
+            className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${
               activeTab === "about"
                 ? "bg-(--primary-500) text-white shadow-md"
                 : "text-(--primary-500) hover:bg-(--primary-500) hover:text-white hover:bg-opacity-10"
@@ -157,7 +192,7 @@ const Profile = () => {
           </button>
           <button
             onClick={() => handleSwitchTab("draft")}
-            className={`flex-1 lg:flex-none flex items-center justify-center lg:justify-start gap-3 px-4 py-3 rounded-xl font-medium transition-all whitespace-nowrap ${
+            className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${
               activeTab === "draft"
                 ? "bg-(--primary-500) text-white shadow-md"
                 : "text-(--primary-500) hover:bg-(--primary-500) hover:text-white hover:bg-opacity-10"
@@ -165,43 +200,21 @@ const Profile = () => {
           >
             <Bookmark size={18} /> {t("profile.draft")}
           </button>
+
+          <div className="mt-auto pt-6 border-t border-(--border-color)">
+            <button
+              onClick={handleLogout}
+              className="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all text-red-600 hover:bg-red-50"
+            >
+              <LogOut size={18} /> {t("profile.logOut")}
+            </button>
+          </div>
         </nav>
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 lg:ml-64 p-4 lg:p-8">
-        {/* Header Section */}
-        <header className="flex flex-col sm:flex-row justify-between items-center gap-6 mb-8">
-          <div className="flex flex-col items-center">
-            <div className="relative">
-              <div className="w-24 h-24 rounded-full border-4 border-(--primary-500) overflow-hidden bg-(--bg-secondary) flex items-center justify-center">
-                {user?.profileUrl ? (
-                  <img
-                    src={user.profileUrl}
-                    alt="Profile"
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <User size={40} className="text-(--text-secondary)" />
-                )}
-              </div>
-            </div>
-            <h2 className="mt-4 text-2xl font-bold text-(--text-primary)">
-              {user?.fullName || t("profile.user")}
-            </h2>
-            <p className="text-(--text-secondary) text-sm">
-              {user?.email || t("profile.emailFallback")}
-            </p>
-          </div>
-          <div className="flex items-center gap-3">
-            <button
-              onClick={handleLogout}
-              className="bg-red-600 text-white px-6 py-2 rounded-lg font-bold text-sm hover:bg-red-700 transition-colors"
-            >
-              {t("profile.logOut")}
-            </button>
-          </div>
-        </header>
+      <main className="flex-1 p-4 lg:p-10 w-full overflow-y-auto">
+        {/* Header Section removed as logout button moved to sidebar */}
 
         {activeTab === "blogs" && (
           <section className="max-w-6xl mx-auto">

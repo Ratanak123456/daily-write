@@ -1,5 +1,4 @@
 import { Eye, MessageSquare, User, X } from "lucide-react";
-import parse from "html-react-parser";
 import { Link } from "react-router-dom";
 
 export default function BlogCard({
@@ -7,7 +6,6 @@ export default function BlogCard({
   author,
   tag,
   title,
-  summary,
   views,
   comments,
   time,
@@ -72,12 +70,9 @@ export default function BlogCard({
       </div>
 
       <div className="space-y-3 p-4">
-        <h3 className="line-clamp-2 text-sm font-semibold text-text-main">
+        <h3 className="line-clamp-1 text-sm font-semibold text-text-main">
           {title}
         </h3>
-        <p className="line-clamp-2 text-xs leading-5 text-[#a5aaae]">
-          {parse(summary)}
-        </p>
 
         {mode === "update" && (
           <p className="text-xs font-semibold text-primary-orange">
@@ -99,7 +94,7 @@ export default function BlogCard({
           <span>{time}</span>
         </div>
 
-        <div className="flex justify-end">
+        <div className="flex justify-center">
           <button className="rounded-full bg-primary-orange px-3 py-1.5 text-[10px] font-semibold text-white hover:brightness-105">
             Read More
           </button>
