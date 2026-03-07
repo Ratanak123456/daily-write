@@ -6,7 +6,7 @@
         "write": "Write",
         "login": "Login",
         "logout": "Logout",
-        "profile": "Profile",
+        "profile": "profile",
         "language": "ភាសាខ្មែរ"
     },
     "home": {
@@ -208,7 +208,7 @@
         "content": "Content"
     },
     "profile": {
-        "profile": "Profile",
+        "profile": "Blog",
         "about": "About",
         "draft": "Draft",
         "user": "User",

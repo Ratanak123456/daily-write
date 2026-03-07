@@ -6,7 +6,7 @@
         "write": "សរសេរ",
         "login": "ចូលគណនី",
         "logout": "ចាកចេញ",
-        "profile": "ប្រវត្តិរូប",
+        "profile": "អត្ថបទ",
         "language": "English"
     },
     "home": {
@@ -208,7 +208,7 @@
         "content": "មាតិកា"
     },
     "profile": {
-        "profile": "ប្រវត្តិរូប",
+        "profile": "អត្ថបទ",
         "about": "អំពី",
         "draft": "ព្រាង",
         "user": "អ្នកប្រើ",

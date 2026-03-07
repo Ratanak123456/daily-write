@@ -324,31 +324,33 @@ export default function BlogPost() {
           </div>
 
           <div className="space-y-6">
-            <div>
-              <label className="block text-lg md:text-2xl font-semibold mb-2">
-                {t("blogPost.category")}{" "}
-                <span className="text-primary-orange">*</span>
-              </label>
-              <div className="relative">
-                <select
-                  value={category}
-                  onChange={(event) => setCategory(event.target.value)}
-                  className="w-full appearance-none bg-bg-side border border-border-main rounded-lg h-12 px-4 text-primary-orange text-base md:text-xl focus:outline-none focus:ring-2 focus:ring-primary-orange"
-                >
-                  <option value="">{t("blogPost.selectCategory")}</option>
-                  <option value="front-end">Front-End</option>
-                  <option value="back-end">Back-End</option>
-                  <option value="cyber-security">Cyber Security</option>
-                  <option value="ux-ui-design">UXUI Design</option>
-                  <option value="mobile-app">Mobile App</option>
-                  <option value="art-history">Art History</option>
-                </select>
-                <ChevronDown
-                  className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-text-sub"
-                  size={22}
-                />
+            {!uuid && (
+              <div>
+                <label className="block text-lg md:text-2xl font-semibold mb-2">
+                  {t("blogPost.category")}{" "}
+                  <span className="text-primary-orange">*</span>
+                </label>
+                <div className="relative">
+                  <select
+                    value={category}
+                    onChange={(event) => setCategory(event.target.value)}
+                    className="w-full appearance-none bg-bg-side border border-border-main rounded-lg h-12 px-4 text-primary-orange text-base md:text-xl focus:outline-none focus:ring-2 focus:ring-primary-orange"
+                  >
+                    <option value="">{t("blogPost.selectCategory")}</option>
+                    <option value="front-end">Front-End</option>
+                    <option value="back-end">Back-End</option>
+                    <option value="cyber-security">Cyber Security</option>
+                    <option value="ux-ui-design">UXUI Design</option>
+                    <option value="mobile-app">Mobile App</option>
+                    <option value="art-history">Art History</option>
+                  </select>
+                  <ChevronDown
+                    className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-text-sub"
+                    size={22}
+                  />
+                </div>
               </div>
-            </div>
+            )}
 
             <div>
               <label className="block text-lg md:text-2xl font-semibold mb-2">

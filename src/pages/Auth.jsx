@@ -130,8 +130,6 @@ const LoginPage = () => {
       if (userResponse.data.refreshToken) {
         storeRefreshToken(userResponse.data.refreshToken);
       }
-      const realAccessToken = getDecryptedAccessToken();
-      console.log("Real Access Token: ", realAccessToken);
       setIsGoogleLoading(false);
       navigate("/");
     }

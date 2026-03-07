@@ -162,7 +162,7 @@ const Profile = () => {
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
         } h-full lg:h-lvh p-6`}
       >
-        <nav className="flex flex-col gap-2 h-full">
+        <nav className="flex flex-col gap-2 h-80">
           <div className="hidden lg:block mb-8">
             <h1 className="text-2xl font-bold text-(--primary-500) text-center">
               {t("profile.profile")}
