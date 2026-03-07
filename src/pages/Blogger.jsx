@@ -6,7 +6,7 @@ import {
   useGetAllProductByCurrentUserUuidQuery,
 } from "../app/features/services/productApi";
 
-export default function Bloger() {
+export default function Blogger() {
   const { uuid } = useParams();
   const [activeTab, setActiveTab] = React.useState("blogs");
 

@@ -11,7 +11,7 @@ import Layout from "./layout.jsx";
 import { store } from "./app/store.js";
 import { Provider } from "react-redux";
 import LoginPage from "./pages/Auth.jsx";
-import Bloger from "./pages/Bloger.jsx";
+import Blogger from "./pages/Blogger.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import { I18nProvider } from "./i18n/I18nProvider.jsx";
 
@@ -45,22 +45,22 @@ const router = createBrowserRouter([
         element: <BlogDetail />,
       },
       {
-        path: "/blogers/:uuid",
-        element: <Bloger />,
+        path: "/bloggers/:uuid",
+        element: <Blogger />,
+      },
+      {
+        path: "/profile",
+        element: (
+          <ProtectedRoute>
+            <Profile />
+          </ProtectedRoute>
+        ),
       },
     ],
   },
   {
     path: "/auth",
     element: <LoginPage />,
-  },
-  {
-    path: "/profile",
-    element: (
-      <ProtectedRoute>
-        <Profile />
-      </ProtectedRoute>
-    ),
   },
 ]);
 ReactDOM.createRoot(document.getElementById("root")).render(

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
-import { useUserLoginMutation } from "../app/features/auth/auth";
+import { useUserLoginMutation, useUserRegisterMutation } from "../app/features/auth/auth";
 import {
   storeAccessToken,
   storeRefreshToken,
@@ -82,6 +82,7 @@ const LoginPage = () => {
   const { t } = useI18n();
   const [view, setView] = useState("login");
   const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const [showLoginPassword, setShowLoginPassword] = useState(false);
   const [showRegisterPassword, setShowRegisterPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -93,6 +94,8 @@ const LoginPage = () => {
     loginUser,
     { data: userResponse, isLoading, isError, error: loginError },
   ] = useUserLoginMutation();
+
+  const [registerUser, { isLoading: isRegisterLoading }] = useUserRegisterMutation();
 
   // Login form
   const {
@@ -108,6 +111,7 @@ const LoginPage = () => {
   const {
     register: regRegister,
     handleSubmit: handleRegisterSubmit,
+    reset: resetRegisterForm,
     formState: { errors: regErrors },
   } = useForm({
     resolver: zodResolver(registerSchema),
@@ -171,6 +175,7 @@ const LoginPage = () => {
   /* ---------------------- Submit Handlers ---------------------- */
   const onLogin = async (data) => {
     setError("");
+    setSuccessMessage("");
     setIsGoogleLoading(false);
     try {
       await loginUser({ email: data.email, password: data.password }).unwrap();
@@ -182,13 +187,20 @@ const LoginPage = () => {
 
   const onRegister = async (data) => {
     setError("");
+    setSuccessMessage("");
     setIsGoogleLoading(false);
     try {
-      console.log("Register payload:", {
-        fullName: data.firstName + " " + data.lastName,
+      const payload = {
+        fullName: `${data.firstName} ${data.lastName}`,
         email: data.email,
         password: data.password,
-      });
+      };
+      
+      await registerUser(payload).unwrap();
+      
+      setSuccessMessage("Register success! Please check your email to verify your account.");
+      resetRegisterForm();
+      setView("login");
     } catch (err) {
       console.error("Registration failed:", err);
       setError(err?.data?.message || "Registration failed. Try again.");
@@ -198,11 +210,13 @@ const LoginPage = () => {
   const handleSwitch = () => {
     setView(view === "login" ? "register" : "login");
     setError("");
+    setSuccessMessage("");
     setIsGoogleLoading(false);
   };
 
   const handleGoogleLogin = () => {
     setError("");
+    setSuccessMessage("");
     setIsGoogleLoading(true);
 
     const requiredFirebaseEnv = [
@@ -358,6 +372,19 @@ const LoginPage = () => {
             </div>
 
             <ErrorMessage error={error} />
+            
+            {successMessage && (
+              <div
+                className="mb-4 p-3 text-xs sm:text-sm rounded-lg sm:rounded-xl text-center"
+                style={{
+                  backgroundColor: "rgba(34, 197, 94, 0.1)",
+                  border: "1px solid rgba(34, 197, 94, 0.2)",
+                  color: "rgb(34, 197, 94)",
+                }}
+              >
+                {successMessage}
+              </div>
+            )}
 
             {/* Login Form */}
             {view === "login" && (
@@ -657,7 +684,8 @@ const LoginPage = () => {
 
                 <button
                   type="submit"
-                  className="w-full text-white font-bold py-2.5 sm:py-3.5 rounded-lg sm:rounded-xl transition-all active:scale-[0.98] text-sm sm:text-base"
+                  disabled={isRegisterLoading}
+                  className="w-full text-white font-bold py-2.5 sm:py-3.5 rounded-lg sm:rounded-xl transition-all active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center text-sm sm:text-base"
                   style={{ backgroundColor: "var(--primary-500)" }}
                   onMouseEnter={(e) =>
                     (e.target.style.backgroundColor = "var(--primary-700)")
@@ -666,7 +694,14 @@ const LoginPage = () => {
                     (e.target.style.backgroundColor = "var(--primary-500)")
                   }
                 >
-                  {t("auth.register")}
+                  {isRegisterLoading ? (
+                    <>
+                      <Loader2 className="mr-2 h-3 w-3 sm:h-4 sm:w-4 animate-spin" />
+                      Registering...
+                    </>
+                  ) : (
+                    t("auth.register")
+                  )}
                 </button>
 
                 <GoogleButton

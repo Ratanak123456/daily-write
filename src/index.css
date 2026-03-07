@@ -114,6 +114,7 @@ html[data-lang="km"] h6 {
 
 @variant dark (&:where(.dark, .dark *));
 
+/* Keyframes */
 @keyframes fadeInUp {
   0% {
     opacity: 0;
@@ -125,19 +126,15 @@ html[data-lang="km"] h6 {
   }
 }
 
-.animate-fade-in-up {
-  animation: fadeInUp 0.8s ease-out forwards;
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
 }
 
-.animate-fade-in-up-delay {
-  animation: fadeInUp 1s ease-out forwards;
-}
-
-.animate-fade-in-up-delay-2 {
-  animation: fadeInUp 1.2s ease-out forwards;
-}
-
-/* Slide In Animations */
 @keyframes slideInLeft {
   0% {
     opacity: 0;
@@ -149,8 +146,15 @@ html[data-lang="km"] h6 {
   }
 }
 
-.animate-slide-in-left {
-  animation: slideInLeft 0.8s ease-out forwards;
+@keyframes slideOutLeft {
+  0% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
 }
 
 @keyframes slideInRight {
@@ -164,8 +168,15 @@ html[data-lang="km"] h6 {
   }
 }
 
-.animate-slide-in-right {
-  animation: slideInRight 0.8s ease-out forwards;
+@keyframes slideOutRight {
+  0% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(50px);
+  }
 }
 
 @keyframes slideInBottom {
@@ -179,11 +190,17 @@ html[data-lang="km"] h6 {
   }
 }
 
-.animate-slide-in-bottom {
-  animation: slideInBottom 0.8s ease-out forwards;
+@keyframes slideOutBottom {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(50px);
+  }
 }
 
-/* Bounce In Animation */
 @keyframes bounceIn {
   0% {
     opacity: 0;
@@ -201,11 +218,6 @@ html[data-lang="km"] h6 {
   }
 }
 
-.animate-bounce-in {
-  animation: bounceIn 0.8s ease-out forwards;
-}
-
-/* Floating Animations */
 @keyframes float {
   0%,
   100% {
@@ -214,10 +226,6 @@ html[data-lang="km"] h6 {
   50% {
     transform: translateY(-20px);
   }
-}
-
-.animate-float {
-  animation: float 3s ease-in-out infinite;
 }
 
 @keyframes floatSlow {
@@ -230,10 +238,6 @@ html[data-lang="km"] h6 {
   }
 }
 
-.animate-float-slow {
-  animation: floatSlow 4s ease-in-out infinite;
-}
-
 @keyframes floatDelayed {
   0%,
   100% {
@@ -244,11 +248,6 @@ html[data-lang="km"] h6 {
   }
 }
 
-.animate-float-delayed {
-  animation: floatDelayed 5s ease-in-out infinite;
-}
-
-/* Subtle Bounce Animation */
 @keyframes bounceSubtle {
   0%,
   100% {
@@ -259,11 +258,6 @@ html[data-lang="km"] h6 {
   }
 }
 
-.animate-bounce-subtle {
-  animation: bounceSubtle 2s ease-in-out infinite;
-}
-
-/* Wave Animation */
 @keyframes wave {
   0%,
   100% {
@@ -277,12 +271,6 @@ html[data-lang="km"] h6 {
   }
 }
 
-.animate-wave {
-  animation: wave 2s ease-in-out infinite;
-  display: inline-block;
-}
-
-/* Pulse Glow Animation */
 @keyframes pulseGlow {
   0%,
   100% {
@@ -295,11 +283,6 @@ html[data-lang="km"] h6 {
   }
 }
 
-.animate-pulse-glow {
-  animation: pulseGlow 3s ease-in-out infinite;
-}
-
-/* Slow Pulse Animation */
 @keyframes pulseSlow {
   0%,
   100% {
@@ -310,11 +293,6 @@ html[data-lang="km"] h6 {
   }
 }
 
-.animate-pulse-slow {
-  animation: pulseSlow 4s ease-in-out infinite;
-}
-
-/* Slow Spin Animation */
 @keyframes spinSlow {
   0% {
     transform: rotate(0deg);
@@ -324,21 +302,7 @@ html[data-lang="km"] h6 {
   }
 }
 
-.animate-spin-slow {
-  animation: spinSlow 20s linear infinite;
-}
-
-@keyframes fadeInUp {
-  0% {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
+/* Animation Classes */
 .animate-fade-in-up {
   animation: fadeInUp 0.8s ease-out forwards;
 }
@@ -351,144 +315,52 @@ html[data-lang="km"] h6 {
   animation: fadeInUp 1.2s ease-out forwards;
 }
 
-/* Slide In Animations */
-@keyframes slideInLeft {
-  0% {
-    opacity: 0;
-    transform: translateX(-50px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateX(0);
-  }
+.animate-fade-out {
+  animation: fadeOut 0.8s ease-out forwards;
 }
 
 .animate-slide-in-left {
   animation: slideInLeft 0.8s ease-out forwards;
 }
 
-@keyframes slideInRight {
-  0% {
-    opacity: 0;
-    transform: translateX(50px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateX(0);
-  }
+.animate-slide-out-left {
+  animation: slideOutLeft 0.8s ease-out forwards;
 }
 
 .animate-slide-in-right {
   animation: slideInRight 0.8s ease-out forwards;
 }
 
-@keyframes slideInBottom {
-  0% {
-    opacity: 0;
-    transform: translateY(50px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.animate-slide-out-right {
+  animation: slideOutRight 0.8s ease-out forwards;
 }
 
 .animate-slide-in-bottom {
   animation: slideInBottom 0.8s ease-out forwards;
 }
 
-/* Bounce In Animation */
-@keyframes bounceIn {
-  0% {
-    opacity: 0;
-    transform: scale(0.3);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.05);
-  }
-  70% {
-    transform: scale(0.9);
-  }
-  100% {
-    transform: scale(1);
-  }
+.animate-slide-out-bottom {
+  animation: slideOutBottom 0.8s ease-out forwards;
 }
 
 .animate-bounce-in {
   animation: bounceIn 0.8s ease-out forwards;
 }
 
-/* Floating Animations */
-@keyframes float {
-  0%,
-  100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-20px);
-  }
-}
-
 .animate-float {
   animation: float 3s ease-in-out infinite;
-}
-
-@keyframes floatSlow {
-  0%,
-  100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
 }
 
 .animate-float-slow {
   animation: floatSlow 4s ease-in-out infinite;
 }
 
-@keyframes floatDelayed {
-  0%,
-  100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-15px);
-  }
-}
-
 .animate-float-delayed {
   animation: floatDelayed 5s ease-in-out infinite;
 }
 
-/* Subtle Bounce Animation */
-@keyframes bounceSubtle {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-5px);
-  }
-}
-
 .animate-bounce-subtle {
   animation: bounceSubtle 2s ease-in-out infinite;
-}
-
-/* Wave Animation */
-@keyframes wave {
-  0%,
-  100% {
-    transform: rotate(0deg);
-  }
-  25% {
-    transform: rotate(10deg);
-  }
-  75% {
-    transform: rotate(-10deg);
-  }
 }
 
 .animate-wave {
@@ -496,46 +368,12 @@ html[data-lang="km"] h6 {
   display: inline-block;
 }
 
-/* Pulse Glow Animation */
-@keyframes pulseGlow {
-  0%,
-  100% {
-    opacity: 1;
-    filter: brightness(1);
-  }
-  50% {
-    opacity: 0.9;
-    filter: brightness(1.1);
-  }
-}
-
 .animate-pulse-glow {
   animation: pulseGlow 3s ease-in-out infinite;
 }
 
-/* Slow Pulse Animation */
-@keyframes pulseSlow {
-  0%,
-  100% {
-    opacity: 0.8;
-  }
-  50% {
-    opacity: 0.4;
-  }
-}
-
 .animate-pulse-slow {
   animation: pulseSlow 4s ease-in-out infinite;
-}
-
-/* Slow Spin Animation */
-@keyframes spinSlow {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
 }
 
 .animate-spin-slow {
@@ -556,65 +394,4 @@ html[data-lang="km"] h6 {
 .blog-post-editor .ql-editor {
   min-height: 320px;
   color: var(--text-primary);
-}
-/* Add these to your existing CSS file */
-
-/* Slide Out Animations */
-@keyframes slideOutLeft {
-  0% {
-    opacity: 1;
-    transform: translateX(0);
-  }
-  100% {
-    opacity: 0;
-    transform: translateX(-50px);
-  }
-}
-
-.animate-slide-out-left {
-  animation: slideOutLeft 0.8s ease-out forwards;
-}
-
-@keyframes slideOutRight {
-  0% {
-    opacity: 1;
-    transform: translateX(0);
-  }
-  100% {
-    opacity: 0;
-    transform: translateX(50px);
-  }
-}
-
-.animate-slide-out-right {
-  animation: slideOutRight 0.8s ease-out forwards;
-}
-
-@keyframes slideOutBottom {
-  0% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  100% {
-    opacity: 0;
-    transform: translateY(50px);
-  }
-}
-
-.animate-slide-out-bottom {
-  animation: slideOutBottom 0.8s ease-out forwards;
-}
-
-/* Fade Out Animation */
-@keyframes fadeOut {
-  0% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-  }
-}
-
-.animate-fade-out {
-  animation: fadeOut 0.8s ease-out forwards;
 }

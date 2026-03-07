@@ -52,5 +52,5 @@ export const clearTokens = () => {
 };
 
 // Backward compatibility (optional)
-export const encrtypedToken = encryptToken;
+export const encryptedToken = encryptToken;
 export const decryptedAccessToken = decryptToken;

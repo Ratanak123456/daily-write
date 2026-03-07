@@ -12,21 +12,23 @@ export const auth = baseApi.injectEndpoints({
       }),
     }),
 
+    userRegister: builder.mutation({
+      query: (userData) => ({
+        url: "/auth/register",
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: userData,
+      }),
+    }),
+
     getCurrentUser: builder.query({
-      query: () => {
-        const accessToken = getDecryptedAccessToken();
-        return {
-          url: "/auth/me",
-          method: "POST",
-          body: {},
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        };
-      },
+      query: () => ({
+        url: "/auth/me",
+        method: "POST",
+      }),
       providesTags: ["User"],
     }),
   }),
 });
 
-export const { useUserLoginMutation, useGetCurrentUserQuery } = auth;
+export const { useUserLoginMutation, useUserRegisterMutation, useGetCurrentUserQuery } = auth;

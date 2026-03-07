@@ -101,7 +101,7 @@ export default function BlogDetail() {
 
           <div className="mt-4 flex flex-wrap items-center gap-4 text-sm text-(--text-secondary)">
             <Link
-              to={`/blogers/${author?.uuid}`}
+              to={`/bloggers/${author?.uuid}`}
               className="flex items-center gap-2 hover:opacity-80 transition-opacity"
             >
               <img
