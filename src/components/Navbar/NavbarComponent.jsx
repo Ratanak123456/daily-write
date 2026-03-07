@@ -119,7 +119,7 @@ export default function NavbarComponent() {
 
           <div className="h-6 w-px bg-border-main mx-1 hidden md:block" />
 
-          <div className="relative" ref={languageMenuRef}>
+          <div className="relative hidden md:block" ref={languageMenuRef}>
             <button
               onClick={() => setShowLanguageMenu((prev) => !prev)}
               className="w-9 h-9 rounded-full border border-border-main overflow-hidden bg-bg-main flex items-center justify-center hover:brightness-95 transition-all"
