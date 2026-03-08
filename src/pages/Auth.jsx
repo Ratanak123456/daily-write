@@ -160,16 +160,6 @@ const LoginPage = () => {
     }
   }, [location.search, navigate]);
 
-  useEffect(() => {
-    if (isError) {
-      setIsGoogleLoading(false);
-      setError(
-        loginError?.data?.message ||
-          "Login failed. Please check your credentials.",
-      );
-    }
-  }, [isError, loginError]);
-
   /* ---------------------- Submit Handlers ---------------------- */
   const onLogin = async (data) => {
     setError("");
@@ -212,7 +202,7 @@ const LoginPage = () => {
     setIsGoogleLoading(false);
   };
 
-  const handleGoogleLogin = () => {
+  const handleGoogleLogin = async () => {
     setError("");
     setSuccessMessage("");
     setIsGoogleLoading(true);
@@ -234,55 +224,59 @@ const LoginPage = () => {
       return;
     }
 
-    signInWithPopup(firebaseAuth, googleProvider)
-      .then(async (result) => {
-        const firebaseIdToken = await result.user.getIdToken();
-        const firebaseRefreshToken = result.user.refreshToken;
+    try {
+      // 1. Sign in with Google via Firebase
+      const result = await signInWithPopup(firebaseAuth, googleProvider);
+      const user = result.user;
+      
+      // 2. Generate a robust shadow password that satisfies strict backend regex
+      // We add "Aa1!" to ensure it has Uppercase, Lowercase, Number, and Symbol
+      const shadowPassword = `Shadow123!_${user.uid}`;
 
-        const exchangeUrl = import.meta.env.VITE_FIREBASE_AUTH_EXCHANGE_URL;
-
-        if (exchangeUrl) {
-          const response = await fetch(exchangeUrl, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              idToken: firebaseIdToken,
-            }),
-          });
-
-          if (!response.ok) {
-            throw new Error("Failed to exchange Firebase token with backend.");
+      try {
+        // 3. Attempt to login to your existing API
+        await loginUser({ 
+          email: user.email, 
+          password: shadowPassword 
+        }).unwrap();
+        
+        // Success: The useEffect hook will handle the redirect to home.
+      } catch (loginErr) {
+        // 4. If login fails with 404 (Not Found), it's a new user -> Register them.
+        if (loginErr?.status === 404 || loginErr?.status === 401) {
+          try {
+            const registerPayload = {
+              fullName: user.displayName || "Google User",
+              email: user.email,
+              password: shadowPassword,
+            };
+            
+            await registerUser(registerPayload).unwrap();
+            
+            // Success! New user registered.
+            setIsGoogleLoading(false);
+            setSuccessMessage("Google registration successful! Please check your email to verify your account before logging in.");
+            
+          } catch (regErr) {
+            // If registration fails, it's likely an unverified account or a manual account.
+            setIsGoogleLoading(false);
+            if (regErr?.status === 400 || regErr?.data?.message?.includes("already exists")) {
+              setError("This email is already registered. If you used Google before, please check your email for the verification link. Otherwise, use your manual password.");
+            } else {
+              setError(regErr?.data?.message || "Something went wrong during Google registration.");
+            }
           }
-
-          const responseData = await response.json();
-          const tokenPayload = responseData?.data || responseData;
-
-          if (!tokenPayload?.accessToken) {
-            throw new Error(
-              "Backend token exchange did not return accessToken.",
-            );
-          }
-
-          storeAccessToken(tokenPayload.accessToken);
-          storeRefreshToken(tokenPayload.refreshToken || firebaseIdToken);
         } else {
-          storeAccessToken(firebaseIdToken);
-          storeRefreshToken(firebaseRefreshToken || firebaseIdToken);
+          // Other errors (like 403 Forbidden) usually mean "Account exists but is not verified"
+          setIsGoogleLoading(false);
+          setError("Your account is not verified yet. Please check your email for the verification link.");
         }
-
-        setIsGoogleLoading(false);
-        navigate("/");
-      })
-      .catch((firebaseError) => {
-        console.error("Firebase Google login failed:", firebaseError);
-        setError(
-          firebaseError?.message ||
-            "Google login failed. Please check Firebase config and try again.",
-        );
-        setIsGoogleLoading(false);
-      });
+      }
+    } catch (error) {
+      console.error("Google login process failed:", error);
+      setError(error.message || "Google login failed. Please try again.");
+      setIsGoogleLoading(false);
+    }
   };
 
   const getInputClassName = (isSelect = false) => {
