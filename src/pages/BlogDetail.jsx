@@ -10,6 +10,7 @@ import {
 } from "../app/features/services/productApi";
 import CommentSection from "../components/Comment/CommentSection";
 import { useI18n } from "../i18n/useI18n";
+import { BlogDetailSkeleton } from "../components/Card/Skeleton";
 
 export default function BlogDetail() {
   const { uuid } = useParams();
@@ -57,9 +58,7 @@ export default function BlogDetail() {
   if (loading) {
     return (
       <section className="bg-(--bg-primary) px-4 py-6 text-(--text-primary) sm:px-6 lg:px-10">
-        <div className="mx-auto max-w-6xl text-center text-lg">
-          {t("blogDetail.loading")}
-        </div>
+        <BlogDetailSkeleton />
       </section>
     );
   }

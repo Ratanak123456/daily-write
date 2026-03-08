@@ -81,3 +81,88 @@ export function BlogSkeleton() {
     </div>
   );
 }
+
+export function BlogDetailSkeleton() {
+  return (
+    <div className="mx-auto max-w-6xl animate-pulse px-4 py-3 sm:px-6 lg:px-10">
+      {/* Hero Image Skeleton */}
+      <div className="h-55 w-full rounded-sm bg-gray-200 dark:bg-gray-700 sm:h-80 md:h-105" />
+
+      <div className="mx-auto mt-6 max-w-5xl">
+        {/* Title Skeleton */}
+        <div className="h-10 w-3/4 rounded-lg bg-gray-200 dark:bg-gray-700 sm:h-12" />
+
+        {/* Metadata Skeleton */}
+        <div className="mt-4 flex flex-wrap items-center gap-4">
+          <div className="flex items-center gap-2">
+            <div className="h-8 w-8 rounded-full bg-gray-200 dark:bg-gray-700" />
+            <div className="space-y-1">
+              <div className="h-3 w-24 rounded bg-gray-200 dark:bg-gray-700" />
+              <div className="h-2 w-16 rounded bg-gray-100 dark:bg-gray-800" />
+            </div>
+          </div>
+          <div className="h-4 w-20 rounded bg-gray-100 dark:bg-gray-800" />
+          <div className="h-4 w-20 rounded bg-gray-100 dark:bg-gray-800" />
+        </div>
+
+        {/* Content Skeleton */}
+        <div className="mt-8 space-y-4">
+          <div className="h-4 w-full rounded bg-gray-100 dark:bg-gray-800" />
+          <div className="h-4 w-full rounded bg-gray-100 dark:bg-gray-800" />
+          <div className="h-4 w-5/6 rounded bg-gray-100 dark:bg-gray-800" />
+          <div className="h-4 w-full rounded bg-gray-100 dark:bg-gray-800" />
+          <div className="h-4 w-4/5 rounded bg-gray-100 dark:bg-gray-800" />
+        </div>
+
+        {/* Related Posts Skeleton */}
+        <div className="mt-10">
+          <div className="h-8 w-48 rounded bg-gray-200 dark:bg-gray-700" />
+          <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-2">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="flex min-h-32 rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden">
+                <div className="h-full w-32 bg-gray-200 dark:bg-gray-700 sm:w-40" />
+                <div className="flex-1 p-3 space-y-2">
+                  <div className="h-4 w-full rounded bg-gray-200 dark:bg-gray-700" />
+                  <div className="h-3 w-5/6 rounded bg-gray-100 dark:bg-gray-800" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function ProfileSkeleton() {
+  return (
+    <div className="flex min-h-screen animate-pulse flex-col lg:flex-row bg-(--bg-primary)">
+      {/* Sidebar Skeleton */}
+      <aside className="hidden lg:block w-64 border-r border-(--border-color) p-6 space-y-8">
+        <div className="h-8 w-3/4 bg-gray-200 dark:bg-gray-700 rounded mx-auto" />
+        <div className="space-y-4">
+          {[...Array(3)].map((_, i) => (
+            <div key={i} className="h-12 w-full bg-gray-100 dark:bg-gray-800 rounded-xl" />
+          ))}
+        </div>
+      </aside>
+
+      {/* Main Content Skeleton */}
+      <main className="flex-1 p-4 lg:p-10">
+        <div className="max-w-6xl mx-auto">
+          {/* Header Skeleton */}
+          <div className="flex flex-col md:flex-row justify-center items-center my-8 gap-4">
+            <div className="h-12 w-48 bg-gray-200 dark:bg-gray-700 rounded-lg" />
+          </div>
+
+          {/* Grid Skeleton */}
+          <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {[...Array(8)].map((_, i) => (
+              <SkeletonCard key={i} />
+            ))}
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+}

@@ -20,6 +20,7 @@ import About from "../components/Profile/About";
 import Blog from "../components/Profile/Blog";
 import DraftBlog from "../components/Profile/DraftBlog";
 import { useI18n } from "../i18n/useI18n";
+import { ProfileSkeleton } from "../components/Card/Skeleton";
 
 const Profile = () => {
   const { t } = useI18n();
@@ -92,11 +93,7 @@ const Profile = () => {
   }
 
   if (isLoading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-(--bg-primary)">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-(--primary-500)"></div>
-      </div>
-    );
+    return <ProfileSkeleton />;
   }
 
   const getPageNumbers = () => {
@@ -160,7 +157,7 @@ const Profile = () => {
       <aside
         className={`fixed inset-y-0 left-0 w-64 border-r border-(--border-color) bg-(--bg-primary) z-50 transform transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 ${
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-        } h-full lg:h-lvh p-6`}
+        } h-full lg:h-auto p-6`}
       >
         <nav className="flex flex-col gap-2 h-80">
           <div className="hidden lg:block mb-8">

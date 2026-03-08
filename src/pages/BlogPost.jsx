@@ -337,12 +337,12 @@ export default function BlogPost() {
                     className="w-full appearance-none bg-bg-side border border-border-main rounded-lg h-12 px-4 text-primary-orange text-base md:text-xl focus:outline-none focus:ring-2 focus:ring-primary-orange"
                   >
                     <option value="">{t("blogPost.selectCategory")}</option>
-                    <option value="front-end">Front-End</option>
-                    <option value="back-end">Back-End</option>
-                    <option value="cyber-security">Cyber Security</option>
-                    <option value="ux-ui-design">UXUI Design</option>
-                    <option value="mobile-app">Mobile App</option>
-                    <option value="art-history">Art History</option>
+                    <option value="front-end">Lifestyle</option>
+                    <option value="back-end">Health & Wellness</option>
+                    <option value="cyber-security">Travel</option>
+                    <option value="ux-ui-design">Food & Recipes</option>
+                    <option value="mobile-app">Personal Growth</option>
+                    <option value="art-history">Technology</option>
                   </select>
                   <ChevronDown
                     className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-text-sub"
