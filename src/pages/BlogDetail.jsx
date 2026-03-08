@@ -1,5 +1,5 @@
-import { useEffect } from "react";
-import { Bookmark, Clock3, Eye, Heart, Link2, User } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Clock3, Eye, Link2, User, Check } from "lucide-react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import parse from "html-react-parser";
 import {
@@ -11,11 +11,14 @@ import {
 import CommentSection from "../components/Comment/CommentSection";
 import { useI18n } from "../i18n/useI18n";
 import { BlogDetailSkeleton } from "../components/Card/Skeleton";
+import Toast from "../components/Toast";
 
 export default function BlogDetail() {
   const { uuid } = useParams();
   const navigate = useNavigate();
   const { t } = useI18n();
+  const [showToast, setShowToast] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -55,6 +58,19 @@ export default function BlogDetail() {
   const loading = blogLoading;
   const error = blogError ? t("blogDetail.loadError") : "";
 
+  const handleCopyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      setCopied(true);
+      setShowToast(true);
+      setTimeout(() => {
+        setCopied(false);
+      }, 2000);
+    } catch (err) {
+      console.error("Failed to copy link: ", err);
+    }
+  };
+
   if (loading) {
     return (
       <section className="bg-(--bg-primary) px-4 py-6 text-(--text-primary) sm:px-6 lg:px-10">
@@ -73,7 +89,7 @@ export default function BlogDetail() {
           <button
             type="button"
             onClick={() => navigate("/blogs")}
-            className="mt-4 rounded-lg bg-(--primary-500) px-4 py-2 text-white hover:bg-primary-600transition-colors"
+            className="mt-4 rounded-lg bg-(--primary-500) px-4 py-2 text-white hover:bg-primary-600 transition-colors"
           >
             {t("blogDetail.backToBlogs")}
           </button>
@@ -146,24 +162,37 @@ export default function BlogDetail() {
 
           <div className="mt-8 border-t border-(--border-color) pt-6">
             <div className="flex flex-wrap items-center gap-3">
-              <button className="flex items-center gap-2 rounded-xl border border-(--border-color) px-4 py-2 text-sm text-(--text-primary) hover:bg-(--bg-secondary) transition-colors">
-                <Heart size={16} className="text-(--text-secondary)" /> 20
-              </button>
-              <button className="flex items-center gap-2 rounded-xl border border-(--border-color) px-4 py-2 text-sm text-(--text-primary) hover:bg-(--bg-secondary) transition-colors">
-                <Bookmark size={16} className="text-(--text-secondary)" /> 20
-              </button>
               <button
                 type="button"
-                onClick={() =>
-                  navigator.clipboard.writeText(window.location.href)
-                }
-                className="flex items-center gap-2 rounded-xl border border-(--border-color) px-4 py-2 text-sm text-(--text-primary) hover:bg-(--bg-secondary) transition-colors"
+                onClick={handleCopyLink}
+                className={`flex items-center gap-2 rounded-xl border border-(--border-color) px-4 py-2 text-sm transition-all duration-300 ${
+                  copied
+                    ? "bg-emerald-50 border-emerald-200 text-emerald-600"
+                    : "text-(--text-primary) hover:bg-(--bg-secondary)"
+                }`}
               >
-                <Link2 size={16} className="text-(--text-secondary)" />{" "}
-                {t("blogDetail.copyLink")}
+                {copied ? (
+                  <>
+                    <Check size={16} />
+                    {t("blogDetail.copied") || "Copied!"}
+                  </>
+                ) : (
+                  <>
+                    <Link2 size={16} className="text-(--text-secondary)" />
+                    {t("blogDetail.copyLink")}
+                  </>
+                )}
               </button>
             </div>
           </div>
+
+          {showToast && (
+            <Toast
+              message="Link Copied"
+              type="success"
+              onClose={() => setShowToast(false)}
+            />
+          )}
 
           <div className="mt-10">
             <h3 className="text-2xl font-semibold text-(--primary-700)">

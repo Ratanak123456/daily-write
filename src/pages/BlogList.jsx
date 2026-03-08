@@ -11,16 +11,17 @@ export default function BlogList() {
   const [page, setPage] = useState(0);
   const [sortBy, setSortBy] = useState("createdAt,desc");
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("all");
   const { t } = useI18n();
   const pageSize = 12;
 
   const mainCategories = [
-    { label: "Lifestyle", value: "lifestyle" },
-    { label: "Health & Wellness", value: "health wellness" },
-    { label: "Travel", value: "travel" },
-    { label: "Food & Recipes", value: "food recipes" },
-    { label: "Personal Growth", value: "personal growth" },
-    { label: "Technology", value: "technology" },
+    { label: "Lifestyle", value: "Lifestyle" },
+    { label: "Health & Wellness", value: "Health & Wellness" },
+    { label: "Travel", value: "Travel" },
+    { label: "Food & Recipes", value: "Food & Recipes" },
+    { label: "Personal Growth", value: "Personal Growth" },
+    { label: "Technology", value: "Technology" },
   ];
 
   const { data, isLoading } = useGetAllProductQuery({
@@ -34,14 +35,20 @@ export default function BlogList() {
   const filteredAndSortedBlogs = (() => {
     let result = [...allBlogs];
 
-    // Filter by search/category
+    // Filter by category
+    if (selectedCategory !== "all") {
+      result = result.filter(
+        (blog) => blog.blogCategory?.toLowerCase() === selectedCategory.toLowerCase()
+      );
+    }
+
+    // Filter by search
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
       result = result.filter(
         (blog) =>
           blog.title?.toLowerCase().includes(query) ||
-          blog.content?.toLowerCase().includes(query) ||
-          blog.blogCategory?.toLowerCase().includes(query)
+          blog.content?.toLowerCase().includes(query)
       );
     }
 
@@ -158,11 +165,11 @@ export default function BlogList() {
           <button
             key="all"
             onClick={() => {
-              setSearchQuery("");
+              setSelectedCategory("all");
               setPage(0);
             }}
             className={`shrink-0 rounded-md border border-border-main px-5 py-2 text-xs transition-colors hover:bg-orange-50 ${
-              !searchQuery
+              selectedCategory === "all"
                 ? "bg-primary-orange text-white"
                 : "bg-bg-main text-primary-orange"
             }`}
@@ -174,13 +181,13 @@ export default function BlogList() {
             <button
               key={category.value}
               onClick={() => {
-                setSearchQuery(
-                  category.value === searchQuery ? "" : category.value,
+                setSelectedCategory(
+                  category.value === selectedCategory ? "all" : category.value,
                 );
                 setPage(0);
               }}
               className={`shrink-0 rounded-md border border-border-main px-5 py-2 text-xs transition-colors hover:bg-orange-50 ${
-                searchQuery.toLowerCase() === category.value.toLowerCase()
+                selectedCategory.toLowerCase() === category.value.toLowerCase()
                   ? "bg-primary-orange text-white"
                   : "bg-bg-main text-primary-orange"
               }`}
@@ -216,6 +223,11 @@ export default function BlogList() {
             blogs={paginatedBlogs}
             isLoading={isLoading}
             pageSize={pageSize}
+            onTagClick={(tag) => {
+              setSelectedCategory(tag);
+              setPage(0);
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }}
           />
         </div>
 

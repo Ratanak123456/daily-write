@@ -87,15 +87,26 @@ export default function About({
   };
 
   const handleSave = async () => {
+    console.log("DEBUG: Saving profile for UUID:", uuid);
+    console.log("DEBUG: Payload:", JSON.stringify(formData, null, 2));
+    
     try {
-      await patchUser({
+      const response = await patchUser({
         uuid,
         payload: formData,
       }).unwrap();
+      console.log("DEBUG: Profile update success:", JSON.stringify(response, null, 2));
       setIsEditing(false);
       showToast("Profile updated successfully!");
     } catch (error) {
-      console.error("Failed to update profile:", error);
+      console.error("DEBUG: Failed to update profile:", error);
+      
+      if (error?.data) {
+        console.error("DEBUG: Server error data (stringified):", JSON.stringify(error.data, null, 2));
+      } else if (error?.status) {
+        console.error("DEBUG: Error status:", error.status);
+      }
+      
       showToast("Failed to update profile. Please try again.", "error");
     }
   };

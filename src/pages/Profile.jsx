@@ -323,7 +323,6 @@ const Profile = () => {
         )}
         {activeTab === "about" && user && (
           <About
-            key={user.uuid}
             uuid={user.uuid}
             fullName={user.fullName}
             email={user.email}

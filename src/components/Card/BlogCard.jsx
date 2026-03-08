@@ -15,6 +15,7 @@ export default function BlogCard({
   mode = "view",
   onCardClick,
   onDelete,
+  onTagClick,
 }) {
   const isDraft = status?.toUpperCase() === "DRAFT" || tag === "DRAFT";
   const linkTo = isDraft ? `/blog-post?uuid=${uuid}` : `/blogs/${uuid}`;
@@ -64,9 +65,22 @@ export default function BlogCard({
           </button>
         )}
 
-        <span className="absolute bottom-3 left-3 rounded-full bg-emerald-50 px-3 py-1 text-[10px] font-semibold text-emerald-700">
-          {tag}
-        </span>
+        {onTagClick ? (
+          <button
+            onClick={(event) => {
+              event.preventDefault();
+              event.stopPropagation();
+              onTagClick(tag);
+            }}
+            className="absolute bottom-3 left-3 rounded-full bg-emerald-50 px-3 py-1 text-[10px] font-semibold text-emerald-700 hover:bg-emerald-100 transition-colors z-10"
+          >
+            {tag}
+          </button>
+        ) : (
+          <span className="absolute bottom-3 left-3 rounded-full bg-emerald-50 px-3 py-1 text-[10px] font-semibold text-emerald-700">
+            {tag}
+          </span>
+        )}
       </div>
 
       <div className="space-y-3 p-4">

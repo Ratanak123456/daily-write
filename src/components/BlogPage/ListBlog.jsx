@@ -9,6 +9,7 @@ export default function ListBlog({
   blogs = [],
   isLoading = false,
   pageSize = 12,
+  onTagClick,
 }) {
   const { data: userData } = useGetAllUserQuery();
   const user = userData?.data?.content;
@@ -47,6 +48,7 @@ export default function ListBlog({
             time={new Date(blog.createdAt).toLocaleDateString()}
             userImage={author?.profileUrl}
             uuid={blog.uuid}
+            onTagClick={onTagClick}
           />
         );
       })}
