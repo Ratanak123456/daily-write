@@ -286,8 +286,8 @@ const LoginPage = () => {
       const user = result.user;
       
       // 2. Generate a robust shadow password that satisfies strict backend regex
-      // We add "Aa1!" to ensure it has Uppercase, Lowercase, Number, and Symbol
-      const shadowPassword = `Shadow123!_${user.uid}`;
+      // We add "123!" to ensure it has Uppercase, Lowercase, Number, and Symbol
+      const shadowPassword = `GoogleAuth123!${user.uid}`;
 
       try {
         // 3. Attempt to login to your existing API
@@ -298,6 +298,8 @@ const LoginPage = () => {
         
         // Success: The useEffect hook will handle the redirect to home.
       } catch (loginErr) {
+        console.warn("Initial Google Login failed (may need registration):", loginErr);
+        
         // 4. If login fails with 404 (Not Found), it's a new user -> Register them.
         if (loginErr?.status === 404 || loginErr?.status === 401) {
           try {
@@ -307,6 +309,7 @@ const LoginPage = () => {
               password: shadowPassword,
             };
             
+            console.log("Attempting Shadow Registration with payload:", registerPayload);
             await registerUser(registerPayload).unwrap();
             
             // Success! New user registered.
@@ -315,6 +318,7 @@ const LoginPage = () => {
             
           } catch (regErr) {
             // If registration fails, it's likely an unverified account or a manual account.
+            console.error("Shadow Registration Detailed Error:", regErr);
             setIsGoogleLoading(false);
             if (regErr?.status === 400 || regErr?.data?.message?.includes("already exists")) {
               setError("This email is already registered. If you used Google before, please check your email for the verification link. Otherwise, use your manual password.");
@@ -325,6 +329,7 @@ const LoginPage = () => {
         } else {
           // Other errors (like 403 Forbidden) usually mean "Account exists but is not verified"
           setIsGoogleLoading(false);
+          console.error("Google Login Forbidden/Error:", loginErr);
           setError("Your account is not verified yet. Please check your email for the verification link.");
         }
       }
