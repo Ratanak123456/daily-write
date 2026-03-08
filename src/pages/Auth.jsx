@@ -290,50 +290,64 @@ const LoginPage = () => {
 
       try {
         // 3. ATTEMPT LOGIN (Using /auth/login endpoint)
-        console.log("Attempting Login with /auth/login...");
-        const response = await loginUser({ 
+        console.log("Attempting Google Login via /auth/login...");
+        const loginResponse = await loginUser({ 
           email: user.email, 
           password: shadowPassword 
         }).unwrap();
         
-        // 4. REDIRECT TO HOMEPAGE ONLY ON SUCCESSFUL LOGIN
-        if (response?.data?.accessToken) {
-          console.log("Login successful, redirecting to home...");
+        // 4. MANUALLY STORE TOKENS & REDIRECT (This prevents the infinite loop)
+        if (loginResponse?.data?.accessToken) {
+          console.log("Login successful, storing tokens...");
+          storeAccessToken(loginResponse.data.accessToken);
+          if (loginResponse.data.refreshToken) {
+            storeRefreshToken(loginResponse.data.refreshToken);
+          }
           setIsGoogleLoading(false);
           navigate("/"); 
+          return;
         }
 
       } catch (loginErr) {
-        console.error("Login with /auth/login failed:", loginErr);
+        console.warn("Initial Login failed, checking if registration is needed...");
 
-        // 5. ATTEMPT REGISTRATION IF USER NOT FOUND (404, 401, or 400)
-        const shouldTryRegister = loginErr?.status === 404 || 
-                                  loginErr?.status === 401 || 
-                                  loginErr?.status === 400;
+        // 5. ATTEMPT REGISTRATION IF USER NOT FOUND
+        const isUserNotFound = loginErr?.status === 404 || 
+                               loginErr?.status === 401 || 
+                               loginErr?.status === 400;
 
-        if (shouldTryRegister) {
+        if (isUserNotFound) {
           try {
-            console.log("User not found, attempting registration...");
+            console.log("User not found, registering...");
             await registerUser({
               fullName: user.displayName || "Google User",
               email: user.email,
               password: shadowPassword,
             }).unwrap();
             
-            // STAY ON AUTH PAGE - Wait for user to verify email
-            setIsGoogleLoading(false);
-            setSuccessMessage("Registration successful! Please check your email to verify your account before logging in with Google again.");
-            
+            // 6. LOGIN IMMEDIATELY AFTER REGISTRATION
+            console.log("Registration success, logging in immediately...");
+            const autoLoginResponse = await loginUser({ 
+              email: user.email, 
+              password: shadowPassword 
+            }).unwrap();
+
+            if (autoLoginResponse?.data?.accessToken) {
+              storeAccessToken(autoLoginResponse.data.accessToken);
+              if (autoLoginResponse.data.refreshToken) {
+                storeRefreshToken(autoLoginResponse.data.refreshToken);
+              }
+              setIsGoogleLoading(false);
+              navigate("/"); 
+            }
           } catch (regErr) {
-            console.error("Registration failed:", regErr);
+            console.error("Auto-Registration/Login failed:", regErr);
             setIsGoogleLoading(false);
-            setError(regErr?.data?.message || "Registration failed. This email might already be registered.");
+            setError(regErr?.data?.message || "Registration failed. Try again.");
           }
         } else {
-          // 6. HANDLE OTHER ERRORS (Like 'Email not verified' 403)
           setIsGoogleLoading(false);
-          const errorMessage = loginErr?.data?.message || "Login failed. Please try again.";
-          setError(errorMessage);
+          setError(loginErr?.data?.message || "Login failed. Please ensure your account is active.");
         }
       }
     } catch (error) {
