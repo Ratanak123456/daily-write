@@ -296,8 +296,8 @@ const LoginPage = () => {
           password: shadowPassword 
         }).unwrap();
         
-        // 4. REDIRECT TO HOMEPAGE ON SUCCESS
-        if (response) {
+        // 4. REDIRECT TO HOMEPAGE ONLY ON SUCCESSFUL LOGIN
+        if (response?.data?.accessToken) {
           console.log("Login successful, redirecting to home...");
           setIsGoogleLoading(false);
           navigate("/"); 
@@ -320,8 +320,10 @@ const LoginPage = () => {
               password: shadowPassword,
             }).unwrap();
             
+            // STAY ON AUTH PAGE - Wait for user to verify email
             setIsGoogleLoading(false);
-            setSuccessMessage("Registration successful! Please check your email to verify your account.");
+            setSuccessMessage("Registration successful! Please check your email to verify your account before logging in with Google again.");
+            
           } catch (regErr) {
             console.error("Registration failed:", regErr);
             setIsGoogleLoading(false);
