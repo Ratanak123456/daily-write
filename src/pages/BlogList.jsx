@@ -23,12 +23,48 @@ export default function BlogList() {
     { label: "Technology", value: "technology" },
   ];
 
-  const { data } = useGetAllProductQuery({
-    pageNumber: page,
-    pageSize,
-    sortBy,
+  const { data, isLoading } = useGetAllProductQuery({
+    pageNumber: 0,
+    pageSize: 200, // Fetch a large amount to handle frontend sorting/filtering
   });
-  const totalPages = data?.data?.totalPages || 0;
+
+  const allBlogs = data?.data?.content || [];
+
+  // Filter and Sort logic
+  const filteredAndSortedBlogs = (() => {
+    let result = [...allBlogs];
+
+    // Filter by search/category
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      result = result.filter(
+        (blog) =>
+          blog.title?.toLowerCase().includes(query) ||
+          blog.content?.toLowerCase().includes(query) ||
+          blog.blogCategory?.toLowerCase().includes(query)
+      );
+    }
+
+    // Sort
+    result.sort((a, b) => {
+      if (sortBy === "view,desc") {
+        return (b.view || 0) - (a.view || 0);
+      } else if (sortBy === "createdAt,desc") {
+        return new Date(b.createdAt) - new Date(a.createdAt);
+      } else if (sortBy === "createdAt,asc") {
+        return new Date(a.createdAt) - new Date(b.createdAt);
+      }
+      return 0;
+    });
+
+    return result;
+  })();
+
+  const totalPages = Math.ceil(filteredAndSortedBlogs.length / pageSize);
+  const paginatedBlogs = filteredAndSortedBlogs.slice(
+    page * pageSize,
+    (page + 1) * pageSize
+  );
 
   const handleSortChange = (e) => {
     setSortBy(e.target.value);
@@ -177,10 +213,9 @@ export default function BlogList() {
         <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {/* Card blog */}
           <ListBlog
-            page={page}
+            blogs={paginatedBlogs}
+            isLoading={isLoading}
             pageSize={pageSize}
-            sortBy={sortBy}
-            searchQuery={searchQuery}
           />
         </div>
 

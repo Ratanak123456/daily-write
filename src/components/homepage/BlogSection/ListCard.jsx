@@ -7,18 +7,17 @@ import {
 } from "../../../app/features/services/productApi";
 
 export default function ListCard() {
-  const { data, isLoading, isError } = useGetAllProductQuery({ pageNumber: 0, pageSize: 20 });
+  // Fetch a large number of blogs to ensure we can find the top story
+  const { data, isLoading, isError } = useGetAllProductQuery({ pageNumber: 0, pageSize: 100 });
   const { data: userData } = useGetAllUserQuery();
 
   if (isLoading || isError) return <SkeletonCard />;
 
-  const productData = data?.data?.content;
+  const blogs = data?.data?.content || [];
   const user = userData?.data?.content;
 
-  // Manually find the blog with the highest view count
-  const mostViewedBlog = productData && productData.length > 0 
-    ? [...productData].reduce((prev, current) => (prev.view > current.view) ? prev : current)
-    : null;
+  // Sort by views descending and take the first one
+  const mostViewedBlog = [...blogs].sort((a, b) => b.view - a.view)[0];
 
   if (!mostViewedBlog) return null;
 
