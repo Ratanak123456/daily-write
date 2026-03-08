@@ -285,52 +285,53 @@ const LoginPage = () => {
       
       const user = result.user;
       
-      // 2. Generate a robust shadow password that satisfies strict backend regex
-      // We add "123!" to ensure it has Uppercase, Lowercase, Number, and Symbol
-      const shadowPassword = `GoogleAuth123!${user.uid}`;
+      // 2. Generate a stable, secure shadow password based on the Firebase UID
+      const shadowPassword = `GoogleAuth123!_${user.uid}`;
 
       try {
-        // 3. Attempt to login to your existing API
-        await loginUser({ 
+        // 3. ATTEMPT LOGIN (Using /auth/login endpoint)
+        console.log("Attempting Login with /auth/login...");
+        const response = await loginUser({ 
           email: user.email, 
           password: shadowPassword 
         }).unwrap();
         
-        // Success: The useEffect hook will handle the redirect to home.
+        // 4. REDIRECT TO HOMEPAGE ON SUCCESS
+        if (response) {
+          console.log("Login successful, redirecting to home...");
+          setIsGoogleLoading(false);
+          navigate("/"); 
+        }
+
       } catch (loginErr) {
-        console.warn("Initial Google Login failed (may need registration):", loginErr);
-        
-        // 4. If login fails with 404 (Not Found), it's a new user -> Register them.
-        if (loginErr?.status === 404 || loginErr?.status === 401) {
+        console.error("Login with /auth/login failed:", loginErr);
+
+        // 5. ATTEMPT REGISTRATION IF USER NOT FOUND (404, 401, or 400)
+        const shouldTryRegister = loginErr?.status === 404 || 
+                                  loginErr?.status === 401 || 
+                                  loginErr?.status === 400;
+
+        if (shouldTryRegister) {
           try {
-            const registerPayload = {
+            console.log("User not found, attempting registration...");
+            await registerUser({
               fullName: user.displayName || "Google User",
               email: user.email,
               password: shadowPassword,
-            };
+            }).unwrap();
             
-            console.log("Attempting Shadow Registration with payload:", registerPayload);
-            await registerUser(registerPayload).unwrap();
-            
-            // Success! New user registered.
             setIsGoogleLoading(false);
-            setSuccessMessage("Google registration successful! Please check your email to verify your account before logging in.");
-            
+            setSuccessMessage("Registration successful! Please check your email to verify your account.");
           } catch (regErr) {
-            // If registration fails, it's likely an unverified account or a manual account.
-            console.error("Shadow Registration Detailed Error:", regErr);
+            console.error("Registration failed:", regErr);
             setIsGoogleLoading(false);
-            if (regErr?.status === 400 || regErr?.data?.message?.includes("already exists")) {
-              setError("This email is already registered. If you used Google before, please check your email for the verification link. Otherwise, use your manual password.");
-            } else {
-              setError(regErr?.data?.message || "Something went wrong during Google registration.");
-            }
+            setError(regErr?.data?.message || "Registration failed. This email might already be registered.");
           }
         } else {
-          // Other errors (like 403 Forbidden) usually mean "Account exists but is not verified"
+          // 6. HANDLE OTHER ERRORS (Like 'Email not verified' 403)
           setIsGoogleLoading(false);
-          console.error("Google Login Forbidden/Error:", loginErr);
-          setError("Your account is not verified yet. Please check your email for the verification link.");
+          const errorMessage = loginErr?.data?.message || "Login failed. Please try again.";
+          setError(errorMessage);
         }
       }
     } catch (error) {
