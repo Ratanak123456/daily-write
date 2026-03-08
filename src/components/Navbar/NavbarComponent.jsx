@@ -16,9 +16,13 @@ import { clearTokens, getDecryptedRefreshToken } from "../../util/tokenUtil";
 import { useI18n } from "../../i18n/useI18n";
 
 export default function NavbarComponent() {
-  const [isDark, setIsDark] = useState(() =>
-    document.documentElement.classList.contains("dark"),
-  );
+  const [isDark, setIsDark] = useState(() => {
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme) {
+      return savedTheme === "dark";
+    }
+    return document.documentElement.classList.contains("dark");
+  });
   const [menuOpen, setMenuOpen] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [showLanguageMenu, setShowLanguageMenu] = useState(false);

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import image from "../../assets/about/Get in touch-cuate.svg"
 import {
   MessageCircle,
   Phone,
@@ -198,6 +199,25 @@ const ContactSection = () => {
         initial="hidden"
         animate={controls}
       >
+        {/* Header Section */}
+        <motion.div 
+          className="text-center mb-12 md:mb-16"
+          variants={itemVariants}
+        >
+          <motion.h2
+            className="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-4 sm:mb-6"
+            style={{ color: "var(--primary-500)" }}
+          >
+            {t("about.contact.getInTouch")}
+          </motion.h2>
+          <motion.p
+            className="text-base sm:text-lg md:text-xl leading-relaxed max-w-2xl mx-auto"
+            style={{ color: "var(--text-secondary)" }}
+          >
+            {t("about.contact.description")}
+          </motion.p>
+        </motion.div>
+
         {/* Top Section: Form and Illustration */}
         <motion.div
           className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 lg:gap-16 mb-12 md:mb-16 lg:mb-20 items-center"
@@ -350,71 +370,25 @@ const ContactSection = () => {
             </motion.form>
           </motion.div>
 
-          {/* Right: Illustration and Text */}
+          {/* Right: Illustration */}
           <motion.div
-            className="text-center lg:text-left"
+            className="flex justify-center items-center"
             variants={illustrationVariants}
           >
-            <motion.h2
-              className="text-2xl sm:text-3xl md:text-4xl font-extrabold mb-4 sm:mb-6 md:mb-8"
-              style={{ color: "var(--primary-500)" }}
-              variants={itemVariants}
-            >
-              {t("about.contact.getInTouch")}
-            </motion.h2>
-
             {/* Illustration Area */}
             <motion.div
-              className="relative mx-auto lg:mx-0 w-full max-w-xs sm:max-w-sm md:max-w-md mb-4 sm:mb-6 md:mb-8"
-              whileHover={{ scale: 1.02 }}
+              className="relative mx-auto lg:mx-0 w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl mb-4 sm:mb-6 md:mb-8"
+              whileHover={{ scale: 1.05, rotate: 1 }}
               transition={{ type: "spring", stiffness: 300 }}
             >
-              <img
-                src="https://cdni.iconscout.com/illustration/premium/thumb/contact-us-4504060-3736970.png"
+              <motion.img
+                src={image}
                 alt="Contact Illustration"
                 className="w-full h-auto drop-shadow-2xl"
               />
-
-              {/* Floating elements */}
-              <motion.div
-                className="absolute -top-2 -right-2 w-6 h-6 sm:w-8 sm:h-8 rounded-full"
-                style={{ backgroundColor: "var(--primary-500)", opacity: 0.2 }}
-                animate={{
-                  scale: [1, 1.3, 1],
-                  x: [0, 5, 0],
-                  y: [0, -5, 0],
-                }}
-                transition={{
-                  duration: 3,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
-              />
-              <motion.div
-                className="absolute -bottom-2 -left-2 w-4 h-4 sm:w-6 sm:h-6 rounded-full"
-                style={{ backgroundColor: "var(--primary-700)", opacity: 0.2 }}
-                animate={{
-                  scale: [1, 1.4, 1],
-                  x: [0, -5, 0],
-                  y: [0, 5, 0],
-                }}
-                transition={{
-                  duration: 3.5,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                  delay: 0.5,
-                }}
-              />
             </motion.div>
-
-            <motion.p
-              className="text-sm sm:text-base md:text-lg leading-relaxed max-w-md mx-auto lg:mx-0"
-              style={{ color: "var(--text-secondary)" }}
-              variants={itemVariants}
-            >
-              {t("about.contact.description")}
-            </motion.p>
           </motion.div>
+          
         </motion.div>
 
         {/* Bottom Section: Info Cards */}

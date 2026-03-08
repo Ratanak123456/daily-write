@@ -14,6 +14,7 @@ import LoginPage from "./pages/Auth.jsx";
 import Blogger from "./pages/Blogger.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import { I18nProvider } from "./i18n/I18nProvider.jsx";
+import NotFound from "./pages/NotFound.jsx";
 
 const router = createBrowserRouter([
   {
@@ -56,11 +57,19 @@ const router = createBrowserRouter([
           </ProtectedRoute>
         ),
       },
+      {
+        path: "*",
+        element: <NotFound />,
+      },
     ],
   },
   {
     path: "/auth",
     element: <LoginPage />,
+  },
+  {
+    path: "*",
+    element: <NotFound />,
   },
 ]);
 ReactDOM.createRoot(document.getElementById("root")).render(

@@ -86,11 +86,11 @@
         "oldest": "Oldest"
     },
     "about": {
-        "sectionTitle": "About Us",
+        "sectionTitle": "",
         "heroHighlight1": "Writers",
         "heroMiddle": "Thinkers &",
         "heroHighlight2": "Curious Minds",
-        "heroDescription": "At DailyWrite, we believe that ideas have the power to inspire change and spark meaningful conversations. Our platform is built to provide an open space where writers can share insights, readers can explore diverse perspectives, and communities can grow through thoughtful discussion. Whether you're passionate about technology, daily life, or general topics, DailyWrite empowers every voice to be heard.",
+        "heroDescription": "At DailyWrite, we believe that ideas have the power to inspire change and spark meaningful conversations. Whether you're passionate about technology, daily life, or general topics, DailyWrite empowers every voice to be heard.",
         "learnMore": "Learn More",
         "mission": {
             "headingPrefix": "Our",

@@ -22,6 +22,16 @@
     <meta property="twitter:title" content="Daily Write - Share Your Stories" />
     <meta property="twitter:description" content="Daily Write is a platform where you can share your thoughts, stories, and experiences with a global community." />
     <meta property="twitter:image" content="/logo.svg" />
+    <script>
+      (function() {
+        const theme = localStorage.getItem('theme');
+        if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

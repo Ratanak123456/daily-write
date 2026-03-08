@@ -1,5 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
+import image from "../../assets/about/About us page-cuate.svg"
 import {
   useScrollAnimation,
   animationVariants,
@@ -37,17 +38,6 @@ const AboutSection = () => {
     },
   };
 
-  const dotVariants = {
-    hidden: { scale: 0 },
-    visible: (i) => ({
-      scale: 1,
-      transition: {
-        delay: 0.5 + i * 0.1,
-        type: "spring",
-        stiffness: 200,
-      },
-    }),
-  };
 
   return (
     <section
@@ -136,171 +126,18 @@ const AboutSection = () => {
           className="relative flex justify-center items-center order-1 lg:order-2 mb-8 lg:mb-0"
           variants={illustrationVariants}
         >
-          {/* Main "Browser" Container */}
-          <motion.div
-            className="relative p-4 sm:p-6 md:p-8 rounded-lg shadow-2xl w-full max-w-sm sm:max-w-md md:max-w-lg"
-            style={{
-              backgroundColor: "var(--bg-primary)",
-              borderColor: "var(--border-color)",
-            }}
+          <motion.img
+            src={image}
+            alt="About Us Illustration"
+            className="w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl h-auto"
             whileHover={{
-              scale: 1.02,
-              boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
+              scale: 1.05,
+              rotate: 1,
             }}
             transition={{ type: "spring", stiffness: 300 }}
-          >
-            {/* Header Dots */}
-            <motion.div className="flex space-x-2 mb-4 sm:mb-6">
-              {["#ef4444", "#f59e0b", "#10b981"].map((color, i) => (
-                <motion.div
-                  key={i}
-                  className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full"
-                  style={{ backgroundColor: color }}
-                  variants={dotVariants}
-                  custom={i}
-                  whileHover={{ scale: 1.2 }}
-                />
-              ))}
-            </motion.div>
-
-            {/* Placeholder Content for Illustration */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-              <motion.div
-                className="space-y-3 sm:space-y-4"
-                variants={containerVariants}
-                initial="hidden"
-                animate={controls}
-              >
-                <motion.div
-                  className="h-6 sm:h-8 w-3/4 rounded"
-                  style={{ backgroundColor: "var(--bg-secondary)" }}
-                  variants={animationVariants.fadeInUp}
-                />
-                <motion.div
-                  className="h-3 sm:h-4 w-full rounded"
-                  style={{ backgroundColor: "var(--bg-secondary)" }}
-                  variants={animationVariants.fadeInUp}
-                />
-                <motion.div
-                  className="h-3 sm:h-4 w-5/6 rounded"
-                  style={{ backgroundColor: "var(--bg-secondary)" }}
-                  variants={animationVariants.fadeInUp}
-                />
-                <motion.div
-                  className="h-8 sm:h-10 w-20 sm:w-24 rounded mt-2 sm:mt-4"
-                  style={{
-                    backgroundColor: "var(--primary-500)",
-                    opacity: 0.2,
-                  }}
-                  variants={animationVariants.fadeInUp}
-                />
-              </motion.div>
-
-              {/* Character Illustration Area */}
-              <motion.div
-                className="rounded-lg h-48 sm:h-56 md:h-64 flex items-center justify-center border-2 border-dashed"
-                style={{
-                  backgroundColor: "var(--bg-secondary)",
-                  borderColor: "var(--primary-500)",
-                }}
-                whileHover={{
-                  scale: 1.02,
-                  borderColor: "var(--primary-700)",
-                }}
-                transition={{ type: "spring", stiffness: 300 }}
-              >
-                <motion.span
-                  className="font-medium text-sm sm:text-base"
-                  style={{ color: "var(--primary-500)" }}
-                  animate={{
-                    opacity: [0.5, 1, 0.5],
-                  }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }}
-                >
-                  Character Illustration
-                </motion.span>
-              </motion.div>
-            </div>
-
-            {/* Decorative Plant - Hidden on mobile, visible on md and up */}
-            <motion.div
-              className="absolute -bottom-6 sm:-bottom-8 -left-6 sm:-left-8 w-16 sm:w-20 md:w-24 h-24 sm:h-28 md:h-32 rounded-t-full hidden md:block"
-              style={{ backgroundColor: "var(--primary-700)" }}
-              animate={{
-                y: [0, -5, 0],
-                rotate: [0, 2, 0],
-              }}
-              transition={{
-                duration: 4,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-            >
-              <motion.div
-                className="absolute -top-8 sm:-top-10 md:-top-12 left-2 sm:left-3 md:left-4 w-3 sm:w-3.5 md:w-4 h-8 sm:h-10 md:h-12 rounded-full"
-                style={{ backgroundColor: "var(--primary-500)" }}
-                animate={{
-                  rotate: [12, 15, 12],
-                  scale: [1, 1.1, 1],
-                }}
-                transition={{
-                  duration: 3,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
-              />
-              <motion.div
-                className="absolute -top-6 sm:-top-8 md:-top-10 left-6 sm:left-8 md:left-10 w-3 sm:w-3.5 md:w-4 h-8 sm:h-10 md:h-12 rounded-full"
-                style={{ backgroundColor: "var(--primary-600)" }}
-                animate={{
-                  rotate: [-12, -15, -12],
-                  scale: [1, 1.1, 1],
-                }}
-                transition={{
-                  duration: 3,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                  delay: 0.5,
-                }}
-              />
-            </motion.div>
-          </motion.div>
-
-          {/* Floating Elements - Hidden on mobile */}
-          <motion.div
-            className="absolute -top-4 -right-4 w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-opacity-20 hidden md:block"
-            style={{ backgroundColor: "var(--primary-500)" }}
-            animate={{
-              y: [0, -10, 0],
-              x: [0, 5, 0],
-              scale: [1, 1.1, 1],
-            }}
-            transition={{
-              duration: 5,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-          />
-          <motion.div
-            className="absolute -bottom-4 -right-8 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-opacity-20 hidden md:block"
-            style={{ backgroundColor: "var(--primary-700)" }}
-            animate={{
-              y: [0, 10, 0],
-              x: [0, -5, 0],
-              scale: [1, 1.2, 1],
-            }}
-            transition={{
-              duration: 4,
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: 1,
-            }}
           />
         </motion.div>
+        
       </motion.div>
     </section>
   );

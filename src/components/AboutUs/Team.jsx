@@ -1,5 +1,15 @@
 import React from "react";
 import { useI18n } from "../../i18n/useI18n";
+import student1 from "../../../public/Team/Saren Ratanak.jpg";
+import student2 from "../../../public/Team/rosa.JPG";
+import student3 from "../../../public/Team/photo_2026-02-17_21-02-08.jpg";
+import student4 from "../../../public/Team/photo_2026-02-19_00-24-53.jpg";
+import student5 from "../../../public/Team/image_2024-01-22_14-24-14.png";
+import student6 from "../../../public/Team/_MG_8835.jpg";
+import student7 from "../../../public/Team/IMG_4905.JPG";
+
+import mentor1 from "../../../public/Mentor/teacher.jpg"
+import mentor2 from "../../../public/Mentor/Chhaya.jpg"
 
 // Reusable social icons component - moved outside to avoid recreation during render
 const SocialIcons = ({ variant = "default" }) => (
@@ -174,13 +184,13 @@ const PeopleSection = () => {
     {
       name: "Kim Chansokpheng",
       role: t("about.people.instructor"),
-      image: "https://via.placeholder.com/150",
+      image: mentor1,
       borderColor: "border-gray-100",
     },
     {
       name: "Chan Chhaya",
       role: t("about.people.instructor"),
-      image: "https://via.placeholder.com/150",
+      image: mentor2,
       borderColor: "border-gray-100",
     },
   ];
@@ -189,19 +199,19 @@ const PeopleSection = () => {
     {
       name: "Saren Ratanak",
       role: t("about.people.frontEnd"),
-      image: "https://via.placeholder.com/150",
+      image: student1,
       borderColor: "border-blue-500",
     },
     {
       name: "Ny Rosa",
       role: t("about.people.frontEnd"),
-      image: "https://via.placeholder.com/150",
+      image: student2,
       borderColor: "border-blue-500",
     },
     {
       name: "Khut Theara",
       role: t("about.people.frontEnd"),
-      image: "https://via.placeholder.com/150",
+      image: student3,
       borderColor: "border-transparent",
     },
   ];
@@ -210,22 +220,22 @@ const PeopleSection = () => {
     {
       name: "Thoun Chamroeun",
       role: t("about.people.frontEnd"),
-      image: "https://via.placeholder.com/150",
+      image: student4,
     },
     {
-      name: "Thoun Chamroeun",
+      name: "Sambath Ousa",
       role: t("about.people.frontEnd"),
-      image: "https://via.placeholder.com/150",
+      image: student5,
     },
     {
-      name: "Thoun Chamroeun",
+      name: "Bun chansovan",
       role: t("about.people.frontEnd"),
-      image: "https://via.placeholder.com/150",
+      image: student6,
     },
     {
-      name: "Thoun Chamroeun",
+      name: "Vok Visak",
       role: t("about.people.frontEnd"),
-      image: "https://via.placeholder.com/150",
+      image: student7,
     },
   ];
 
@@ -235,9 +245,9 @@ const PeopleSection = () => {
       style={{ backgroundColor: "var(--bg-primary)" }}
     >
       {/* Mentors Section */}
-      <section className="max-w-4xl mx-auto">
+      <section className="max-w-3xl mx-auto">
         <SectionHeader title={t("about.people.mentors")} />
-        <div className="grid md:grid-cols-2 gap-8 justify-items-center">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 justify-items-center">
           {mentors.map((mentor, index) => (
             <MentorCard key={`mentor-${index}`} mentor={mentor} />
           ))}
@@ -245,7 +255,7 @@ const PeopleSection = () => {
       </section>
 
       {/* Team Section */}
-      <section className="py-16 px-4">
+      <section className="pt-16 px-4">
         <div className="max-w-6xl mx-auto">
           <SectionHeader title={t("about.people.team")} />
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center">
@@ -257,7 +267,7 @@ const PeopleSection = () => {
       </section>
 
       {/* Additional Team Members Section */}
-      <section className="py-12 px-1">
+      <section className=" pt-8 px-1">
         <div className="w-[80%] mx-auto">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 justify-items-center">
             {additionalMembers.map((member, index) => (

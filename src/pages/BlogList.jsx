@@ -3,6 +3,9 @@ import { Search, ChevronLeft, ChevronRight } from "lucide-react";
 import ListBlog from "../components/BlogPage/ListBlog";
 import { useGetAllProductQuery } from "../app/features/services/productApi";
 import { useI18n } from "../i18n/useI18n";
+import Idealamp from "../assets/blogpage/Idea lamp.png"
+import planet from "../assets/blogpage/Planet.png"
+
 
 export default function BlogList() {
   const [page, setPage] = useState(0);
@@ -12,12 +15,12 @@ export default function BlogList() {
   const pageSize = 12;
 
   const mainCategories = [
-    { label: "Front-End", value: "front-end" },
-    { label: "Back-End", value: "back-end" },
-    { label: "Cyber Security", value: "cyber-security" },
-    { label: "UXUI Design", value: "ux-ui-design" },
-    { label: "Mobile App", value: "mobile-app" },
-    { label: "Art History", value: "art-history" },
+    { label: "Lifestyle", value: "lifestyle" },
+    { label: "Health & Wellness", value: "health wellness" },
+    { label: "Travel", value: "travel" },
+    { label: "Food & Recipes", value: "food recipes" },
+    { label: "Personal Growth", value: "personal growth" },
+    { label: "Technology", value: "technology" },
   ];
 
   const { data } = useGetAllProductQuery({
@@ -80,12 +83,12 @@ export default function BlogList() {
         <span className="absolute right-[16%] top-[70%] h-3 w-3 rounded-full bg-[#a5aaae]" />
 
         <img
-          src="../src/assets/blogpage/Idea lamp.png"
+          src={Idealamp}
           alt="Idea lamp"
           className="absolute right-[14%] top-8 hidden w-24 opacity-80 md:block"
         />
         <img
-          src="../src/assets/blogpage/Planet.png"
+          src={planet}
           alt="Planet"
           className="absolute bottom-8 left-1/2 hidden w-20 -translate-x-1/2 opacity-80 md:block"
         />

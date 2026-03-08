@@ -2,31 +2,12 @@ import React from "react";
 import { motion } from "framer-motion";
 import { useScrollAnimation } from "./hooks/useScrollAnimation";
 import { useI18n } from "../../i18n/useI18n";
+import image from "../../assets/about/Team page-bro.svg"
+import { Link } from "react-router-dom";
 
 const IntroSection = () => {
   const { controls, ref, isInView } = useScrollAnimation({ amount: 0.3 });
   const { t } = useI18n();
-
-  const teamMembers = [
-    {
-      id: 1,
-      color: "var(--primary-500)",
-      name: "John Doe",
-      role: "Founder & Writer",
-    },
-    {
-      id: 2,
-      color: "var(--text-secondary)",
-      name: "Jane Smith",
-      role: "Content Lead",
-    },
-    {
-      id: 3,
-      color: "var(--text-primary)",
-      name: "Mike Johnson",
-      role: "Tech Editor",
-    },
-  ];
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -48,31 +29,6 @@ const IntroSection = () => {
         type: "spring",
         stiffness: 100,
         damping: 12,
-      },
-    },
-  };
-
-  const cardVariants = {
-    hidden: { scale: 0.8, opacity: 0, y: 20 },
-    visible: (i) => ({
-      scale: 1,
-      opacity: 1,
-      y: 0,
-      transition: {
-        type: "spring",
-        stiffness: 100,
-        damping: 12,
-        delay: 0.3 + i * 0.1,
-      },
-    }),
-    hover: {
-      y: -10,
-      scale: 1.05,
-      boxShadow: "0 20px 30px -10px rgba(0, 0, 0, 0.2)",
-      transition: {
-        type: "spring",
-        stiffness: 400,
-        damping: 10,
       },
     },
   };
@@ -151,175 +107,19 @@ const IntroSection = () => {
       >
         {/* Left Side: Team Illustration Area */}
         <motion.div
-          className="relative order-2 lg:order-1 mt-8 lg:mt-0"
+          className="relative order-2 lg:order-1 mt-8 lg:mt-0 flex justify-center items-center"
           variants={itemVariants}
         >
-          {/* Large Abstract Background Blob */}
-          <motion.div
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[110%] h-[110%] rounded-full mix-blend-multiply filter blur-xl sm:blur-2xl"
-            style={{ backgroundColor: "var(--primary-500)", opacity: 0.1 }}
-            variants={blobVariants}
-            initial="hidden"
-            animate={["visible", "animate"]}
-          />
-
-          <motion.div
-            className="relative z-10 rounded-xl shadow-xl p-4 sm:p-5 md:p-6"
-            style={{
-              backgroundColor: "var(--bg-primary)",
-              borderColor: "var(--border-color)",
+          <motion.img
+            src={image}
+            alt="Team Illustration"
+            className="w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl h-auto relative z-10"
+            whileHover={{
+              scale: 1.05,
+              rotate: -1,
             }}
-            whileHover={{ boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)" }}
             transition={{ type: "spring", stiffness: 300 }}
-          >
-            <motion.h3
-              className="text-center font-bold text-base sm:text-lg md:text-xl tracking-widest mb-4 sm:mb-6 uppercase"
-              style={{ color: "var(--text-secondary)" }}
-              variants={itemVariants}
-            >
-              {t("about.team.cardTitle")}
-            </motion.h3>
-
-            {/* Horizontal Line Placeholders */}
-            <motion.div
-              className="space-y-1 sm:space-y-2 mb-6 sm:mb-8"
-              variants={itemVariants}
-            >
-              <motion.div
-                className="h-0.5 sm:h-1 w-full rounded-full"
-                style={{ backgroundColor: "var(--text-primary)", opacity: 0.8 }}
-                initial={{ width: 0 }}
-                animate={isInView ? { width: "100%" } : { width: 0 }}
-                transition={{ duration: 0.8, delay: 0.5 }}
-              />
-              <motion.div
-                className="h-0.5 sm:h-1 w-full rounded-full"
-                style={{ backgroundColor: "var(--text-primary)", opacity: 0.8 }}
-                initial={{ width: 0 }}
-                animate={isInView ? { width: "100%" } : { width: 0 }}
-                transition={{ duration: 0.8, delay: 0.7 }}
-              />
-              <motion.div
-                className="h-0.5 sm:h-1 w-2/3 rounded-full"
-                style={{ backgroundColor: "var(--text-primary)", opacity: 0.8 }}
-                initial={{ width: 0 }}
-                animate={isInView ? { width: "66.666667%" } : { width: 0 }}
-                transition={{ duration: 0.8, delay: 0.9 }}
-              />
-            </motion.div>
-
-            {/* Team Cards Grid */}
-            <motion.div
-              className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4"
-              variants={containerVariants}
-            >
-              {teamMembers.map((member, index) => (
-                <motion.div
-                  key={member.id}
-                  className="rounded-lg overflow-hidden flex flex-col cursor-pointer"
-                  style={{
-                    borderColor: "var(--border-color)",
-                  }}
-                  variants={cardVariants}
-                  custom={index}
-                  whileHover="hover"
-                >
-                  {/* Avatar Placeholder */}
-                  <motion.div
-                    className="h-28 xs:h-32 sm:h-36 md:h-40 flex items-end justify-center relative overflow-hidden"
-                    style={{ backgroundColor: member.color }}
-                    whileHover={{ scale: 1.1 }}
-                    transition={{ type: "spring", stiffness: 300 }}
-                  >
-                    <motion.div
-                      className="w-12 xs:w-14 sm:w-16 h-16 xs:h-20 sm:h-24 rounded-t-full"
-                      style={{ backgroundColor: "rgba(255, 255, 255, 0.2)" }}
-                      animate={{
-                        y: [0, -5, 0],
-                      }}
-                      transition={{
-                        duration: 3,
-                        repeat: Infinity,
-                        ease: "easeInOut",
-                        delay: index * 0.2,
-                      }}
-                    />
-
-                    {/* Floating particles for hover effect */}
-                    <motion.div
-                      className="absolute inset-0 pointer-events-none"
-                      initial={{ opacity: 0 }}
-                      whileHover={{ opacity: 1 }}
-                    >
-                      {[...Array(3)].map((_, i) => (
-                        <motion.div
-                          key={i}
-                          className="absolute w-1 h-1 bg-white rounded-full"
-                          initial={{
-                            x: "50%",
-                            y: "50%",
-                            opacity: 0,
-                          }}
-                          animate={{
-                            x: ["50%", `${30 + i * 20}%`],
-                            y: ["50%", `${20 + i * 15}%`],
-                            opacity: [0, 1, 0],
-                            scale: [0, 1, 0],
-                          }}
-                          transition={{
-                            duration: 1,
-                            repeat: Infinity,
-                            delay: i * 0.2,
-                          }}
-                        />
-                      ))}
-                    </motion.div>
-                  </motion.div>
-
-                  {/* Card Bottom Text Placeholder */}
-                  <motion.div
-                    className="p-2 sm:p-3 space-y-1.5 sm:space-y-2"
-                    style={{ backgroundColor: "var(--text-primary)" }}
-                    whileHover={{ backgroundColor: "var(--primary-500)" }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <motion.div
-                      className="h-0.5 sm:h-1 w-full rounded"
-                      style={{ backgroundColor: "rgba(255, 255, 255, 0.4)" }}
-                      animate={{
-                        width: ["100%", "80%", "100%"],
-                      }}
-                      transition={{
-                        duration: 2,
-                        repeat: Infinity,
-                        ease: "easeInOut",
-                        delay: index * 0.3,
-                      }}
-                    />
-                    <motion.div
-                      className="h-0.5 sm:h-1 w-2/3 rounded"
-                      style={{ backgroundColor: "rgba(255, 255, 255, 0.4)" }}
-                    />
-                    <div className="flex justify-end pt-0.5 sm:pt-1">
-                      <motion.div
-                        className="h-0.5 sm:h-1 w-3 sm:w-4 rounded"
-                        style={{ backgroundColor: "rgba(255, 255, 255, 0.6)" }}
-                        animate={{
-                          rotate: [0, 360],
-                        }}
-                        transition={{
-                          duration: 2,
-                          repeat: Infinity,
-                          ease: "linear",
-                          delay: index * 0.2,
-                        }}
-                      />
-                    </div>
-                  </motion.div>
-                </motion.div>
-              ))}
-            </motion.div>
-          </motion.div>
+          />
         </motion.div>
 
         {/* Right Side: Content */}
@@ -374,7 +174,8 @@ const IntroSection = () => {
             </motion.p>
           </motion.div>
 
-          <motion.button
+              <Link to="/auth">
+                          <motion.button
             className="mt-6 sm:mt-8 md:mt-10 text-white font-bold py-3 sm:py-4 px-6 sm:px-8 md:px-10 rounded-lg transition-all text-sm sm:text-base"
             style={{ backgroundColor: "var(--primary-500)" }}
             variants={itemVariants}
@@ -388,6 +189,7 @@ const IntroSection = () => {
           >
             {t("about.team.join")}
           </motion.button>
+              </Link>
         </motion.div>
       </motion.div>
 

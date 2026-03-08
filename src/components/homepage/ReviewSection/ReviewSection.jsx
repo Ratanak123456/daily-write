@@ -1,7 +1,12 @@
 import { useState, useEffect, useRef } from "react";
-import ratanak from "../../../../public/Team/Saren Ratanak.jpg";
-import student2 from "../../../../public/Team/IMG_0070.JPG";
-import student3 from "../../../../public/Team/IMG_4905.JPG";
+import student1 from "../../../../public/Team/Saren Ratanak.jpg";
+import student2 from "../../../../public/Team/IMG_4905.JPG";
+import student3 from "../../../../public/Team/photo_2026-02-19_00-24-53.jpg";
+import student4 from "../../../../public/Team/image_2024-01-22_14-24-14.png";
+import student5 from "../../../../public/Team/rosa.JPG";
+import student6 from "../../../../public/Team/_MG_8835.jpg";
+import student7 from "../../../../public/Team/photo_2026-02-17_21-02-08.jpg";
+
 
 export default function ReviewSection() {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -86,31 +91,53 @@ export default function ReviewSection() {
 const students = [
   {
     id: 1,
-    name: "Pao Ponareachh",
+    name: "Ratanak Saren",
     feedback: "The React tutorials on this blog helped me understand hooks and state management better than any other resource I've tried.",
-    image: ratanak,
-    alt: "Pao Ponareachh",
-    favoriteArticle: "Understanding React Hooks",
-    date: "2024-03-15"
+    image: student1,
+    alt: "Ratanak Saren",
   },
   {
     id: 2,
-    name: "John Smith",
+    name: "Vok Visak",
     feedback: "I look forward to every Monday for the new blog posts. The career advice series has been invaluable for my professional growth.",
     image: student2,
-    alt: "John Smith",
-    favoriteArticle: "10 Tips for Junior Developers",
-    date: "2024-03-10"
+    alt: "Vok Visak",
   },
   {
     id: 3,
-    name: "Sarah Johnson",
+    name: "Thoun Chamroeun",
     feedback: "As a beginner, I really appreciate how the blog breaks down complex topics into digestible pieces. Keep up the great work!",
     image: student3,
-    alt: "Sarah Johnson",
-    favoriteArticle: "JavaScript Fundamentals for Beginners",
-    date: "2024-03-05"
-  }
+    alt: "Thoun Chamroeun",
+  },
+  {
+  id: 4,
+  name: "Sambath Ousa",
+  feedback: "The weekly newsletter has become essential reading for me. The curated content saves me hours of research and always introduces me to new tools I hadn't discovered yet.",
+  image: student4,
+  alt: "Sambath Ousa",
+},
+{
+  id: 5,
+  name: "Ny Rosa",
+  feedback: "Finally found a tech blog that doesn't assume I already know everything! The step-by-step tutorials with real-world examples helped me land my first freelance project.",
+  image: student5,
+  alt: "Ny Rosa"
+},
+{
+  id: 6,
+  name: "Bun chansovan",
+  feedback: "Been following this blog for 2 years now. The quality of content has consistently improved, and the community discussions in the comments are incredibly helpful.",
+  image: student6,
+  alt: "Bun chansovan"
+},
+{
+  id: 7,
+  name: "Khut Theara",
+  feedback: "As a career changer, finding relatable content that bridges the gap between theory and practice has been invaluable. The career advice series is gold!",
+  image: student7,
+  alt: "Khut Theara"
+}
 ];
 
   const currentStudent = students[currentIndex];

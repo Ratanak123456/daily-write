@@ -13,11 +13,14 @@ export default function FooterComponents() {
       { name: t("footer.aboutUs"), path: "/about" },
     ],
     categories: [
-      { name: t("footer.frontEnd"), path: "/about" },
-      { name: t("footer.cyberSecurity"), path: "/about" },
-      { name: t("footer.uxuiDesign"), path: "/about" },
-      { name: t("footer.backEnd"), path: "/about" },
+      { name: "Lifestyle", value: "lifestyle" },
+      { name: "Health & Wellness", value: "health wellness" },
+      { name: "Travel", value: "travel" },
+      { name: "Food & Recipes", value: "food recipes" },
+      { name: "Personal Growth", value: "personal growth" },
+      { name: "Technology", value: "technology" },
     ],
+
     information: [
       { name: t("footer.feedback"), path: "/" },
       { name: t("footer.faq"), path: "/" },
@@ -72,7 +75,7 @@ export default function FooterComponents() {
               {footerLinks.categories.map((item) => (
                 <li key={item.name}>
                   <Link
-                    to={item.path}
+                    to="/blogs"
                     className="hover:text-white transition-colors"
                   >
                     {item.name}
