@@ -7,7 +7,11 @@ import {
   getDecryptedAccessToken,
 } from "../util/tokenUtil";
 import { useNavigate, useLocation } from "react-router-dom";
-import { signInWithPopup } from "firebase/auth";
+import { 
+  signInWithPopup, 
+  signInWithRedirect, 
+  getRedirectResult 
+} from "firebase/auth";
 import logo from "../assets/DaliyWriteLogo.svg";
 import logIn from "../assets/Auth/login.svg";
 import signUp from "../assets/Auth/sign-up-animate.svg";
@@ -125,6 +129,47 @@ const LoginPage = () => {
   });
 
   useEffect(() => {
+    // 1. Check if we are coming back from a Google Redirect (Mobile only)
+    getRedirectResult(firebaseAuth)
+      .then(async (result) => {
+        if (result?.user) {
+          setIsGoogleLoading(true);
+          const user = result.user;
+          const shadowPassword = `Shadow123!_${user.uid}`;
+
+          try {
+            // Attempt to login
+            await loginUser({ 
+              email: user.email, 
+              password: shadowPassword 
+            }).unwrap();
+          } catch (loginErr) {
+            // If new user, register them
+            if (loginErr?.status === 404 || loginErr?.status === 401) {
+              try {
+                await registerUser({
+                  fullName: user.displayName || "Google User",
+                  email: user.email,
+                  password: shadowPassword,
+                }).unwrap();
+                setSuccessMessage("Google registration successful! Please verify your email.");
+              } catch (regErr) {
+                setError("Registration failed. Try again.");
+              }
+            } else {
+              setError("Login failed. Check your email verification.");
+            }
+          } finally {
+            setIsGoogleLoading(false);
+          }
+        }
+      })
+      .catch((err) => {
+        console.error("Redirect Result Error:", err);
+      });
+  }, []);
+
+  useEffect(() => {
     if (userResponse?.data?.accessToken) {
       storeAccessToken(userResponse.data.accessToken);
       if (userResponse.data.refreshToken) {
@@ -225,8 +270,19 @@ const LoginPage = () => {
     }
 
     try {
-      // 1. Sign in with Google via Firebase
-      const result = await signInWithPopup(firebaseAuth, googleProvider);
+      // 1. Intelligent Device Detection (Mobile vs Desktop)
+      // Mobile browsers are aggressive with popup blockers, so we use Redirect.
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      
+      let result;
+      if (isMobile) {
+        // This will redirect the whole page away to Google and back.
+        await signInWithRedirect(firebaseAuth, googleProvider);
+        return; // Function stops here, result handled by getRedirectResult useEffect
+      } else {
+        result = await signInWithPopup(firebaseAuth, googleProvider);
+      }
+      
       const user = result.user;
       
       // 2. Generate a robust shadow password that satisfies strict backend regex
