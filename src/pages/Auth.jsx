@@ -313,10 +313,14 @@ const LoginPage = () => {
 
         // 5. ATTEMPT REGISTRATION (We try this for ANY login error)
         try {
+          console.log("User not found, attempting registration with profile info...");
           await registerUser({
             fullName: user.displayName || "Google User",
             email: user.email,
             password: shadowPassword,
+            // Including the Google profile photo
+            avatar: user.photoURL, 
+            profileImage: user.photoURL,
           }).unwrap();
 
           // 6. LOGIN IMMEDIATELY AFTER SUCCESSFUL REGISTRATION
@@ -325,7 +329,6 @@ const LoginPage = () => {
             email: user.email, 
             password: shadowPassword 
           }).unwrap();
-
           if (autoLoginResponse?.data?.accessToken) {
             storeAccessToken(autoLoginResponse.data.accessToken);
             if (autoLoginResponse.data.refreshToken) {
@@ -339,11 +342,16 @@ const LoginPage = () => {
           console.error("Auth Process Error:", regErr);
           setIsGoogleLoading(false);
 
-          // Show the ACTUAL message from your backend server
-          const finalError = regErr?.data?.message || loginErr?.data?.message || "Authentication failed.";
-          setError(finalError);
+          // Get the most specific error message possible
+          const backendMessage = regErr?.data?.message || 
+                                 loginErr?.data?.message || 
+                                 regErr?.data?.error || 
+                                 "Authentication failed. Please check your credentials.";
+          
+          setError(backendMessage);
         }
-      }    } catch (error) {
+      }
+    } catch (error) {
       console.error("Google login process failed:", error);
       setError(error.message || "Google login failed. Please try again.");
       setIsGoogleLoading(false);
