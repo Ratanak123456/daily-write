@@ -1,10 +1,10 @@
-// Reusable Google button
+// Reusable Google button component
 const GoogleButton = ({ text, onClick, isLoading = false }) => (
   <button
     type="button"
     onClick={onClick}
     disabled={isLoading}
-    className="w-full flex items-center justify-center gap-2 sm:gap-3 py-2.5 sm:py-3 rounded-lg sm:rounded-xl transition-all text-sm sm:text-base"
+    className="w-full flex items-center justify-center gap-2 sm:gap-3 py-2.5 sm:py-3 rounded-lg sm:rounded-xl transition-all text-sm sm:text-base mt-2"
     style={{
       backgroundColor: "var(--bg-primary)",
       border: "1px solid var(--border-color)",
