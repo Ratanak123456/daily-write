@@ -63,11 +63,29 @@ body {
   min-height: 100vh;
 }
 
+#root {
+  font-family: inherit;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
 html[data-lang="km"] body {
   font-family: var(--font-khmer);
   line-height: 1.8;
   letter-spacing: 0.01em;
   word-spacing: 0.04em;
+}
+
+html[data-lang="km"] button,
+html[data-lang="km"] input,
+html[data-lang="km"] select,
+html[data-lang="km"] textarea {
+  font-family: inherit;
 }
 
 html[data-lang="km"] h1,
@@ -394,4 +412,5 @@ html[data-lang="km"] h6 {
 .blog-post-editor .ql-editor {
   min-height: 320px;
   color: var(--text-primary);
+  font-family: inherit;
 }

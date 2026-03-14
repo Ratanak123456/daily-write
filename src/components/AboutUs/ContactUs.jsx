@@ -377,7 +377,7 @@ const ContactSection = () => {
           >
             {/* Illustration Area */}
             <motion.div
-              className="relative mx-auto lg:mx-0 w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl mb-4 sm:mb-6 md:mb-8"
+              className=" hidden lg:block relative mx-auto lg:mx-0 w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl mb-4 sm:mb-6 md:mb-8"
               whileHover={{ scale: 1.05, rotate: 1 }}
               transition={{ type: "spring", stiffness: 300 }}
             >

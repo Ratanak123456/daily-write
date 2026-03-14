@@ -7,11 +7,10 @@ import student4 from "../../../public/Team/photo_2026-02-19_00-24-53.jpg";
 import student5 from "../../../public/Team/image_2024-01-22_14-24-14.png";
 import student6 from "../../../public/Team/_MG_8835.jpg";
 import student7 from "../../../public/Team/IMG_4905.JPG";
+import mentor1 from "../../../public/Mentor/teacher.jpg";
+import mentor2 from "../../../public/Mentor/Chhaya.jpg";
 
-import mentor1 from "../../../public/Mentor/teacher.jpg"
-import mentor2 from "../../../public/Mentor/Chhaya.jpg"
-
-// Reusable social icons component - moved outside to avoid recreation during render
+// Social icons component
 const SocialIcons = ({ variant = "default" }) => (
   <div className="flex gap-4 justify-center">
     <a
@@ -55,113 +54,45 @@ const SocialIcons = ({ variant = "default" }) => (
   </div>
 );
 
-// Reusable card components - moved outside
-const MentorCard = ({ mentor }) => (
+// Single reusable card component
+const PersonCard = ({ person }) => (
   <div
-    className="border rounded-3xl p-8 shadow-sm text-center w-full max-w-[362.66px]"
+    className="border rounded-3xl p-8 shadow-sm text-center w-[362.66px] h-full flex flex-col justify-between"
     style={{
       backgroundColor: "var(--bg-primary)",
       borderColor: "var(--border-color)",
     }}
   >
-    <div className="mb-6">
-      <img
-        src={mentor.image}
-        alt={mentor.name}
-        className="w-32 h-32 rounded-full mx-auto object-cover"
-        style={{ backgroundColor: "var(--bg-secondary)" }}
-      />
+    <div>
+      <div className="mb-6">
+        <img
+          src={person.image}
+          alt={person.name}
+          className="w-32 h-32 rounded-full mx-auto object-cover"
+          style={{ backgroundColor: "var(--bg-secondary)" }}
+        />
+      </div>
+      <h3
+        className="text-xl font-bold mb-1"
+        style={{ color: "var(--primary-500)" }}
+      >
+        {person.name}
+      </h3>
+      <p
+        className="text-sm mb-6 pb-6 border-b"
+        style={{
+          color: "var(--text-secondary)",
+          borderColor: "var(--border-color)",
+        }}
+      >
+        {person.role}
+      </p>
     </div>
-    <h3
-      className="text-xl font-bold mb-1"
-      style={{ color: "var(--primary-500)" }}
-    >
-      {mentor.name}
-    </h3>
-    <p
-      className="text-sm mb-6 pb-6 border-b"
-      style={{
-        color: "var(--text-secondary)",
-        borderColor: "var(--border-color)",
-      }}
-    >
-      {mentor.role}
-    </p>
     <SocialIcons variant="default" />
   </div>
 );
 
-const TeamCard = ({ member }) => (
-  <div
-    className="border rounded-3xl p-8 shadow-sm text-center w-full max-w-[362.66px]"
-    style={{
-      backgroundColor: "var(--bg-primary)",
-      borderColor: "var(--border-color)",
-    }}
-  >
-    <div className="mb-6">
-      <img
-        src={member.image}
-        alt={member.name}
-        className="w-32 h-32 rounded-full mx-auto object-cover"
-        style={{ backgroundColor: "var(--bg-secondary)" }}
-      />
-    </div>
-    <h3
-      className="text-xl font-bold mb-1"
-      style={{ color: "var(--primary-500)" }}
-    >
-      {member.name}
-    </h3>
-    <p
-      className="text-sm mb-6 pb-6 border-b"
-      style={{
-        color: "var(--text-secondary)",
-        borderColor: "var(--border-color)",
-      }}
-    >
-      {member.role}
-    </p>
-    <SocialIcons variant="default" />
-  </div>
-);
-
-const AdditionalMemberCard = ({ member }) => (
-  <div
-    className="border rounded-3xl p-8 shadow-sm text-center w-full max-w-[362.66px]"
-    style={{
-      backgroundColor: "var(--bg-primary)",
-      borderColor: "var(--border-color)",
-    }}
-  >
-    <div className="mb-6">
-      <img
-        src={member.image}
-        alt={member.name}
-        className="w-32 h-32 rounded-full mx-auto object-cover"
-        style={{ backgroundColor: "var(--bg-secondary)" }}
-      />
-    </div>
-    <h3
-      className="text-xl font-bold mb-1"
-      style={{ color: "var(--primary-500)" }}
-    >
-      {member.name}
-    </h3>
-    <p
-      className="text-sm mb-6 pb-6 border-b"
-      style={{
-        color: "var(--text-secondary)",
-        borderColor: "var(--border-color)",
-      }}
-    >
-      {member.role}
-    </p>
-    <SocialIcons variant="default" />
-  </div>
-);
-
-// Reusable section header - moved outside
+// Section header
 const SectionHeader = ({ title }) => (
   <div className="text-center mb-12">
     <h2
@@ -179,19 +110,16 @@ const SectionHeader = ({ title }) => (
 const PeopleSection = () => {
   const { t } = useI18n();
 
-  // Define all team members data
   const mentors = [
     {
       name: "Kim Chansokpheng",
       role: t("about.people.instructor"),
       image: mentor1,
-      borderColor: "border-gray-100",
     },
     {
       name: "Chan Chhaya",
       role: t("about.people.instructor"),
       image: mentor2,
-      borderColor: "border-gray-100",
     },
   ];
 
@@ -200,19 +128,16 @@ const PeopleSection = () => {
       name: "Saren Ratanak",
       role: t("about.people.frontEnd"),
       image: student1,
-      borderColor: "border-blue-500",
     },
     {
       name: "Ny Rosa",
       role: t("about.people.frontEnd"),
       image: student2,
-      borderColor: "border-blue-500",
     },
     {
       name: "Khut Theara",
       role: t("about.people.frontEnd"),
       image: student3,
-      borderColor: "border-transparent",
     },
   ];
 
@@ -249,32 +174,29 @@ const PeopleSection = () => {
         <SectionHeader title={t("about.people.mentors")} />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 justify-items-center">
           {mentors.map((mentor, index) => (
-            <MentorCard key={`mentor-${index}`} mentor={mentor} />
+            <PersonCard key={`mentor-${index}`} person={mentor} />
           ))}
         </div>
       </section>
 
       {/* Team Section */}
-      <section className="pt-16 px-4">
-        <div className="max-w-6xl mx-auto">
+      <section className="pt-16 px-1">
+        <div className="sm:w-[87%] lg:w-[65%] mx-auto">
           <SectionHeader title={t("about.people.team")} />
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 justify-items-center">
             {teamMembers.map((member, index) => (
-              <TeamCard key={`team-${index}`} member={member} />
+              <PersonCard key={`team-${index}`} person={member} />
             ))}
           </div>
         </div>
       </section>
 
       {/* Additional Team Members Section */}
-      <section className=" pt-8 px-1">
-        <div className="w-[80%] mx-auto">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 justify-items-center">
+      <section className="pt-8 px-1">
+        <div className="sm:w-[87%] mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 justify-items-center">
             {additionalMembers.map((member, index) => (
-              <AdditionalMemberCard
-                key={`additional-${index}`}
-                member={member}
-              />
+              <PersonCard key={`additional-${index}`} person={member} />
             ))}
           </div>
         </div>

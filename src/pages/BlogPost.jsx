@@ -13,6 +13,15 @@ import { buildCreateBlogPayload } from "../app/features/services/blogPayload";
 import { useI18n } from "../i18n/useI18n";
 import { resolveMediaPreviewUrl } from "../util/mediaUrl";
 
+const EDITOR_TOOLBAR_OPTIONS = [
+  ["bold", "italic", "underline", "strike"],
+  [{ header: [1, 2, false] }],
+  [{ list: "ordered" }, { list: "bullet" }],
+  [{ align: [] }],
+  ["link", "image"],
+  ["clean"],
+];
+
 export default function BlogPost() {
   const { t } = useI18n();
   const navigate = useNavigate();
@@ -136,7 +145,7 @@ export default function BlogPost() {
     }
   };
 
-  // Initialize Quill
+  // Initialize Quill once
   useEffect(() => {
     if (
       (uuid && isFetching) ||
@@ -149,23 +158,32 @@ export default function BlogPost() {
       theme: "snow",
       placeholder: t("blogPost.editorPlaceholder"),
       modules: {
-        toolbar: [
-          ["bold", "italic", "underline", "strike"],
-          [{ header: [1, 2, false] }],
-          [{ list: "ordered" }, { list: "bullet" }],
-          [{ align: [] }],
-          ["link", "image"],
-          ["clean"],
-        ],
+        toolbar: EDITOR_TOOLBAR_OPTIONS,
       },
     });
     setIsEditorReady(true);
 
     return () => {
+      const quill = quillInstanceRef.current;
+      if (quill) {
+        const toolbar = quill.container?.previousSibling;
+        if (toolbar?.classList?.contains("ql-toolbar")) {
+          toolbar.remove();
+        }
+      }
+
       quillInstanceRef.current = null;
       setIsEditorReady(false);
     };
-  }, [uuid, isFetching, t]);
+  }, [uuid, isFetching]);
+
+  // Update editor placeholder on language change
+  useEffect(() => {
+    const quill = quillInstanceRef.current;
+    if (!quill) return;
+
+    quill.root.dataset.placeholder = t("blogPost.editorPlaceholder");
+  }, [t]);
 
   // Pre-fill data when editing a draft
   useEffect(() => {
