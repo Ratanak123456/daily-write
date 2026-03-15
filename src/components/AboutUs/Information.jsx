@@ -6,6 +6,7 @@ import {
   blobAnimation,
 } from "./hooks/useScrollAnimation";
 import { useI18n } from "../../i18n/useI18n";
+import AboutImg from "../../assets/about/About us page-cuate.svg";
 
 const AboutSection = () => {
   const { controls, ref } = useScrollAnimation({ amount: 0.3 });
@@ -133,163 +134,62 @@ const AboutSection = () => {
 
         {/* Right Illustration Column */}
         <motion.div
-          className="relative flex justify-center items-center order-1 lg:order-2 mb-8 lg:mb-0"
+          className="relative flex justify-center items-center order-1 lg:order-2 mb-8 lg:mb-0 w-full"
           variants={illustrationVariants}
         >
-          {/* Main "Browser" Container */}
+          {/* Background Glows for Depth */}
           <motion.div
-            className="relative p-4 sm:p-6 md:p-8 rounded-lg shadow-2xl w-full max-w-sm sm:max-w-md md:max-w-lg"
-            style={{
-              backgroundColor: "var(--bg-primary)",
-              borderColor: "var(--border-color)",
-            }}
-            whileHover={{
-              scale: 1.02,
-              boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
-            }}
-            transition={{ type: "spring", stiffness: 300 }}
-          >
-            {/* Header Dots */}
-            <motion.div className="flex space-x-2 mb-4 sm:mb-6">
-              {["#ef4444", "#f59e0b", "#10b981"].map((color, i) => (
-                <motion.div
-                  key={i}
-                  className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full"
-                  style={{ backgroundColor: color }}
-                  variants={dotVariants}
-                  custom={i}
-                  whileHover={{ scale: 1.2 }}
-                />
-              ))}
-            </motion.div>
-
-            {/* Placeholder Content for Illustration */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-              <motion.div
-                className="space-y-3 sm:space-y-4"
-                variants={containerVariants}
-                initial="hidden"
-                animate={controls}
-              >
-                <motion.div
-                  className="h-6 sm:h-8 w-3/4 rounded"
-                  style={{ backgroundColor: "var(--bg-secondary)" }}
-                  variants={animationVariants.fadeInUp}
-                />
-                <motion.div
-                  className="h-3 sm:h-4 w-full rounded"
-                  style={{ backgroundColor: "var(--bg-secondary)" }}
-                  variants={animationVariants.fadeInUp}
-                />
-                <motion.div
-                  className="h-3 sm:h-4 w-5/6 rounded"
-                  style={{ backgroundColor: "var(--bg-secondary)" }}
-                  variants={animationVariants.fadeInUp}
-                />
-                <motion.div
-                  className="h-8 sm:h-10 w-20 sm:w-24 rounded mt-2 sm:mt-4"
-                  style={{
-                    backgroundColor: "var(--primary-500)",
-                    opacity: 0.2,
-                  }}
-                  variants={animationVariants.fadeInUp}
-                />
-              </motion.div>
-
-              {/* Character Illustration Area - Now with actual image */}
-              <motion.div
-                className="rounded-lg h-48 sm:h-56 md:h-64 border-2 border-dashed overflow-hidden"
-                style={{
-                  backgroundColor: "var(--bg-secondary)",
-                  borderColor: "var(--primary-500)",
-                }}
-                whileHover={{
-                  scale: 1.02,
-                  borderColor: "var(--primary-700)",
-                }}
-                transition={{ type: "spring", stiffness: 300 }}
-              >
-                <img
-                  src="https://via.placeholder.com/300x200" // Replace with your actual image path
-                  alt="Character illustration"
-                  className="w-full h-full object-cover"
-                />
-              </motion.div>
-            </div>
-
-            {/* Decorative Plant - Hidden on mobile, visible on md and up */}
-            <motion.div
-              className="absolute -bottom-6 sm:-bottom-8 -left-6 sm:-left-8 w-16 sm:w-20 md:w-24 h-24 sm:h-28 md:h-32 rounded-t-full hidden md:block"
-              style={{ backgroundColor: "var(--primary-700)" }}
-              animate={{
-                y: [0, -5, 0],
-                rotate: [0, 2, 0],
-              }}
-              transition={{
-                duration: 4,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-            >
-              <motion.div
-                className="absolute -top-8 sm:-top-10 md:-top-12 left-2 sm:left-3 md:left-4 w-3 sm:w-3.5 md:w-4 h-8 sm:h-10 md:h-12 rounded-full"
-                style={{ backgroundColor: "var(--primary-500)" }}
-                animate={{
-                  rotate: [12, 15, 12],
-                  scale: [1, 1.1, 1],
-                }}
-                transition={{
-                  duration: 3,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
-              />
-              <motion.div
-                className="absolute -top-6 sm:-top-8 md:-top-10 left-6 sm:left-8 md:left-10 w-3 sm:w-3.5 md:w-4 h-8 sm:h-10 md:h-12 rounded-full"
-                style={{ backgroundColor: "var(--primary-600)" }}
-                animate={{
-                  rotate: [-12, -15, -12],
-                  scale: [1, 1.1, 1],
-                }}
-                transition={{
-                  duration: 3,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                  delay: 0.5,
-                }}
-              />
-            </motion.div>
-          </motion.div>
-
-          {/* Floating Elements - Hidden on mobile */}
-          <motion.div
-            className="absolute -top-4 -right-4 w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-opacity-20 hidden md:block"
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 rounded-full blur-3xl opacity-20 z-0"
             style={{ backgroundColor: "var(--primary-500)" }}
             animate={{
-              y: [0, -10, 0],
-              x: [0, 5, 0],
-              scale: [1, 1.1, 1],
+              scale: [1, 1.2, 1],
+              opacity: [0.1, 0.2, 0.1],
             }}
             transition={{
-              duration: 5,
+              duration: 8,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          />
+
+          {/* Floating Decorative Elements */}
+          <motion.div
+            className="absolute -top-8 -right-8 w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-opacity-10 hidden md:block z-0"
+            style={{ backgroundColor: "var(--primary-500)" }}
+            animate={{
+              y: [0, -20, 0],
+              x: [0, 15, 0],
+            }}
+            transition={{
+              duration: 6,
               repeat: Infinity,
               ease: "easeInOut",
             }}
           />
           <motion.div
-            className="absolute -bottom-4 -right-8 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-opacity-20 hidden md:block"
+            className="absolute -bottom-12 -left-8 w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-opacity-10 hidden md:block z-0"
             style={{ backgroundColor: "var(--primary-700)" }}
             animate={{
-              y: [0, 10, 0],
-              x: [0, -5, 0],
-              scale: [1, 1.2, 1],
+              y: [0, 20, 0],
+              x: [0, -15, 0],
             }}
             transition={{
-              duration: 4,
+              duration: 5,
               repeat: Infinity,
               ease: "easeInOut",
               delay: 1,
             }}
+          />
+
+          <motion.img
+            src={AboutImg}
+            alt="About illustration"
+            className="w-full h-full object-contain max-w-md sm:max-w-xl md:max-w-2xl lg:max-w-3xl relative z-10"
+            whileHover={{
+              scale: 1.05,
+              rotate: 1,
+            }}
+            transition={{ type: "spring", stiffness: 300 }}
           />
         </motion.div>
       </motion.div>
