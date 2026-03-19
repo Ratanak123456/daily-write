@@ -51,8 +51,10 @@ const Divider = ({ text }) => (
 );
 
 /* ---------------------- Validation Schemas ---------------------- */
+const emailSchema = z.string().trim().toLowerCase().email("Please enter a valid email");
+
 const loginSchema = z.object({
-  email: z.string().email("Please enter a valid email"),
+  email: emailSchema,
   password: z.string(),
 });
 
@@ -60,7 +62,7 @@ const registerSchema = z
   .object({
     firstName: z.string().min(2, "First name required"),
     lastName: z.string().min(2, "Last name required"),
-    email: z.string().email("Please enter a valid email"),
+    email: emailSchema,
     password: z
       .string()
       .min(8, "Password must be at least 8 characters long")
@@ -207,9 +209,8 @@ const LoginPage = () => {
     setSuccessMessage("");
   };
 
-  const getInputClassName = () => "w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg sm:rounded-xl border transition-all text-sm sm:text-base";
-  const handleInputFocus = (e) => { e.target.style.boxShadow = `0 0 0 2px var(--primary-500)`; e.target.style.borderColor = "var(--primary-500)"; };
-  const handleInputBlur = (e) => { e.target.style.boxShadow = "none"; e.target.style.borderColor = ""; };
+  const getInputClassName = () =>
+    "w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg sm:rounded-xl border transition-all text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-[var(--primary-500)] focus:border-[var(--primary-500)]";
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4 sm:p-6 relative overflow-hidden" style={{ backgroundColor: "var(--bg-primary)" }}>
@@ -233,25 +234,37 @@ const LoginPage = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   <div>
                     <label className="block text-xs sm:text-sm font-semibold mb-1">{t("auth.firstName")}</label>
-                    <input type="text" {...regRegister("firstName")} className={getInputClassName()} onFocus={handleInputFocus} onBlur={handleInputBlur} />
+                    <input type="text" {...regRegister("firstName")} className={getInputClassName()} autoComplete="given-name" />
                     {regErrors.firstName && <p className="mt-1 text-xs text-red-500">{regErrors.firstName.message}</p>}
                   </div>
                   <div>
                     <label className="block text-xs sm:text-sm font-semibold mb-1">{t("auth.lastName")}</label>
-                    <input type="text" {...regRegister("lastName")} className={getInputClassName()} onFocus={handleInputFocus} onBlur={handleInputBlur} />
+                    <input type="text" {...regRegister("lastName")} className={getInputClassName()} autoComplete="family-name" />
                     {regErrors.lastName && <p className="mt-1 text-xs text-red-500">{regErrors.lastName.message}</p>}
                   </div>
                 </div>
               )}
               <div>
                 <label className="block text-xs sm:text-sm font-semibold mb-1">{t("auth.email")}</label>
-                <input type="email" {...(view === "login" ? loginRegister("email") : regRegister("email"))} className={getInputClassName()} onFocus={handleInputFocus} onBlur={handleInputBlur} />
+                <input
+                  type="email"
+                  {...(view === "login" ? loginRegister("email") : regRegister("email"))}
+                  className={getInputClassName()}
+                  autoComplete="email"
+                  autoCapitalize="none"
+                  spellCheck={false}
+                />
                 {(view === "login" ? loginErrors.email : regErrors.email) && <p className="mt-1 text-xs text-red-500">{(view === "login" ? loginErrors.email : regErrors.email).message}</p>}
               </div>
               <div>
                 <label className="block text-xs sm:text-sm font-semibold mb-1">{t("auth.password")}</label>
                 <div className="relative">
-                  <input type={showLoginPassword || showRegisterPassword ? "text" : "password"} {...(view === "login" ? loginRegister("password") : regRegister("password"))} className={getInputClassName()} onFocus={handleInputFocus} onBlur={handleInputBlur} />
+                  <input
+                    type={showLoginPassword || showRegisterPassword ? "text" : "password"}
+                    {...(view === "login" ? loginRegister("password") : regRegister("password"))}
+                    className={getInputClassName()}
+                    autoComplete={view === "login" ? "current-password" : "new-password"}
+                  />
                   <button type="button" onClick={() => view === "login" ? setShowLoginPassword(!showLoginPassword) : setShowRegisterPassword(!showRegisterPassword)} className="absolute right-3 top-1/2 -translate-y-1/2" style={{ color: "var(--text-secondary)" }}>
                     {showLoginPassword || showRegisterPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </button>
@@ -262,7 +275,12 @@ const LoginPage = () => {
                 <div>
                   <label className="block text-xs sm:text-sm font-semibold mb-1">{t("auth.confirmPassword")}</label>
                   <div className="relative">
-                    <input type={showConfirmPassword ? "text" : "password"} {...regRegister("confirmPassword")} className={getInputClassName()} onFocus={handleInputFocus} onBlur={handleInputBlur} />
+                    <input
+                      type={showConfirmPassword ? "text" : "password"}
+                      {...regRegister("confirmPassword")}
+                      className={getInputClassName()}
+                      autoComplete="new-password"
+                    />
                     <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="absolute right-3 top-1/2 -translate-y-1/2" style={{ color: "var(--text-secondary)" }}>
                       {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                     </button>
