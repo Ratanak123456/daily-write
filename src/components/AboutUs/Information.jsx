@@ -1,5 +1,4 @@
 import React from "react";
-import { motion } from "framer-motion";
 import {
   useScrollAnimation,
   animationVariants,
@@ -36,18 +35,6 @@ const AboutSection = () => {
         delay: 0.4,
       },
     },
-  };
-
-  const dotVariants = {
-    hidden: { scale: 0 },
-    visible: (i) => ({
-      scale: 1,
-      transition: {
-        delay: 0.5 + i * 0.1,
-        type: "spring",
-        stiffness: 200,
-      },
-    }),
   };
 
   return (

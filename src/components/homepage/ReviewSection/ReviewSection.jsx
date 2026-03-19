@@ -14,6 +14,93 @@ export default function ReviewSection() {
   const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef(null);
 
+  const students = [
+    {
+      id: 1,
+      name: "Saren Ratanak",
+      role: "Developer",
+      image: student1,
+      quote:
+        "Writing has become a daily habit that helped me grow personally and professionally.",
+    },
+    {
+      id: 2,
+      name: "Rosa",
+      role: "Blogger",
+      image: student2,
+      quote:
+        "This platform gave me the courage to share my stories with the world.",
+    },
+    {
+      id: 3,
+      name: "Chhaya",
+      role: "Mentor",
+      image: student3,
+      quote:
+        "The community here is incredibly supportive and inspiring.",
+    },
+    {
+      id: 4,
+      name: "Sok Kanha",
+      role: "Writer",
+      image: student4,
+      quote:
+        "I've improved my writing skills significantly since joining.",
+    },
+    {
+      id: 5,
+      name: "Sokha",
+      role: "Content Creator",
+      image: student5,
+      quote:
+        "The best platform for anyone who wants to express themselves through writing.",
+    },
+    {
+      id: 6,
+      name: "Dara",
+      role: "Blogger",
+      image: student6,
+      quote:
+        "Daily writing habit changed my life. Highly recommended!",
+    },
+    {
+      id: 7,
+      name: "Ratanak",
+      role: "Freelancer",
+      image: student7,
+      quote:
+        "The clean interface makes writing a pleasure.",
+    },
+  ];
+
+  const handlePrevious = () => {
+    if (isAnimating) return;
+    setIsAnimating(true);
+    setDirection("left");
+    setCurrentIndex((prevIndex) =>
+      prevIndex === 0 ? students.length - 1 : prevIndex - 1,
+    );
+    setTimeout(() => setIsAnimating(false), 500);
+  };
+
+  const handleNext = () => {
+    if (isAnimating) return;
+    setIsAnimating(true);
+    setDirection("right");
+    setCurrentIndex((prevIndex) =>
+      prevIndex === students.length - 1 ? 0 : prevIndex + 1,
+    );
+    setTimeout(() => setIsAnimating(false), 500);
+  };
+
+  const handleDotClick = (index) => {
+    if (isAnimating || index === currentIndex) return;
+    setIsAnimating(true);
+    setDirection(index > currentIndex ? "right" : "left");
+    setCurrentIndex(index);
+    setTimeout(() => setIsAnimating(false), 500);
+  };
+
   // Intersection Observer for scroll in/out animations
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -58,93 +145,6 @@ export default function ReviewSection() {
       }
     };
   }, [currentIndex, isAnimating, isVisible]);
-
-  const handlePrevious = () => {
-    if (isAnimating) return;
-    setIsAnimating(true);
-    setDirection("left");
-    setCurrentIndex((prevIndex) =>
-      prevIndex === 0 ? students.length - 1 : prevIndex - 1,
-    );
-    setTimeout(() => setIsAnimating(false), 500);
-  };
-
-  const handleNext = () => {
-    if (isAnimating) return;
-    setIsAnimating(true);
-    setDirection("right");
-    setCurrentIndex((prevIndex) =>
-      prevIndex === students.length - 1 ? 0 : prevIndex + 1,
-    );
-    setTimeout(() => setIsAnimating(false), 500);
-  };
-
-  const handleDotClick = (index) => {
-    if (isAnimating || index === currentIndex) return;
-    setIsAnimating(true);
-    setDirection(index > currentIndex ? "right" : "left");
-    setCurrentIndex(index);
-    setTimeout(() => setIsAnimating(false), 500);
-  };
-
-  const students = [
-    {
-      id: 1,
-      name: "Ratanak Saren",
-      feedback:
-        "The React tutorials on this blog helped me understand hooks and state management better than any other resource I've tried.",
-      image: student1,
-      alt: "Ratanak Saren",
-    },
-    {
-      id: 2,
-      name: "Vok Visak",
-      feedback:
-        "I look forward to every Monday for the new blog posts. The career advice series has been invaluable for my professional growth.",
-      image: student2,
-      alt: "Vok Visak",
-    },
-    {
-      id: 3,
-      name: "Thoun Chamroeun",
-      feedback:
-        "As a beginner, I really appreciate how the blog breaks down complex topics into digestible pieces. Keep up the great work!",
-      image: student3,
-      alt: "Thoun Chamroeun",
-    },
-    {
-      id: 4,
-      name: "Sambath Ousa",
-      feedback:
-        "The weekly newsletter has become essential reading for me. The curated content saves me hours of research and always introduces me to new tools I hadn't discovered yet.",
-      image: student4,
-      alt: "Sambath Ousa",
-    },
-    {
-      id: 5,
-      name: "Ny Rosa",
-      feedback:
-        "Finally found a tech blog that doesn't assume I already know everything! The step-by-step tutorials with real-world examples helped me land my first freelance project.",
-      image: student5,
-      alt: "Ny Rosa",
-    },
-    {
-      id: 6,
-      name: "Bun chansovan",
-      feedback:
-        "Been following this blog for 2 years now. The quality of content has consistently improved, and the community discussions in the comments are incredibly helpful.",
-      image: student6,
-      alt: "Bun chansovan",
-    },
-    {
-      id: 7,
-      name: "Khut Theara",
-      feedback:
-        "As a career changer, finding relatable content that bridges the gap between theory and practice has been invaluable. The career advice series is gold!",
-      image: student7,
-      alt: "Khut Theara",
-    },
-  ];
 
   const currentStudent = students[currentIndex];
 

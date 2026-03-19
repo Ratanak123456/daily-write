@@ -1,5 +1,4 @@
 import {
-  useGetAllProductQuery,
   useGetAllUserQuery,
 } from "../../app/features/services/productApi";
 import BlogCard from "../Card/BlogCard";

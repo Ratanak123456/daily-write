@@ -1,5 +1,4 @@
 import React from "react";
-import { motion } from "framer-motion";
 import { useScrollAnimation } from "./hooks/useScrollAnimation";
 import { useI18n } from "../../i18n/useI18n";
 import image from "../../assets/about/Team page-bro.svg"

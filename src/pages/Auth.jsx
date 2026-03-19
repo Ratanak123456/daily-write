@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { useUserLoginMutation, useUserRegisterMutation } from "../app/features/auth/auth";
 import {
@@ -141,16 +141,26 @@ const LoginPage = () => {
       if (refreshToken) storeRefreshToken(refreshToken);
       navigate("/", { replace: true });
     } else if (oauthError) {
-      setError(decodeURIComponent(oauthError));
       navigate("/auth", { replace: true });
+      // Error will be displayed via derived state below
     }
   }, [location.search, navigate]);
 
-  useEffect(() => {
-    if (isError) {
-      setError(loginError?.data?.message || "Login failed. Please check your credentials.");
-    }
+  // Derive error from URL params for OAuth errors
+  const urlError = useMemo(() => {
+    const params = new URLSearchParams(location.search);
+    const err = params.get("error") || params.get("message");
+    return err ? decodeURIComponent(err) : null;
+  }, [location.search]);
+
+  // Derive error from login API error
+  const loginErrorMessage = useMemo(() => {
+    if (!isError) return null;
+    return loginError?.data?.message || "Login failed. Please check your credentials.";
   }, [isError, loginError]);
+
+  // Combined error display
+  const displayError = error || urlError || loginErrorMessage || "";
 
   const onLogin = async (data) => {
     setError("");
@@ -205,7 +215,7 @@ const LoginPage = () => {
               <h1 className="text-2xl sm:text-3xl font-bold" style={{ color: "var(--primary-500)" }}>{view === "login" ? t("auth.login") : t("auth.register")}</h1>
               <p className="mt-1 sm:mt-2 text-center text-xs sm:text-sm" style={{ color: "var(--text-secondary)" }}>{view === "login" ? t("auth.loginSubtitle") : t("auth.registerSubtitle")}</p>
             </div>
-            <ErrorMessage error={error} />
+            <ErrorMessage error={displayError} />
             {successMessage && <div className="mb-4 p-3 text-xs sm:text-sm rounded-lg sm:rounded-xl text-center" style={{ backgroundColor: "rgba(34, 197, 94, 0.1)", border: "1px solid rgba(34, 197, 94, 0.2)", color: "rgb(34, 197, 94)" }}>{successMessage}</div>}
             <form className="space-y-3 sm:space-y-4" onSubmit={view === "login" ? handleLoginSubmit(onLogin) : handleRegisterSubmit(onRegister)}>
               {view === "register" && (

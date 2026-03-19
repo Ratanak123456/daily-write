@@ -1,11 +1,20 @@
-import React from "react";
-import { motion } from "framer-motion";
+import React, { useMemo } from "react";
 import { Link } from "react-router-dom";
 import { Home, ArrowLeft } from "lucide-react";
 import { useI18n } from "../i18n/useI18n";
 
 const NotFound = () => {
   const { t } = useI18n();
+
+  // Generate stable random positions once during mount
+  const particles = useMemo(() =>
+    [...Array(5)].map((_, i) => ({
+      top: `${(i * 17 + 13) % 100}%`,
+      left: `${(i * 23 + 7) % 100}%`,
+      duration: 3 + (i * 0.4) + 2,
+      delay: i * 0.5,
+    })),
+  []);
 
   return (
     <main className="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 relative overflow-hidden bg-bg-main">
@@ -79,22 +88,22 @@ const NotFound = () => {
         </motion.div>
 
         {/* Small floating particles */}
-        {[...Array(5)].map((_, i) => (
+        {particles.map((particle, i) => (
           <motion.div
             key={i}
             className="absolute w-2 h-2 bg-primary-orange/30 rounded-full hidden sm:block"
             style={{
-              top: `${Math.random() * 100}%`,
-              left: `${Math.random() * 100}%`,
+              top: particle.top,
+              left: particle.left,
             }}
             animate={{
               y: [0, -30, 0],
               opacity: [0, 1, 0],
             }}
             transition={{
-              duration: 3 + Math.random() * 2,
+              duration: particle.duration,
               repeat: Infinity,
-              delay: i * 0.5,
+              delay: particle.delay,
             }}
           />
         ))}
