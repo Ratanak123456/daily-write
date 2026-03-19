@@ -26,6 +26,10 @@ export const getDecryptedRefreshToken = () => {
   return secureLocalStorage.getItem(REFRESH_TOKEN_KEY);
 };
 
+export const hasAuthToken = () => {
+  return Boolean(getDecryptedAccessToken() || getDecryptedRefreshToken());
+};
+
 // Clear tokens (Logout)
 export const clearTokens = () => {
   secureLocalStorage.removeItem(ACCESS_TOKEN_KEY);

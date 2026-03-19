@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { useUserLoginMutation, useUserRegisterMutation } from "../app/features/auth/auth";
 import {
@@ -86,12 +86,18 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [
-    loginUser,
-    { data: userResponse, isLoading, isError, error: loginError },
-  ] = useUserLoginMutation();
+  const [loginUser, { isLoading, isError, error: loginError }] =
+    useUserLoginMutation();
 
   const [registerUser, { isLoading: isRegisterLoading }] = useUserRegisterMutation();
+
+  const extractTokens = useCallback((response) => {
+    const payload = response?.data ?? response;
+    return {
+      accessToken: payload?.accessToken || null,
+      refreshToken: payload?.refreshToken || null,
+    };
+  }, []);
 
   // Login form
   const {
@@ -121,18 +127,9 @@ const LoginPage = () => {
   });
 
   useEffect(() => {
-    if (userResponse?.data?.accessToken) {
-      storeAccessToken(userResponse.data.accessToken);
-      if (userResponse.data.refreshToken) {
-        storeRefreshToken(userResponse.data.refreshToken);
-      }
-      navigate("/");
-    }
-  }, [userResponse, navigate]);
-
-  useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
-    const accessToken = searchParams.get("accessToken") || searchParams.get("token");
+    const accessToken =
+      searchParams.get("accessToken") || searchParams.get("token");
     const refreshToken = searchParams.get("refreshToken");
     const oauthError = searchParams.get("error") || searchParams.get("message");
 
@@ -166,7 +163,21 @@ const LoginPage = () => {
     setError("");
     setSuccessMessage("");
     try {
-      await loginUser({ email: data.email, password: data.password }).unwrap();
+      const loginResponse = await loginUser({
+        email: data.email,
+        password: data.password,
+      }).unwrap();
+      const { accessToken, refreshToken } = extractTokens(loginResponse);
+
+      if (!accessToken) {
+        throw new Error("Login response missing access token");
+      }
+
+      storeAccessToken(accessToken);
+      if (refreshToken) {
+        storeRefreshToken(refreshToken);
+      }
+      navigate("/", { replace: true });
     } catch (err) {
       setError(err?.data?.message || "Login failed. Try again.");
     }

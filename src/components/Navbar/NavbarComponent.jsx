@@ -13,7 +13,7 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../../assets/DaliyWriteLogo.svg";
 import { useGetCurrentUserQuery } from "../../app/features/auth/auth";
-import { clearTokens, getDecryptedRefreshToken } from "../../util/tokenUtil";
+import { clearTokens, hasAuthToken } from "../../util/tokenUtil";
 import { useI18n } from "../../i18n/useI18n";
 import { getMediaUrl } from "../../util/mediaUrl";
 
@@ -34,7 +34,7 @@ export default function NavbarComponent() {
   const profileMenuRef = useRef(null);
   const languageMenuRef = useRef(null);
 
-  const token = getDecryptedRefreshToken();
+  const token = hasAuthToken();
   const { data: userData, isLoading } = useGetCurrentUserQuery(undefined, {
     skip: !token,
   });

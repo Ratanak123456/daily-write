@@ -13,7 +13,7 @@ import {
   Menu,
 } from "lucide-react";
 import { useGetCurrentUserQuery } from "../app/features/auth/auth";
-import { getDecryptedRefreshToken, clearTokens } from "../util/tokenUtil";
+import { hasAuthToken, clearTokens } from "../util/tokenUtil";
 import { useNavigate } from "react-router-dom";
 import { useDeleteBlogMutation } from "../app/features/services/productApi";
 import About from "../components/Profile/About";
@@ -25,7 +25,7 @@ import { ProfileSkeleton } from "../components/Card/Skeleton";
 const Profile = () => {
   const { t } = useI18n();
   const navigate = useNavigate();
-  const token = getDecryptedRefreshToken();
+  const token = hasAuthToken();
   const [page, setPage] = useState(0);
   const pageSize = 12;
   const [totalPages, setTotalPages] = useState(0);
