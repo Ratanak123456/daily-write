@@ -1,12 +1,12 @@
 import React from "react";
 import { useI18n } from "../../i18n/useI18n";
 import student1 from "../../../public/Team/Saren Ratanak.jpg";
-import student2 from "../../../public/Team/rosa.JPG";
+import student2 from "../../../public/Team/rosa.jpg";
 import student3 from "../../../public/Team/photo_2026-02-17_21-02-08.jpg";
 import student4 from "../../../public/Team/photo_2026-02-19_00-24-53.jpg";
 import student5 from "../../../public/Team/image_2024-01-22_14-24-14.png";
 import student6 from "../../../public/Team/_MG_8835.jpg";
-import student7 from "../../../public/Team/IMG_4905.JPG";
+import student7 from "../../../public/Team/IMG_4905.jpg";
 import mentor1 from "../../../public/Mentor/teacher.jpg";
 import mentor2 from "../../../public/Mentor/Chhaya.jpg";
 

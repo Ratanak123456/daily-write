@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 import student1 from "../../../../public/Team/Saren Ratanak.jpg";
-import student2 from "../../../../public/Team/IMG_4905.JPG";
+import student2 from "../../../../public/Team/IMG_4905.jpg";
 import student3 from "../../../../public/Team/photo_2026-02-19_00-24-53.jpg";
 import student4 from "../../../../public/Team/image_2024-01-22_14-24-14.png";
-import student5 from "../../../../public/Team/rosa.JPG";
+import student5 from "../../../../public/Team/rosa.jpg";
 import student6 from "../../../../public/Team/_MG_8835.jpg";
 import student7 from "../../../../public/Team/photo_2026-02-17_21-02-08.jpg";
 
@@ -17,7 +17,7 @@ export default function ReviewSection() {
   const students = [
     {
       id: 1,
-      name: "Saren Ratanak",
+      name: "Ratanak",
       role: "Developer",
       image: student1,
       quote:
@@ -25,7 +25,7 @@ export default function ReviewSection() {
     },
     {
       id: 2,
-      name: "Rosa",
+      name: "Visak",
       role: "Blogger",
       image: student2,
       quote:
@@ -41,7 +41,7 @@ export default function ReviewSection() {
     },
     {
       id: 4,
-      name: "Sok Kanha",
+      name: "Chamroeun",
       role: "Writer",
       image: student4,
       quote:
@@ -49,7 +49,7 @@ export default function ReviewSection() {
     },
     {
       id: 5,
-      name: "Sokha",
+      name: "Rosa",
       role: "Content Creator",
       image: student5,
       quote:
@@ -57,7 +57,7 @@ export default function ReviewSection() {
     },
     {
       id: 6,
-      name: "Dara",
+      name: "Sovan",
       role: "Blogger",
       image: student6,
       quote:
@@ -65,7 +65,7 @@ export default function ReviewSection() {
     },
     {
       id: 7,
-      name: "Ratanak",
+      name: "Theara",
       role: "Freelancer",
       image: student7,
       quote:
@@ -254,7 +254,7 @@ export default function ReviewSection() {
                   : "opacity-0 translate-y-5"
               }`}
             >
-              {currentStudent.feedback}
+              {currentStudent.quote}
             </p>
 
             <span

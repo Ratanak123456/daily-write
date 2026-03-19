@@ -9,7 +9,7 @@ const getFileExtension = (fileName) => {
 export const resolveMediaPreviewUrl = (
   response,
   originalFileName,
-  baseUrl = import.meta.env.VITE_BASE_URL,
+  baseUrl = import.meta.env.VITE_BASE_URL || "https://blog-api.bykh.org/api/v100",
 ) => {
   const payload = response?.data ?? response;
   const media = Array.isArray(payload) ? payload[0] : payload;
@@ -55,16 +55,20 @@ export const resolveMediaPreviewUrl = (
 export const getMediaUrl = (url, baseUrl = import.meta.env.VITE_BASE_URL) => {
   if (!url || url === "null" || url === "undefined") return "";
   if (url.startsWith("http") || url.startsWith("data:")) return url;
-  
+
+  // Fallback to API base URL if VITE_BASE_URL is not set
+  const fallbackBaseUrl = "https://blog-api.bykh.org/api/v100";
+  const finalBaseUrl = baseUrl || fallbackBaseUrl;
+
   // If baseUrl is missing, try to use a safe default or just return the path
   // In many cases, if it's a relative path, it might be in the public folder or relative to the origin
-  if (!baseUrl) {
+  if (!finalBaseUrl) {
     return url.startsWith("/") ? url : `/${url}`;
   }
 
   // Clean up the base URL and the path to ensure they join correctly
-  const cleanBase = baseUrl.replace(/\/+$/, "");
+  const cleanBase = finalBaseUrl.replace(/\/+$/, "");
   const cleanPath = url.replace(/^\/+/, "");
-  
+
   return `${cleanBase}/${cleanPath}`;
 };
