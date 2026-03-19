@@ -3,9 +3,9 @@ import {
   usePatchUserMutation,
   useUploadMediaMutation,
 } from "../../app/features/services/productApi";
-import { Camera, Edit2, Save, X } from "lucide-react";
+import { Camera, Edit2, Save, X, User } from "lucide-react";
 import Toast from "../Toast";
-import { resolveMediaPreviewUrl } from "../../util/mediaUrl";
+import { resolveMediaPreviewUrl, getMediaUrl } from "../../util/mediaUrl";
 
 export default function About({
   uuid,
@@ -179,12 +179,12 @@ export default function About({
             <div className="w-32 h-32 rounded-full border-4 border-(--primary-500) overflow-hidden bg-(--bg-secondary) flex items-center justify-center">
               {formData.profileUrl ? (
                 <img
-                  src={formData.profileUrl}
+                  src={getMediaUrl(formData.profileUrl)}
                   alt="Profile"
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <span className="text-4xl">👤</span>
+                <User size={64} className="text-(--text-secondary)" />
               )}
               {isUploading.profile && (
                 <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
@@ -277,7 +277,7 @@ export default function About({
             <div className="w-full h-64 overflow-hidden rounded-2xl bg-(--bg-secondary) border border-(--border-color)">
               {formData.coverUrl ? (
                 <img
-                  src={formData.coverUrl}
+                  src={getMediaUrl(formData.coverUrl)}
                   alt="Cover"
                   className="w-full h-full object-cover"
                 />

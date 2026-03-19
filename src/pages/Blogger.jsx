@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { User } from "lucide-react";
 import BlogCard from "../components/Card/BlogCard";
 import SkeletonCard from "../components/Card/Skeleton";
+import { getMediaUrl } from "../util/mediaUrl";
 import {
   useGetAllUserQuery,
   useGetUserByUuidQuery,
@@ -91,9 +92,9 @@ export default function Blogger() {
           <div className="rounded-2xl shadow-sm p-8 flex flex-col items-center text-center bg-[var(--bg-primary)] border border-[var(--border-color)]">
             <div className="relative mb-4">
               <div className="w-24 h-24 rounded-full border-4 border-[var(--primary-500)] overflow-hidden flex items-center justify-center bg-[var(--bg-secondary)]">
-                {blogger.profileUrl ? (
+                {getMediaUrl(blogger.profileUrl) ? (
                   <img
-                    src={blogger.profileUrl}
+                    src={getMediaUrl(blogger.profileUrl)}
                     alt={blogger.fullName}
                     className="w-full h-full object-cover"
                   />
@@ -219,10 +220,10 @@ export default function Blogger() {
                 About {blogger.fullName}
               </h2>
 
-              {blogger.coverUrl ? (
+              {getMediaUrl(blogger.coverUrl) ? (
                 <div className="mb-6 overflow-hidden rounded-xl border border-[var(--border-color)]">
                   <img
-                    src={blogger.coverUrl}
+                    src={getMediaUrl(blogger.coverUrl)}
                     alt={`${blogger.fullName} cover`}
                     className="w-full h-56 object-cover"
                   />

@@ -12,6 +12,7 @@ import CommentSection from "../components/Comment/CommentSection";
 import { useI18n } from "../i18n/useI18n";
 import { BlogDetailSkeleton } from "../components/Card/Skeleton";
 import Toast from "../components/Toast";
+import { getMediaUrl } from "../util/mediaUrl";
 
 export default function BlogDetail() {
   const { uuid } = useParams();
@@ -109,7 +110,7 @@ export default function BlogDetail() {
       <div className="mx-auto max-w-6xl">
         <div className="relative overflow-hidden rounded-sm">
           <img
-            src={blog.thumbnailUrl}
+            src={getMediaUrl(blog.thumbnailUrl)}
             alt={blog.title}
             className="h-55 w-full object-cover sm:h-80 md:h-105"
           />
@@ -129,9 +130,9 @@ export default function BlogDetail() {
               className="flex items-center gap-2 hover:opacity-80 transition-opacity"
             >
               <div className="h-8 w-8 rounded-full border border-(--border-color) overflow-hidden bg-(--bg-secondary) flex items-center justify-center">
-                {author?.profileUrl ? (
+                {getMediaUrl(author?.profileUrl) ? (
                   <img
-                    src={author.profileUrl}
+                    src={getMediaUrl(author.profileUrl)}
                     alt={author.fullName || "Author"}
                     className="h-full w-full object-cover"
                   />
@@ -207,7 +208,7 @@ export default function BlogDetail() {
                   className="flex min-h-32 cursor-pointer overflow-hidden rounded-2xl border border-(--border-color) bg-(--bg-primary) hover:bg-(--bg-secondary) transition-colors"
                 >
                   <img
-                    src={item.thumbnailUrl}
+                    src={getMediaUrl(item.thumbnailUrl)}
                     alt={item.title}
                     className="h-full w-32 shrink-0 object-cover sm:w-40"
                   />

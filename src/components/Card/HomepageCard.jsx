@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import parse from "html-react-parser";
 import { Link } from "react-router-dom";
 import { User } from "lucide-react";
+import { getMediaUrl } from "../../util/mediaUrl";
 
 export function Card({
   title,
@@ -53,7 +54,7 @@ export function Card({
         {/* Image with zoom effect */}
         <div className="rounded-3xl overflow-hidden mb-8 group">
           <img
-            src={image}
+            src={getMediaUrl(image)}
             alt={title}
             className={`w-full h-auto object-cover transition-all duration-700 ${
               isVisible ? "scale-100" : "scale-110"
@@ -146,9 +147,9 @@ export function Card({
           }`}
         >
           <div className="w-10 h-10 bg-primary-orange rounded-full flex items-center justify-center overflow-hidden border-2 border-primary-orange bg-orange-50">
-            {userImage ? (
+            {getMediaUrl(userImage) ? (
               <img
-                src={userImage}
+                src={getMediaUrl(userImage)}
                 alt={user}
                 className="w-full h-full object-cover"
               />
@@ -258,9 +259,9 @@ export function CardSidBar({
                 }`}
               >
                 <div className="w-4 h-4 bg-primary-orange rounded-full flex items-center justify-center overflow-hidden bg-orange-50">
-                  {userImage ? (
+                  {getMediaUrl(userImage) ? (
                     <img
-                      src={userImage}
+                      src={getMediaUrl(userImage)}
                       alt={user}
                       className="w-full h-full object-cover"
                     />
@@ -275,7 +276,7 @@ export function CardSidBar({
 
           {/* Image with scale and rotate effect */}
           <img
-            src={image}
+            src={getMediaUrl(image)}
             className={`w-28 h-20 rounded-xl object-cover transition-all duration-700 delay-200 transform ${
               isVisible
                 ? "opacity-100 scale-100 rotate-0"

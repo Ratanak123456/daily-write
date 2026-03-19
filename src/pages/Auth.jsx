@@ -213,16 +213,19 @@ const LoginPage = () => {
                   <div>
                     <label className="block text-xs sm:text-sm font-semibold mb-1">{t("auth.firstName")}</label>
                     <input type="text" {...regRegister("firstName")} className={getInputClassName()} onFocus={handleInputFocus} onBlur={handleInputBlur} />
+                    {regErrors.firstName && <p className="mt-1 text-xs text-red-500">{regErrors.firstName.message}</p>}
                   </div>
                   <div>
                     <label className="block text-xs sm:text-sm font-semibold mb-1">{t("auth.lastName")}</label>
                     <input type="text" {...regRegister("lastName")} className={getInputClassName()} onFocus={handleInputFocus} onBlur={handleInputBlur} />
+                    {regErrors.lastName && <p className="mt-1 text-xs text-red-500">{regErrors.lastName.message}</p>}
                   </div>
                 </div>
               )}
               <div>
                 <label className="block text-xs sm:text-sm font-semibold mb-1">{t("auth.email")}</label>
                 <input type="email" {...(view === "login" ? loginRegister("email") : regRegister("email"))} className={getInputClassName()} onFocus={handleInputFocus} onBlur={handleInputBlur} />
+                {(view === "login" ? loginErrors.email : regErrors.email) && <p className="mt-1 text-xs text-red-500">{(view === "login" ? loginErrors.email : regErrors.email).message}</p>}
               </div>
               <div>
                 <label className="block text-xs sm:text-sm font-semibold mb-1">{t("auth.password")}</label>
@@ -232,6 +235,7 @@ const LoginPage = () => {
                     {showLoginPassword || showRegisterPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </button>
                 </div>
+                {(view === "login" ? loginErrors.password : regErrors.password) && <p className="mt-1 text-xs text-red-500">{(view === "login" ? loginErrors.password : regErrors.password).message}</p>}
               </div>
               {view === "register" && (
                 <div>
@@ -242,6 +246,7 @@ const LoginPage = () => {
                       {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                     </button>
                   </div>
+                  {regErrors.confirmPassword && <p className="mt-1 text-xs text-red-500">{regErrors.confirmPassword.message}</p>}
                 </div>
               )}
               <Divider text={view === "login" ? t("auth.orLoginWith") : t("auth.orRegisterWith")} />

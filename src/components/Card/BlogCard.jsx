@@ -1,5 +1,6 @@
 import { Eye, MessageSquare, User, X } from "lucide-react";
 import { Link } from "react-router-dom";
+import { getMediaUrl } from "../../util/mediaUrl";
 
 export default function BlogCard({
   image,
@@ -29,13 +30,13 @@ export default function BlogCard({
       onClick={isInteractiveMode ? onCardClick : undefined}
     >
       <div className="relative h-44 w-full">
-        <img src={image} alt={title} className="h-full w-full object-cover" />
+        <img src={getMediaUrl(image)} alt={title} className="h-full w-full object-cover" />
         <div className="absolute left-3 top-3 rounded-full bg-white px-2 py-1 text-[10px] font-semibold text-[#00b33d]">
           <div className="flex items-center gap-2">
             <div className="h-6 w-6 rounded-full overflow-hidden flex items-center justify-center bg-orange-50 border border-primary-orange">
-              {userImage ? (
+              {getMediaUrl(userImage) ? (
                 <img
-                  src={userImage}
+                  src={getMediaUrl(userImage)}
                   alt={author}
                   className="h-full w-full object-cover"
                 />

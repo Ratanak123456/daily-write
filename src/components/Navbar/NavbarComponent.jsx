@@ -15,6 +15,7 @@ import logo from "../../assets/DaliyWriteLogo.svg";
 import { useGetCurrentUserQuery } from "../../app/features/auth/auth";
 import { clearTokens, getDecryptedRefreshToken } from "../../util/tokenUtil";
 import { useI18n } from "../../i18n/useI18n";
+import { getMediaUrl } from "../../util/mediaUrl";
 
 export default function NavbarComponent() {
   const [isDark, setIsDark] = useState(() => {
@@ -255,9 +256,9 @@ export default function NavbarComponent() {
                   className="flex items-center gap-2 focus:outline-none"
                 >
                   <div className="w-10 h-10 rounded-full border-2 border-primary-orange overflow-hidden bg-orange-50 flex items-center justify-center">
-                    {user.profileUrl ? (
+                    {getMediaUrl(user.profileUrl) ? (
                       <img
-                        src={user.profileUrl}
+                        src={getMediaUrl(user.profileUrl)}
                         alt={user.fullName}
                         className="w-full h-full object-cover"
                       />

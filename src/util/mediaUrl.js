@@ -3,6 +3,9 @@ const getFileExtension = (fileName) => {
   return extension || "jpg";
 };
 
+/**
+ * Resolves a media URL from an upload response.
+ */
 export const resolveMediaPreviewUrl = (
   response,
   originalFileName,
@@ -23,20 +26,45 @@ export const resolveMediaPreviewUrl = (
     media?.downloadUrl;
 
   if (directUrl) {
-    return directUrl.startsWith("http")
-      ? directUrl
-      : `${baseUrl}/${directUrl.replace(/^\//, "")}`;
+    if (directUrl.startsWith("http")) return directUrl;
+    if (!baseUrl) return directUrl.startsWith("/") ? directUrl : `/${directUrl}`;
+    return `${baseUrl.replace(/\/+$/, "")}/${directUrl.replace(/^\//, "")}`;
   }
 
   const fileName = media?.fileName || media?.name;
   if (fileName) {
-    return `${baseUrl}/${fileName}`;
+    if (!baseUrl) return fileName.startsWith("/") ? fileName : `/${fileName}`;
+    return `${baseUrl.replace(/\/+$/, "")}/${fileName.replace(/^\//, "")}`;
   }
 
   const uuid = media?.uuid || media?.id || media?.fileUuid || media?.mediaUuid;
   if (uuid) {
-    return `${baseUrl}/${uuid}.${getFileExtension(originalFileName)}`;
+    const extension = getFileExtension(originalFileName);
+    if (!baseUrl) return `/${uuid}.${extension}`;
+    return `${baseUrl.replace(/\/+$/, "")}/${uuid}.${extension}`;
   }
 
   return "";
+};
+
+/**
+ * Safely resolves a media URL from a string path or filename.
+ * If it's already a full URL, returns it as is.
+ * If it's a relative path or just a filename, prepends the base URL.
+ */
+export const getMediaUrl = (url, baseUrl = import.meta.env.VITE_BASE_URL) => {
+  if (!url || url === "null" || url === "undefined") return "";
+  if (url.startsWith("http") || url.startsWith("data:")) return url;
+  
+  // If baseUrl is missing, try to use a safe default or just return the path
+  // In many cases, if it's a relative path, it might be in the public folder or relative to the origin
+  if (!baseUrl) {
+    return url.startsWith("/") ? url : `/${url}`;
+  }
+
+  // Clean up the base URL and the path to ensure they join correctly
+  const cleanBase = baseUrl.replace(/\/+$/, "");
+  const cleanPath = url.replace(/^\/+/, "");
+  
+  return `${cleanBase}/${cleanPath}`;
 };

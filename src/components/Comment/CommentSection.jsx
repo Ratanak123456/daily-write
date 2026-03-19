@@ -6,6 +6,7 @@ import {
 } from "../../app/features/services/productApi";
 import { useGetCurrentUserQuery } from "../../app/features/auth/auth";
 import { getDecryptedAccessToken } from "../../util/tokenUtil";
+import { getMediaUrl } from "../../util/mediaUrl";
 
 export default function CommentSection({ blogUuid }) {
   const hasToken = Boolean(getDecryptedAccessToken());
@@ -130,9 +131,9 @@ export default function CommentSection({ blogUuid }) {
               className="rounded-xl border border-[var(--border-color)] bg-[var(--bg-primary)] p-4 hover:bg-[var(--bg-secondary)] transition-colors"
             >
               <div className="flex items-center gap-2">
-                {item?.user?.profileUrl ? (
+                {getMediaUrl(item?.user?.profileUrl) ? (
                   <img
-                    src={item.user.profileUrl}
+                    src={getMediaUrl(item.user.profileUrl)}
                     alt={item?.user?.fullName || "User"}
                     className="h-8 w-8 rounded-full object-cover border border-[var(--border-color)]"
                   />
