@@ -15,7 +15,7 @@ import {
   iconVariants,
   blobAnimation,
 } from "./hooks/useScrollAnimation";
-import { useI18n } from "../../i18n/useI18n";
+import { useI18n } from "../../../i18n/useI18n";
 
 const MissionSection = () => {
   const { controls, ref, isInView } = useScrollAnimation({ amount: 0.2 });

@@ -117,14 +117,11 @@ export default function ReviewSection() {
       },
     );
 
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
-    }
+    const node = sectionRef.current;
+    if (node) observer.observe(node);
 
     return () => {
-      if (sectionRef.current) {
-        observer.unobserve(sectionRef.current);
-      }
+      if (node) observer.unobserve(node);
     };
   }, []);
 
@@ -134,8 +131,12 @@ export default function ReviewSection() {
     if (isVisible) {
       interval = setInterval(() => {
         if (!isAnimating) {
+          setIsAnimating(true);
           setDirection("right");
-          handleNext();
+          setCurrentIndex((prevIndex) =>
+            prevIndex === students.length - 1 ? 0 : prevIndex + 1,
+          );
+          setTimeout(() => setIsAnimating(false), 500);
         }
       }, 5000);
     }
@@ -145,7 +146,7 @@ export default function ReviewSection() {
         clearInterval(interval);
       }
     };
-  }, [currentIndex, isAnimating, isVisible]);
+  }, [currentIndex, isAnimating, isVisible, students.length]);
 
   const currentStudent = students[currentIndex];
 

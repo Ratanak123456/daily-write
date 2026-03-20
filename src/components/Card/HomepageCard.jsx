@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import parse from "html-react-parser";
 import { Link } from "react-router-dom";
 import { User } from "lucide-react";
-import { getMediaUrl } from "../../util/mediaUrl";
+import { getMediaUrl } from "../../utils/mediaUrl";
 
 export function Card({
   title,
@@ -30,14 +30,11 @@ export function Card({
       },
     );
 
-    if (cardRef.current) {
-      observer.observe(cardRef.current);
-    }
+    const node = cardRef.current;
+    if (node) observer.observe(node);
 
     return () => {
-      if (cardRef.current) {
-        observer.unobserve(cardRef.current);
-      }
+      if (node) observer.unobserve(node);
     };
   }, []);
 
@@ -190,14 +187,11 @@ export function CardSidBar({
       },
     );
 
-    if (cardRef.current) {
-      observer.observe(cardRef.current);
-    }
+    const node = cardRef.current;
+    if (node) observer.observe(node);
 
     return () => {
-      if (cardRef.current) {
-        observer.unobserve(cardRef.current);
-      }
+      if (node) observer.unobserve(node);
     };
   }, []);
   

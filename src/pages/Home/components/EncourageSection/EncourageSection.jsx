@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import image from "../../../assets/homepage/wall-post-amico.svg";
-import { useI18n } from "../../../i18n/useI18n";
+import image from "../../../../assets/homepage/wall-post-amico.svg";
+import { useI18n } from "../../../../i18n/useI18n";
 
 export default function EncourageSection() {
   const imageRef = useRef(null);
@@ -44,12 +44,14 @@ export default function EncourageSection() {
       });
     }, observerOptions);
 
-    if (imageRef.current) observer.observe(imageRef.current);
-    if (contentRef.current) observer.observe(contentRef.current);
+    const imageNode = imageRef.current;
+    const contentNode = contentRef.current;
+    if (imageNode) observer.observe(imageNode);
+    if (contentNode) observer.observe(contentNode);
 
     return () => {
-      if (imageRef.current) observer.unobserve(imageRef.current);
-      if (contentRef.current) observer.unobserve(contentRef.current);
+      if (imageNode) observer.unobserve(imageNode);
+      if (contentNode) observer.unobserve(contentNode);
     };
   }, []);
 

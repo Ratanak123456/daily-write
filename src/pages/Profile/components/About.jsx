@@ -2,10 +2,10 @@ import React, { useState, useEffect } from "react";
 import {
   usePatchUserMutation,
   useUploadMediaMutation,
-} from "../../app/features/services/productApi";
+} from "../../../app/features/services/productApi";
 import { Camera, Edit2, Save, X, User } from "lucide-react";
-import Toast from "../Toast";
-import { resolveMediaPreviewUrl, getMediaUrl } from "../../util/mediaUrl";
+import Toast from "../../../components/Toast";
+import { resolveMediaPreviewUrl, getMediaUrl } from "../../../utils/mediaUrl";
 
 export default function About({
   uuid,

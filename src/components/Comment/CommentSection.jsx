@@ -5,8 +5,8 @@ import {
   useGetCommentsByBlogQuery,
 } from "../../app/features/services/productApi";
 import { useGetCurrentUserQuery } from "../../app/features/auth/auth";
-import { getDecryptedAccessToken } from "../../util/tokenUtil";
-import { getMediaUrl } from "../../util/mediaUrl";
+import { getDecryptedAccessToken } from "../../utils/tokenUtil";
+import { getMediaUrl } from "../../utils/mediaUrl";
 
 export default function CommentSection({ blogUuid }) {
   const hasToken = Boolean(getDecryptedAccessToken());

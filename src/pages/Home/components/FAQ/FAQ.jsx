@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import image from "../../../assets/homepage/man-thinking-pana.svg";
-import { useI18n } from "../../../i18n/useI18n";
+import image from "../../../../assets/homepage/man-thinking-pana.svg";
+import { useI18n } from "../../../../i18n/useI18n";
 
 export default function FAQ() {
   const headerRef = useRef(null);
@@ -66,19 +66,22 @@ export default function FAQ() {
     }, observerOptions);
 
     // Observe header and image
-    if (headerRef.current) observer.observe(headerRef.current);
-    if (imageRef.current) observer.observe(imageRef.current);
+    const headerNode = headerRef.current;
+    const imageNode = imageRef.current;
+    if (headerNode) observer.observe(headerNode);
+    if (imageNode) observer.observe(imageNode);
 
     // Observe all FAQ items
-    faqItemsRef.current.forEach((item) => {
+    const faqNodes = faqItemsRef.current.filter(Boolean);
+    faqNodes.forEach((item) => {
       if (item) observer.observe(item);
     });
 
     // Cleanup
     return () => {
-      if (headerRef.current) observer.unobserve(headerRef.current);
-      if (imageRef.current) observer.unobserve(imageRef.current);
-      faqItemsRef.current.forEach((item) => {
+      if (headerNode) observer.unobserve(headerNode);
+      if (imageNode) observer.unobserve(imageNode);
+      faqNodes.forEach((item) => {
         if (item) observer.unobserve(item);
       });
     };

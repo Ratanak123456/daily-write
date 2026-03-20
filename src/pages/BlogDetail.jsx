@@ -12,7 +12,7 @@ import CommentSection from "../components/Comment/CommentSection";
 import { useI18n } from "../i18n/useI18n";
 import { BlogDetailSkeleton } from "../components/Card/Skeleton";
 import Toast from "../components/Toast";
-import { getMediaUrl } from "../util/mediaUrl";
+import { getMediaUrl } from "../utils/mediaUrl";
 import NotFound from "./NotFound";
 
 export default function BlogDetail() {

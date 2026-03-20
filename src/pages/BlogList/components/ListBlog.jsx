@@ -1,8 +1,8 @@
 import {
   useGetAllUserQuery,
-} from "../../app/features/services/productApi";
-import BlogCard from "../Card/BlogCard";
-import SkeletonCard from "../Card/Skeleton";
+} from "../../../app/features/services/productApi";
+import BlogCard from "../../../components/Card/BlogCard";
+import SkeletonCard from "../../../components/Card/Skeleton";
 
 export default function ListBlog({
   blogs = [],

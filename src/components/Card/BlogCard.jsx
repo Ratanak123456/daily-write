@@ -1,6 +1,6 @@
 import { Eye, MessageSquare, User, X } from "lucide-react";
 import { Link } from "react-router-dom";
-import { getMediaUrl } from "../../util/mediaUrl";
+import { getMediaUrl } from "../../utils/mediaUrl";
 
 export default function BlogCard({
   image,

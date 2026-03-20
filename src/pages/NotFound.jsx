@@ -202,7 +202,7 @@ const NotFound = () => {
             <div className="flex flex-wrap items-center justify-center gap-4 text-sm">
               <span className="text-text-sub">Quick Navigation:</span>
               <Link
-                to="/blog"
+                to="/blogs"
                 className="text-text-sub hover:text-primary-orange transition-colors"
               >
                 Blog

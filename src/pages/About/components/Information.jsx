@@ -5,8 +5,8 @@ import {
   animationVariants,
   blobAnimation,
 } from "./hooks/useScrollAnimation";
-import { useI18n } from "../../i18n/useI18n";
-import AboutImg from "../../assets/about/about-us-page-cuate.svg";
+import { useI18n } from "../../../i18n/useI18n";
+import AboutImg from "../../../assets/about/about-us-page-cuate.svg";
 
 const AboutSection = () => {
   const { controls, ref } = useScrollAnimation({ amount: 0.3 });

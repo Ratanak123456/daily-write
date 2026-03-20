@@ -1,10 +1,10 @@
-import { Card, CardSidBar } from "../../Card/HomepageCard";
-import SkeletonCard, { Skeleton } from "../../Card/Skeleton";
+import { Card, CardSidBar } from "../../../../components/Card/HomepageCard";
+import SkeletonCard, { Skeleton } from "../../../../components/Card/Skeleton";
 import {
   useGetAllProductQuery,
   useGetAllUserQuery,
   useGetTrendingBlogsQuery,
-} from "../../../app/features/services/productApi";
+} from "../../../../app/features/services/productApi";
 
 export default function ListCard() {
   // Fetch a large number of blogs to ensure we can find the top story

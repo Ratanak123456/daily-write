@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 // eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from "framer-motion";
-import image from "../../assets/about/get-in-touch-cuate.svg"
+import image from "../../../assets/about/get-in-touch-cuate.svg"
 import {
   MessageCircle,
   Phone,
@@ -12,7 +12,7 @@ import {
   X,
 } from "lucide-react";
 import { useScrollAnimation } from "./hooks/useScrollAnimation";
-import { useI18n } from "../../i18n/useI18n";
+import { useI18n } from "../../../i18n/useI18n";
 
 const ContactSection = () => {
   const [showSuccess, setShowSuccess] = useState(false);

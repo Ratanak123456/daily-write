@@ -1,11 +1,11 @@
 import {
   useGetAllProductByCurrentUserUuidQuery,
   useGetAllUserQuery,
-} from "../../app/features/services/productApi";
-import { useGetCurrentUserQuery } from "../../app/features/auth/auth";
+} from "../../../app/features/services/productApi";
+import { useGetCurrentUserQuery } from "../../../app/features/auth/auth";
 import { useEffect } from "react";
-import BlogCard from "../Card/BlogCard";
-import SkeletonCard from "../Card/Skeleton";
+import BlogCard from "../../../components/Card/BlogCard";
+import SkeletonCard from "../../../components/Card/Skeleton";
 
 export default function DraftBlog({
   page = 0,

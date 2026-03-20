@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { Search, ChevronLeft, ChevronRight } from "lucide-react";
-import ListBlog from "../components/BlogPage/ListBlog";
+import ListBlog from "./BlogList/components/ListBlog";
 import { useGetAllProductQuery } from "../app/features/services/productApi";
 import { useI18n } from "../i18n/useI18n";
 import Idealamp from "../assets/blogpage/idea-lamp.png"
-import planet from "../assets/blogpage/Planet.png"
+import planet from "../assets/blogpage/planet.png"
 
 
 export default function BlogList() {

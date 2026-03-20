@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useI18n } from "../../../i18n/useI18n";
+import { useI18n } from "../../../../i18n/useI18n";
 
 export default function ShareFeedback() {
   const [isVisible, setIsVisible] = useState(false);
@@ -20,14 +20,11 @@ export default function ShareFeedback() {
       },
     );
 
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
-    }
+    const node = sectionRef.current;
+    if (node) observer.observe(node);
 
     return () => {
-      if (sectionRef.current) {
-        observer.unobserve(sectionRef.current);
-      }
+      if (node) observer.unobserve(node);
     };
   }, []);
 

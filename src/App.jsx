@@ -1,11 +1,11 @@
 import { Link } from "react-router-dom";
-import ListCard, { SideBar } from "./components/Homepage/BlogSection/ListCard";
-import EncourageSection from "./components/Homepage/EncourageSection/EncourageSection";
-import ImageSide from "./components/Homepage/HeroSection/ImageSide";
-import Information from "./components/Homepage/HeroSection/Information";
-import FAQ from "./components/Homepage/FAQ/FAQ";
-import ReviewSection from "./components/Homepage/ReviewSection/ReviewSection";
-import ShareFeedback from "./components/Homepage/ShareFeedback/ShareFeedback";
+import ListCard, { SideBar } from "./pages/Home/components/BlogSection/ListCard";
+import EncourageSection from "./pages/Home/components/EncourageSection/EncourageSection";
+import ImageSide from "./pages/Home/components/HeroSection/ImageSide";
+import Information from "./pages/Home/components/HeroSection/Information";
+import FAQ from "./pages/Home/components/FAQ/FAQ";
+import ReviewSection from "./pages/Home/components/ReviewSection/ReviewSection";
+import ShareFeedback from "./pages/Home/components/ShareFeedback/ShareFeedback";
 import { useI18n } from "./i18n/useI18n";
 
 function App() {

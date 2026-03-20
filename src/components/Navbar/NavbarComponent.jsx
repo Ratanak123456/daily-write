@@ -13,9 +13,9 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../../assets/DailyWriteLogo.svg";
 import { useGetCurrentUserQuery } from "../../app/features/auth/auth";
-import { clearTokens, hasAuthToken } from "../../util/tokenUtil";
+import { clearTokens, hasAuthToken } from "../../utils/tokenUtil";
 import { useI18n } from "../../i18n/useI18n";
-import { getMediaUrl } from "../../util/mediaUrl";
+import { getMediaUrl } from "../../utils/mediaUrl";
 
 export default function NavbarComponent() {
   const [isDark, setIsDark] = useState(() => {

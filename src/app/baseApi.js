@@ -5,7 +5,7 @@ import {
   storeAccessToken,
   storeRefreshToken,
   clearTokens,
-} from "../util/tokenUtil";
+} from "../utils/tokenUtil";
 
 // create customBaseQuery
 const customBaseQuery = fetchBaseQuery({

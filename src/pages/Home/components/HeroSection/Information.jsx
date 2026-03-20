@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
-import Button from "../../Button/Button";
-import { useI18n } from "../../../i18n/useI18n";
+import Button from "../../../../components/Button/Button";
+import { useI18n } from "../../../../i18n/useI18n";
 import { Link } from "react-router-dom";
 
 export default function Information() {
@@ -24,14 +24,11 @@ export default function Information() {
       },
     );
 
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
-    }
+    const node = sectionRef.current;
+    if (node) observer.observe(node);
 
     return () => {
-      if (sectionRef.current) {
-        observer.unobserve(sectionRef.current);
-      }
+      if (node) observer.unobserve(node);
     };
   }, []);
 

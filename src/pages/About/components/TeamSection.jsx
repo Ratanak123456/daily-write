@@ -1,8 +1,8 @@
 import React from "react";
 import { motion as Motion } from "framer-motion";
 import { useScrollAnimation } from "./hooks/useScrollAnimation";
-import { useI18n } from "../../i18n/useI18n";
-import image from "../../assets/about/team-page-bro.svg"
+import { useI18n } from "../../../i18n/useI18n";
+import image from "../../../assets/about/team-page-bro.svg"
 import { Link } from "react-router-dom";
 
 const IntroSection = () => {

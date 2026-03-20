@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { User } from "lucide-react";
 import BlogCard from "../components/Card/BlogCard";
 import SkeletonCard from "../components/Card/Skeleton";
-import { getMediaUrl } from "../util/mediaUrl";
+import { getMediaUrl } from "../utils/mediaUrl";
 import {
   useGetAllUserQuery,
   useGetUserByUuidQuery,

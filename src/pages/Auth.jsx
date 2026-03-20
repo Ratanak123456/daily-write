@@ -4,7 +4,7 @@ import { useUserLoginMutation, useUserRegisterMutation } from "../app/features/a
 import {
   storeAccessToken,
   storeRefreshToken,
-} from "../util/tokenUtil";
+} from "../utils/tokenUtil";
 import { useNavigate, useLocation } from "react-router-dom";
 import logo from "../assets/DailyWriteLogo.svg";
 import logIn from "../assets/auth/login.svg";

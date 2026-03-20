@@ -1,5 +1,5 @@
-import heropic from "../../assets/homepage/hero-illustration.svg";
-import Button from "../Button/Button";
+import heropic from "../../../assets/homepage/hero-illustration.svg";
+import Button from "../../../components/Button/Button";
 
 export default function HeroSection() {
   return (

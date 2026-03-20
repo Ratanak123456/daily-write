@@ -7,6 +7,7 @@ import { store } from "./app/store.js";
 import { Provider } from "react-redux";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import { I18nProvider } from "./i18n/I18nProvider.jsx";
+import PageSkeleton from "./components/PageSkeleton.jsx";
 
 const AppPage = lazy(() => import("./App.jsx"));
 const AboutPage = lazy(() => import("./pages/About.jsx"));
@@ -18,15 +19,9 @@ const AuthPage = lazy(() => import("./pages/Auth.jsx"));
 const BloggerPage = lazy(() => import("./pages/Blogger.jsx"));
 const NotFoundPage = lazy(() => import("./pages/NotFound.jsx"));
 
-const withRouteLoader = (element) => {
+const withRouteLoader = (element, variant = "default") => {
   return (
-    <Suspense
-      fallback={
-        <div className="min-h-[40vh] flex items-center justify-center text-primary-orange font-semibold">
-          Loading...
-        </div>
-      }
-    >
+    <Suspense fallback={<PageSkeleton variant={variant} />}>
       {element}
     </Suspense>
   );
@@ -39,53 +34,53 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: withRouteLoader(<AppPage />),
+        element: withRouteLoader(<AppPage />, "home"),
       },
       {
         path: "/about",
-        element: withRouteLoader(<AboutPage />),
+        element: withRouteLoader(<AboutPage />, "about"),
       },
       {
         path: "/blogs",
-        element: withRouteLoader(<BlogListPage />),
+        element: withRouteLoader(<BlogListPage />, "blogList"),
       },
       {
         path: "/blog-post",
         element: (
           <ProtectedRoute>
-            {withRouteLoader(<BlogPostPage />)}
+            {withRouteLoader(<BlogPostPage />, "blogPost")}
           </ProtectedRoute>
         ),
       },
       {
         path: "/blogs/:uuid",
-        element: withRouteLoader(<BlogDetailPage />),
+        element: withRouteLoader(<BlogDetailPage />, "blogDetail"),
       },
       {
         path: "/bloggers/:uuid",
-        element: withRouteLoader(<BloggerPage />),
+        element: withRouteLoader(<BloggerPage />, "blogger"),
       },
       {
         path: "/profile",
         element: (
           <ProtectedRoute>
-            {withRouteLoader(<ProfilePage />)}
+            {withRouteLoader(<ProfilePage />, "profile")}
           </ProtectedRoute>
         ),
       },
       {
         path: "*",
-        element: withRouteLoader(<NotFoundPage />),
+        element: withRouteLoader(<NotFoundPage />, "notFound"),
       },
     ],
   },
   {
     path: "/auth",
-    element: withRouteLoader(<AuthPage />),
+    element: withRouteLoader(<AuthPage />, "auth"),
   },
   {
     path: "*",
-    element: withRouteLoader(<NotFoundPage />),
+    element: withRouteLoader(<NotFoundPage />, "notFound"),
   },
 ]);
 ReactDOM.createRoot(document.getElementById("root")).render(

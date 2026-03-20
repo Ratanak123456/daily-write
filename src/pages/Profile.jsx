@@ -13,12 +13,12 @@ import {
   Menu,
 } from "lucide-react";
 import { useGetCurrentUserQuery } from "../app/features/auth/auth";
-import { hasAuthToken, clearTokens } from "../util/tokenUtil";
+import { hasAuthToken, clearTokens } from "../utils/tokenUtil";
 import { useNavigate } from "react-router-dom";
 import { useDeleteBlogMutation } from "../app/features/services/productApi";
-import About from "../components/Profile/About";
-import Blog from "../components/Profile/Blog";
-import DraftBlog from "../components/Profile/DraftBlog";
+import About from "./Profile/components/About";
+import Blog from "./Profile/components/Blog";
+import DraftBlog from "./Profile/components/DraftBlog";
 import { useI18n } from "../i18n/useI18n";
 import { ProfileSkeleton } from "../components/Card/Skeleton";
 

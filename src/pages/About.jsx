@@ -1,9 +1,9 @@
 import React from 'react';
-import AboutSection from '../components/AboutUs/Information';
-import MissionSection from '../components/AboutUs/MissionSection';
-import IntroSection from '../components/AboutUs/TeamSection';
-import PeopleSection from '../components/AboutUs/Team';
-import ContactSection from '../components/AboutUs/ContactUs';
+import AboutSection from './About/components/Information';
+import MissionSection from './About/components/MissionSection';
+import IntroSection from './About/components/TeamSection';
+import PeopleSection from './About/components/Team';
+import ContactSection from './About/components/ContactUs';
 
 const About = () => {
   return (

@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import heropic from "../../../assets/homepage/hero-illustration.svg";
+import heropic from "../../../../assets/homepage/hero-illustration.svg";
 
 export default function ImageSide() {
   const [isVisible, setIsVisible] = useState(false);
@@ -20,14 +20,11 @@ export default function ImageSide() {
       }
     );
 
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
-    }
+    const node = sectionRef.current;
+    if (node) observer.observe(node);
 
     return () => {
-      if (sectionRef.current) {
-        observer.unobserve(sectionRef.current);
-      }
+      if (node) observer.unobserve(node);
     };
   }, []);
 

@@ -11,7 +11,8 @@ import {
 } from "../app/features/services/productApi";
 import { buildCreateBlogPayload } from "../app/features/services/blogPayload";
 import { useI18n } from "../i18n/useI18n";
-import { resolveMediaPreviewUrl } from "../util/mediaUrl";
+import { resolveMediaPreviewUrl } from "../utils/mediaUrl";
+import PageSkeleton from "../components/PageSkeleton";
 
 const EDITOR_TOOLBAR_OPTIONS = [
   ["bold", "italic", "underline", "strike"],
@@ -170,7 +171,7 @@ export default function BlogPost() {
       quillInstanceRef.current = null;
       setIsEditorReady(false);
     };
-  }, [uuid, isFetching]);
+  }, [uuid, isFetching, t]);
 
   // Update editor placeholder on language change
   useEffect(() => {
@@ -198,16 +199,7 @@ export default function BlogPost() {
   }, [blogResult, isEditorReady]);
 
   if (uuid && isFetching) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-bg-main">
-        <div className="relative">
-          <div className="w-16 h-16 border-4 border-border-main border-t-primary-orange rounded-full animate-spin"></div>
-          <p className="absolute -bottom-8 left-1/2 -translate-x-1/2 text-text-sub font-medium whitespace-nowrap">
-            Loading your content...
-          </p>
-        </div>
-      </div>
-    );
+    return <PageSkeleton variant="blogPost" />;
   }
 
   return (
