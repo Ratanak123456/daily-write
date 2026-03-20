@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import image from "../../../assets/homepage/Wall post-amico.svg";
+import image from "../../../assets/homepage/wall-post-amico.svg";
 import { useI18n } from "../../../i18n/useI18n";
 
 export default function EncourageSection() {

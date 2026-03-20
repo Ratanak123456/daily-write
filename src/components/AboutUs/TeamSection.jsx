@@ -1,8 +1,8 @@
 import React from "react";
-import { motion } from "framer-motion";
+import { motion as Motion } from "framer-motion";
 import { useScrollAnimation } from "./hooks/useScrollAnimation";
 import { useI18n } from "../../i18n/useI18n";
-import image from "../../assets/about/Team page-bro.svg"
+import image from "../../assets/about/team-page-bro.svg"
 import { Link } from "react-router-dom";
 
 const IntroSection = () => {
@@ -39,18 +39,18 @@ const IntroSection = () => {
       style={{ backgroundColor: "var(--bg-primary)" }}
       ref={ref}
     >
-      <motion.div
+      <Motion.div
         className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 lg:gap-16 items-center"
         variants={containerVariants}
         initial="hidden"
         animate={controls}
       >
         {/* Left Side: Team Illustration Area */}
-        <motion.div
+        <Motion.div
           className="relative order-2 lg:order-1 mt-8 lg:mt-0 flex justify-center items-center"
           variants={itemVariants}
         >
-          <motion.img
+          <Motion.img
             src={image}
             alt="Team Illustration"
             className="w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl h-auto relative z-10"
@@ -60,15 +60,15 @@ const IntroSection = () => {
             }}
             transition={{ type: "spring", stiffness: 300 }}
           />
-        </motion.div>
+        </Motion.div>
 
         {/* Right Side: Content */}
-        <motion.div
+        <Motion.div
           className="z-10 order-1 lg:order-2"
           variants={containerVariants}
         >
-          <motion.div className="mb-3 sm:mb-4" variants={itemVariants}>
-            <motion.h2
+          <Motion.div className="mb-3 sm:mb-4" variants={itemVariants}>
+            <Motion.h2
               className="font-extrabold text-3xl sm:text-4xl md:text-5xl"
               style={{ color: "var(--text-primary)" }}
             >
@@ -77,31 +77,31 @@ const IntroSection = () => {
                 {t("about.team.we")}
               </span>
               ?
-            </motion.h2>
-            <motion.div
+            </Motion.h2>
+            <Motion.div
               className="h-1 sm:h-1.5 w-24 sm:w-32 mt-2 rounded-full"
               style={{ backgroundColor: "var(--primary-500)" }}
               initial={{ width: 0 }}
               animate={controls}
               transition={{ duration: 0.8, delay: 0.5 }}
             />
-          </motion.div>
+          </Motion.div>
 
-          <motion.div
+          <Motion.div
             className="space-y-4 sm:space-y-6 text-base sm:text-lg leading-relaxed"
             style={{ color: "var(--text-secondary)" }}
             variants={containerVariants}
           >
-            <motion.p variants={itemVariants}>
+            <Motion.p variants={itemVariants}>
               {t("about.team.description1")}
-            </motion.p>
-            <motion.p variants={itemVariants}>
+            </Motion.p>
+            <Motion.p variants={itemVariants}>
               {t("about.team.description2")}
-            </motion.p>
-          </motion.div>
+            </Motion.p>
+          </Motion.div>
 
           <Link to="/auth">
-            <motion.button
+            <Motion.button
               className="mt-6 sm:mt-8 md:mt-10 text-white font-bold py-3 sm:py-4 px-6 sm:px-8 md:px-10 rounded-lg transition-all text-sm sm:text-base"
               style={{ backgroundColor: "var(--primary-500)" }}
               variants={itemVariants}
@@ -114,10 +114,10 @@ const IntroSection = () => {
               whileTap={{ scale: 0.95 }}
             >
               {t("about.team.join")}
-            </motion.button>
+            </Motion.button>
           </Link>
-        </motion.div>
-      </motion.div>
+        </Motion.div>
+      </Motion.div>
     </section>
   );
 };

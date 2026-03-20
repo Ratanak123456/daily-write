@@ -13,6 +13,7 @@ import { useI18n } from "../i18n/useI18n";
 import { BlogDetailSkeleton } from "../components/Card/Skeleton";
 import Toast from "../components/Toast";
 import { getMediaUrl } from "../util/mediaUrl";
+import NotFound from "./NotFound";
 
 export default function BlogDetail() {
   const { uuid } = useParams();
@@ -57,7 +58,6 @@ export default function BlogDetail() {
     : [];
 
   const loading = blogLoading;
-  const error = blogError ? t("blogDetail.loadError") : "";
 
   const handleCopyLink = async () => {
     try {
@@ -80,23 +80,8 @@ export default function BlogDetail() {
     );
   }
 
-  if (error || !blog) {
-    return (
-      <section className="bg-(--bg-primary) px-4 py-6 text-(--text-primary) sm:px-6 lg:px-10">
-        <div className="mx-auto max-w-6xl text-center">
-          <p className="text-lg text-red-500">
-            {error || t("blogDetail.notFound")}
-          </p>
-          <button
-            type="button"
-            onClick={() => navigate("/blogs")}
-            className="mt-4 rounded-lg bg-(--primary-500) px-4 py-2 text-white hover:bg-primary-600 transition-colors"
-          >
-            {t("blogDetail.backToBlogs")}
-          </button>
-        </div>
-      </section>
-    );
+  if (blogError || !blog) {
+    return <NotFound />;
   }
 
   const createdDate = new Date(blog.createdAt).toLocaleDateString("en-US", {

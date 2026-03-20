@@ -7,8 +7,8 @@ import {
 } from "../util/tokenUtil";
 import { useNavigate, useLocation } from "react-router-dom";
 import logo from "../assets/DailyWriteLogo.svg";
-import logIn from "../assets/Auth/login.svg";
-import signUp from "../assets/Auth/sign-up-animate.svg";
+import logIn from "../assets/auth/login.svg";
+import signUp from "../assets/auth/sign-up-animate.svg";
 import z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";

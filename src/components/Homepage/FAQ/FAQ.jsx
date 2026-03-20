@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import image from "../../../assets/homepage/Man thinking-pana.svg";
+import image from "../../../assets/homepage/man-thinking-pana.svg";
 import { useI18n } from "../../../i18n/useI18n";
 
 export default function FAQ() {

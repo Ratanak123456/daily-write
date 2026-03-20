@@ -5,7 +5,7 @@ import ImageSide from "./components/Homepage/HeroSection/ImageSide";
 import Information from "./components/Homepage/HeroSection/Information";
 import FAQ from "./components/Homepage/FAQ/FAQ";
 import ReviewSection from "./components/Homepage/ReviewSection/ReviewSection";
-import ShareFeedback from "./components/Homepage/ShareFeedBack/ShareFeedback";
+import ShareFeedback from "./components/Homepage/ShareFeedback/ShareFeedback";
 import { useI18n } from "./i18n/useI18n";
 
 function App() {

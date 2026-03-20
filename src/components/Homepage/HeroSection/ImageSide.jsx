@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import heropic from "../../../assets/homepage/Untitled design.svg";
+import heropic from "../../../assets/homepage/hero-illustration.svg";
 
 export default function ImageSide() {
   const [isVisible, setIsVisible] = useState(false);

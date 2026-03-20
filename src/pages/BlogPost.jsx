@@ -42,7 +42,6 @@ export default function BlogPost() {
 
   const [category, setCategory] = useState("");
   const [title, setTitle] = useState("");
-  const [coverImage, setCoverImage] = useState(null);
   const [coverPreview, setCoverPreview] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
@@ -59,8 +58,6 @@ export default function BlogPost() {
 
     setErrorMessage("");
     setSuccessMessage("");
-    setCoverImage(file);
-
     const formData = new FormData();
     formData.append("files", file, file.name);
 
@@ -74,7 +71,6 @@ export default function BlogPost() {
 
       setCoverPreview(previewUrl);
     } catch (error) {
-      setCoverImage(null);
       setCoverPreview("");
       setErrorMessage(
         error?.data?.message ||
@@ -86,7 +82,6 @@ export default function BlogPost() {
   };
 
   const handleRemoveCoverImage = () => {
-    setCoverImage(null);
     setCoverPreview("");
     setErrorMessage("");
     setSuccessMessage("");

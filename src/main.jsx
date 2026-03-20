@@ -1,20 +1,36 @@
 import "./index.css";
-import App from "./App.jsx";
+import { Suspense, lazy } from "react";
 import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import About from "./pages/About.jsx";
-import BlogList from "./pages/BlogList.jsx";
-import BlogPost from "./pages/BlogPost.jsx";
-import Profile from "./pages/Profile.jsx";
-import BlogDetail from "./pages/BlogDetail.jsx";
 import Layout from "./layout.jsx";
 import { store } from "./app/store.js";
 import { Provider } from "react-redux";
-import LoginPage from "./pages/Auth.jsx";
-import Blogger from "./pages/Blogger.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import { I18nProvider } from "./i18n/I18nProvider.jsx";
-import NotFound from "./pages/NotFound.jsx";
+
+const AppPage = lazy(() => import("./App.jsx"));
+const AboutPage = lazy(() => import("./pages/About.jsx"));
+const BlogListPage = lazy(() => import("./pages/BlogList.jsx"));
+const BlogPostPage = lazy(() => import("./pages/BlogPost.jsx"));
+const ProfilePage = lazy(() => import("./pages/Profile.jsx"));
+const BlogDetailPage = lazy(() => import("./pages/BlogDetail.jsx"));
+const AuthPage = lazy(() => import("./pages/Auth.jsx"));
+const BloggerPage = lazy(() => import("./pages/Blogger.jsx"));
+const NotFoundPage = lazy(() => import("./pages/NotFound.jsx"));
+
+const withRouteLoader = (element) => {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-[40vh] flex items-center justify-center text-primary-orange font-semibold">
+          Loading...
+        </div>
+      }
+    >
+      {element}
+    </Suspense>
+  );
+};
 
 const router = createBrowserRouter([
   {
@@ -23,53 +39,53 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <App />,
+        element: withRouteLoader(<AppPage />),
       },
       {
         path: "/about",
-        element: <About />,
+        element: withRouteLoader(<AboutPage />),
       },
       {
         path: "/blogs",
-        element: <BlogList />,
+        element: withRouteLoader(<BlogListPage />),
       },
       {
         path: "/blog-post",
         element: (
           <ProtectedRoute>
-            <BlogPost />
+            {withRouteLoader(<BlogPostPage />)}
           </ProtectedRoute>
         ),
       },
       {
         path: "/blogs/:uuid",
-        element: <BlogDetail />,
+        element: withRouteLoader(<BlogDetailPage />),
       },
       {
         path: "/bloggers/:uuid",
-        element: <Blogger />,
+        element: withRouteLoader(<BloggerPage />),
       },
       {
         path: "/profile",
         element: (
           <ProtectedRoute>
-            <Profile />
+            {withRouteLoader(<ProfilePage />)}
           </ProtectedRoute>
         ),
       },
       {
         path: "*",
-        element: <NotFound />,
+        element: withRouteLoader(<NotFoundPage />),
       },
     ],
   },
   {
     path: "/auth",
-    element: <LoginPage />,
+    element: withRouteLoader(<AuthPage />),
   },
   {
     path: "*",
-    element: <NotFound />,
+    element: withRouteLoader(<NotFoundPage />),
   },
 ]);
 ReactDOM.createRoot(document.getElementById("root")).render(

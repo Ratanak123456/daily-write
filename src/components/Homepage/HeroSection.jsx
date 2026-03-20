@@ -1,4 +1,4 @@
-import heropic from "../../assets/homepage/Untitled design.svg";
+import heropic from "../../assets/homepage/hero-illustration.svg";
 import Button from "../Button/Button";
 
 export default function HeroSection() {
