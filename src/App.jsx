@@ -50,13 +50,13 @@ function App() {
           </div>
           <aside className="lg:w-1/3">
             <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-4 w-full">
+              <div className="flex items-center w-[75%]">
                 <h2 className="text-2xl font-bold text-text-main">
                   {t("home.latest")}
                 </h2>
                 <div className="h-0.5 grow bg-primary-orange"></div>
               </div>
-              <Link to="/blogs" className="text-primary-orange font-bold ml-4">
+              <Link to="/blogs" className="text-primary-orange font-bold ">
                 {t("home.viewAll")}
               </Link>
             </div>

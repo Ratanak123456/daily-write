@@ -33,7 +33,7 @@ export default function ReviewSection() {
     },
     {
       id: 3,
-      name: "Chhaya",
+      name: "Chamroeun",
       role: "Mentor",
       image: student3,
       quote:
@@ -41,7 +41,7 @@ export default function ReviewSection() {
     },
     {
       id: 4,
-      name: "Chamroeun",
+      name: "Ousa",
       role: "Writer",
       image: student4,
       quote:

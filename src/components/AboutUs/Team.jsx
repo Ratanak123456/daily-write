@@ -181,7 +181,7 @@ const PeopleSection = () => {
 
       {/* Team Section */}
       <section className="pt-16 px-1">
-        <div className="sm:w-[87%] lg:w-[65%] mx-auto">
+        <div className="sm:w-[95%] lg:w-[75%] mx-auto">
           <SectionHeader title={t("about.people.team")} />
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 justify-items-center">
             {teamMembers.map((member, index) => (
@@ -192,8 +192,8 @@ const PeopleSection = () => {
       </section>
 
       {/* Additional Team Members Section */}
-      <section className="pt-8 px-1">
-        <div className="sm:w-[87%] mx-auto">
+      <section className="pt-3 px-1">
+        <div className="sm:w-full mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 justify-items-center">
             {additionalMembers.map((member, index) => (
               <PersonCard key={`additional-${index}`} person={member} />

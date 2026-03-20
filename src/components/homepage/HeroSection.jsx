@@ -38,7 +38,7 @@ export default function HeroSection() {
               <Button
                 title="Explore Blogs"
                 backgroundColor="bg-primary-orange"
-                hoverColor="bg-primary-orange-dark"
+                hoverColor="hover:bg-primary-orange-dark"
                 textColor="text-white"
               />
             </div>

@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import Button from "../../Button/Button";
 import { useI18n } from "../../../i18n/useI18n";
+import { Link } from "react-router-dom";
 
 export default function Information() {
   const [isVisible, setIsVisible] = useState(false);
@@ -97,19 +98,30 @@ export default function Information() {
         }`}
         style={{ transitionDelay: "500ms" }}
       >
-        <div className="transform hover:scale-105 transition-transform duration-300 w-full sm:w-auto">
-          <Button
-            link="blogs"
-            title={t("hero.exploreBlogs")}
-            backgroundColor="bg-primary-orange"
-            hoverColor="bg-primary-orange-dark"
-            textColor="text-white"
-            className="w-full sm:w-auto px-6 sm:px-8 py-2 sm:py-3 text-sm sm:text-base"
-          />
-        </div>
-        <button className="w-full sm:w-auto px-6 sm:px-8 py-2 sm:py-3 border-2 border-border-main bg-white text-text-sub font-bold rounded-lg hover:bg-primary-orange hover:text-white hover:border-primary-orange transition-all duration-300 hover:shadow-lg hover:shadow-primary-orange/20 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800 transform hover:-translate-y-1 text-sm sm:text-base">
-          {t("hero.learnMore")}
-        </button>
+<div className="transform hover:scale-105 transition-transform duration-300 w-full sm:w-auto">
+  <Button
+    link="blogs"
+    title={t("hero.exploreBlogs")}
+    backgroundColor="bg-primary-orange"
+    hoverColor="hover:bg-primary-orange-dark"
+    textColor="text-white"
+    className="w-full sm:w-auto px-6 sm:px-8 py-2 sm:py-3 text-sm sm:text-base"
+  />
+</div>
+
+<div className="transform hover:scale-105 transition-transform duration-300 w-full sm:w-auto">
+  <Button
+    link="about"
+    title={t("hero.learnMore")}
+    backgroundColor="bg-white dark:bg-transparent"
+    hoverColor="hover:bg-primary-orange"
+    textColor="text-text-sub dark:text-gray-300"
+    borderColor="border-2 border-border-main dark:border-gray-700"
+    hoverTextColor="hover:text-white"
+    hoverBorderColor="hover:border-primary-orange"
+    className="w-full sm:w-auto px-6 sm:px-8 py-2 sm:py-3 text-sm sm:text-base font-bold hover:shadow-lg hover:shadow-primary-orange/20"
+  />
+</div>
       </div>
     </div>
   );
