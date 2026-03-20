@@ -13,7 +13,7 @@ import {
   Menu,
 } from "lucide-react";
 import { useGetCurrentUserQuery } from "../app/features/auth/auth";
-import { hasAuthToken, clearTokens } from "../utils/tokenUtil";
+import { hasAuthToken, clearTokens, isFirebaseAuthSession } from "../utils/tokenUtil";
 import { useNavigate } from "react-router-dom";
 import { useDeleteBlogMutation } from "../app/features/services/productApi";
 import About from "./Profile/components/About";
@@ -21,11 +21,13 @@ import Blog from "./Profile/components/Blog";
 import DraftBlog from "./Profile/components/DraftBlog";
 import { useI18n } from "../i18n/useI18n";
 import { ProfileSkeleton } from "../components/Card/Skeleton";
+import { signOutFirebaseUser } from "../app/firebase/authService";
 
 const Profile = () => {
   const { t } = useI18n();
   const navigate = useNavigate();
   const token = hasAuthToken();
+  const firebaseSession = isFirebaseAuthSession();
   const [page, setPage] = useState(0);
   const pageSize = 12;
   const [totalPages, setTotalPages] = useState(0);
@@ -59,7 +61,8 @@ const Profile = () => {
     }
   }, [page, totalPages]);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await signOutFirebaseUser().catch(() => {});
     clearTokens();
     navigate("/");
     window.location.reload();
@@ -329,11 +332,16 @@ const Profile = () => {
             profileUrl={user.profileUrl}
             coverUrl={user.coverUrl}
             bio={user.bio}
-            createdAt={new Date(user.createdAt).toLocaleDateString("en-US", {
-              month: "short",
-              day: "numeric",
-              year: "numeric",
-            })}
+            isFirebaseSession={firebaseSession}
+            createdAt={
+              user.createdAt
+                ? new Date(user.createdAt).toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                    year: "numeric",
+                  })
+                : ""
+            }
           />
         )}
         {activeTab === "draft" && (

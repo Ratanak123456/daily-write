@@ -6,6 +6,7 @@ import {
 import { Camera, Edit2, Save, X, User } from "lucide-react";
 import Toast from "../../../components/Toast";
 import { resolveMediaPreviewUrl, getMediaUrl } from "../../../utils/mediaUrl";
+import { updateFirebaseUserProfile } from "../../../app/firebase/authService";
 
 export default function About({
   uuid,
@@ -15,8 +16,10 @@ export default function About({
   coverUrl,
   createdAt,
   bio,
+  isFirebaseSession = false,
 }) {
   const [isEditing, setIsEditing] = useState(false);
+  const [failedAvatarUrl, setFailedAvatarUrl] = useState("");
   const [formData, setFormData] = useState({
     fullName: fullName || "",
     email: email || "",
@@ -87,6 +90,21 @@ export default function About({
   };
 
   const handleSave = async () => {
+    if (isFirebaseSession) {
+      try {
+        await updateFirebaseUserProfile({
+          fullName: formData.fullName,
+          profileUrl: formData.profileUrl,
+          email: formData.email,
+        });
+        setIsEditing(false);
+        showToast("Firebase profile updated successfully!");
+      } catch (error) {
+        showToast(error?.message || "Failed to update Firebase profile.", "error");
+      }
+      return;
+    }
+
     console.log("DEBUG: Saving profile for UUID:", uuid);
     console.log("DEBUG: Payload:", JSON.stringify(formData, null, 2));
     
@@ -138,6 +156,11 @@ export default function About({
                 ? "Edit your personal information"
                 : "Manage your personal information"}
             </p>
+            {isFirebaseSession && (
+              <p className="text-xs text-(--text-secondary) mt-1">
+                Profile updates are synced with Firebase.
+              </p>
+            )}
           </div>
           <div className="flex gap-2">
             {isEditing ? (
@@ -177,11 +200,14 @@ export default function About({
         <div className="mb-12 flex flex-col items-center">
           <div className="relative group">
             <div className="w-32 h-32 rounded-full border-4 border-(--primary-500) overflow-hidden bg-(--bg-secondary) flex items-center justify-center">
-              {formData.profileUrl ? (
+              {formData.profileUrl &&
+              failedAvatarUrl !== getMediaUrl(formData.profileUrl) ? (
                 <img
                   src={getMediaUrl(formData.profileUrl)}
                   alt="Profile"
                   className="w-full h-full object-cover"
+                  referrerPolicy="no-referrer"
+                  onError={() => setFailedAvatarUrl(getMediaUrl(formData.profileUrl))}
                 />
               ) : (
                 <User size={64} className="text-(--text-secondary)" />
@@ -192,7 +218,7 @@ export default function About({
                 </div>
               )}
             </div>
-            {isEditing && (
+            {isEditing && !isFirebaseSession && (
               <label className="absolute bottom-1 right-1 bg-(--primary-500) p-2 rounded-full cursor-pointer shadow-lg hover:scale-110 transition-transform">
                 <Camera size={18} className="text-white" />
                 <input
@@ -208,6 +234,22 @@ export default function About({
             Profile Picture
           </p>
         </div>
+
+        {isEditing && isFirebaseSession && (
+          <div className="mb-8">
+            <label className="text-(--text-secondary) text-xs ml-1">
+              Profile Image URL
+            </label>
+            <input
+              type="url"
+              name="profileUrl"
+              value={formData.profileUrl}
+              onChange={handleChange}
+              placeholder="https://..."
+              className="w-full mt-1 bg-(--bg-secondary) border border-(--border-color) p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-(--primary-500) text-(--text-primary)"
+            />
+          </div>
+        )}
 
         <div className="mb-12">
           <h3 className="text-lg font-bold mb-6 flex items-center gap-2">

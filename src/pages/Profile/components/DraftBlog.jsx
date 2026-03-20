@@ -6,6 +6,7 @@ import { useGetCurrentUserQuery } from "../../../app/features/auth/auth";
 import { useEffect } from "react";
 import BlogCard from "../../../components/Card/BlogCard";
 import SkeletonCard from "../../../components/Card/Skeleton";
+import { isFirebaseAuthSession } from "../../../utils/tokenUtil";
 
 export default function DraftBlog({
   page = 0,
@@ -17,10 +18,12 @@ export default function DraftBlog({
 }) {
   const { data: currentUserData } = useGetCurrentUserQuery();
   const currentUser = currentUserData?.data;
+  const firebaseSession = isFirebaseAuthSession();
+  const shouldFetchBackendDrafts = Boolean(currentUser?.uuid) && !firebaseSession;
 
   const { data, isLoading, isError } = useGetAllProductByCurrentUserUuidQuery(
     { userUuid: currentUser?.uuid, pageNumber: 0, pageSize: 1000 },
-    { skip: !currentUser?.uuid },
+    { skip: !shouldFetchBackendDrafts },
   );
   const { data: userData } = useGetAllUserQuery();
 
@@ -52,11 +55,29 @@ export default function DraftBlog({
     onTotalPagesChange?.(totalPages);
   }, [onTotalPagesChange, totalPages]);
 
+  if (!currentUser) {
+    return (
+      <div className="contents">
+        {[...Array(pageSize)].map((_, i) => (
+          <SkeletonCard key={i} />
+        ))}
+      </div>
+    );
+  }
+
+  if (firebaseSession) {
+    return (
+      <div className="col-span-full py-10 text-center text-gray-500 text-lg">
+        Your Firebase profile is ready. No draft blogs have been linked yet.
+      </div>
+    );
+  }
+
   if (isError) {
     return <div>Error loading drafts</div>;
   }
 
-  if (isLoading || !data || !currentUser) {
+  if (isLoading || !data) {
     return (
       <div className="contents">
         {[...Array(pageSize)].map((_, i) => (

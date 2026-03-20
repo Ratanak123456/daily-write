@@ -5,6 +5,7 @@ import {
   storeAccessToken,
   storeRefreshToken,
   clearTokens,
+  isFirebaseAuthSession,
 } from "../utils/tokenUtil";
 
 // create customBaseQuery
@@ -28,6 +29,10 @@ const tokenRefreshBaseQuery = async (args, api, extraOptions) => {
 
   // If we get a 401, try to refresh the token
   if (result.error?.status === 401) {
+    if (isFirebaseAuthSession()) {
+      return result;
+    }
+
     const refreshToken = getDecryptedRefreshToken();
 
     if (!refreshToken) {

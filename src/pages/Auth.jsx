@@ -1,11 +1,11 @@
-import { useEffect, useState, useMemo, useCallback } from "react";
+import { useState } from "react";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
-import { useUserLoginMutation, useUserRegisterMutation } from "../app/features/auth/auth";
 import {
   storeAccessToken,
   storeRefreshToken,
+  storeAuthProvider,
 } from "../utils/tokenUtil";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import logo from "../assets/DailyWriteLogo.svg";
 import logIn from "../assets/auth/login.svg";
 import signUp from "../assets/auth/sign-up-animate.svg";
@@ -16,6 +16,10 @@ import DecorativeBlobs from "../components/DecorativeBlobs";
 import BackToHome from "../components/Button/BackHome";
 import { useI18n } from "../i18n/useI18n";
 import GoogleButton from "../components/Button/Google";
+import {
+  loginWithEmailPassword,
+  registerWithEmailPassword,
+} from "../app/firebase/authService";
 
 // Reusable error message
 const ErrorMessage = ({ error }) =>
@@ -85,21 +89,8 @@ const LoginPage = () => {
   const [showLoginPassword, setShowLoginPassword] = useState(false);
   const [showRegisterPassword, setShowRegisterPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [authLoading, setAuthLoading] = useState(false);
   const navigate = useNavigate();
-  const location = useLocation();
-
-  const [loginUser, { isLoading, isError, error: loginError }] =
-    useUserLoginMutation();
-
-  const [registerUser, { isLoading: isRegisterLoading }] = useUserRegisterMutation();
-
-  const extractTokens = useCallback((response) => {
-    const payload = response?.data ?? response;
-    return {
-      accessToken: payload?.accessToken || null,
-      refreshToken: payload?.refreshToken || null,
-    };
-  }, []);
 
   // Login form
   const {
@@ -128,78 +119,52 @@ const LoginPage = () => {
     },
   });
 
-  useEffect(() => {
-    const searchParams = new URLSearchParams(location.search);
-    const accessToken =
-      searchParams.get("accessToken") || searchParams.get("token");
-    const refreshToken = searchParams.get("refreshToken");
-    const oauthError = searchParams.get("error") || searchParams.get("message");
-
-    if (accessToken) {
-      storeAccessToken(accessToken);
-      if (refreshToken) storeRefreshToken(refreshToken);
-      navigate("/", { replace: true });
-    } else if (oauthError) {
-      navigate("/auth", { replace: true });
-      // Error will be displayed via derived state below
+  const persistAuth = (accessToken, refreshToken) => {
+    storeAccessToken(accessToken);
+    if (refreshToken) {
+      storeRefreshToken(refreshToken);
     }
-  }, [location.search, navigate]);
+    storeAuthProvider("firebase");
+  };
 
-  // Derive error from URL params for OAuth errors
-  const urlError = useMemo(() => {
-    const params = new URLSearchParams(location.search);
-    const err = params.get("error") || params.get("message");
-    return err ? decodeURIComponent(err) : null;
-  }, [location.search]);
-
-  // Derive error from login API error
-  const loginErrorMessage = useMemo(() => {
-    if (!isError) return null;
-    return loginError?.data?.message || "Login failed. Please check your credentials.";
-  }, [isError, loginError]);
-
-  // Combined error display
-  const displayError = error || urlError || loginErrorMessage || "";
+  const displayError = error;
 
   const onLogin = async (data) => {
     setError("");
     setSuccessMessage("");
+    setAuthLoading(true);
     try {
-      const loginResponse = await loginUser({
-        email: data.email,
-        password: data.password,
-      }).unwrap();
-      const { accessToken, refreshToken } = extractTokens(loginResponse);
-
-      if (!accessToken) {
-        throw new Error("Login response missing access token");
-      }
-
-      storeAccessToken(accessToken);
-      if (refreshToken) {
-        storeRefreshToken(refreshToken);
-      }
+      const { accessToken, refreshToken } = await loginWithEmailPassword(
+        data.email,
+        data.password,
+      );
+      persistAuth(accessToken, refreshToken);
       navigate("/", { replace: true });
     } catch (err) {
-      setError(err?.data?.message || "Login failed. Try again.");
+      setError(err?.message || "Login failed. Try again.");
+    } finally {
+      setAuthLoading(false);
     }
   };
 
   const onRegister = async (data) => {
     setError("");
     setSuccessMessage("");
+    setAuthLoading(true);
     try {
-      const payload = {
-        fullName: `${data.firstName} ${data.lastName}`,
-        email: data.email,
-        password: data.password,
-      };
-      await registerUser(payload).unwrap();
-      setSuccessMessage("Register success! Please check your email to verify your account.");
+      const { accessToken, refreshToken } = await registerWithEmailPassword(
+        data.email,
+        data.password,
+        `${data.firstName} ${data.lastName}`.trim(),
+      );
+      persistAuth(accessToken, refreshToken);
+      setSuccessMessage("Registration successful. You are now logged in.");
       resetRegisterForm();
-      setView("login");
+      navigate("/", { replace: true });
     } catch (err) {
-      setError(err?.data?.message || "Registration failed. Try again.");
+      setError(err?.message || "Registration failed. Try again.");
+    } finally {
+      setAuthLoading(false);
     }
   };
 
@@ -207,6 +172,35 @@ const LoginPage = () => {
     setView(view === "login" ? "register" : "login");
     setError("");
     setSuccessMessage("");
+  };
+
+  const handleGoogleSuccess = async (result) => {
+    const googleUser = result?.user ?? null;
+    const firebaseIdToken = googleUser
+      ? await googleUser.getIdToken()
+      : null;
+    const firebaseRefreshToken = googleUser?.stsTokenManager?.refreshToken || null;
+
+    console.log("Google login result:", result);
+    console.log("Google login user:", googleUser);
+    console.log("Firebase ID token:", firebaseIdToken);
+
+    if (!firebaseIdToken) {
+      setSuccessMessage("");
+      setError("Google sign-in succeeded, but no Firebase token was returned.");
+      return;
+    }
+
+    persistAuth(firebaseIdToken, firebaseRefreshToken);
+    setError("");
+    setSuccessMessage("Google login successful.");
+    navigate("/", { replace: true });
+  };
+
+  const handleGoogleError = (googleError) => {
+    console.error("Google login error:", googleError);
+    setSuccessMessage("");
+    setError("Google login failed. Check the browser console.");
   };
 
   const getInputClassName = () =>
@@ -289,10 +283,16 @@ const LoginPage = () => {
                 </div>
               )}
               <Divider text={view === "login" ? t("auth.orLoginWith") : t("auth.orRegisterWith")} />
-              <button type="submit" disabled={isLoading || isRegisterLoading} className="w-full text-white font-bold py-2.5 sm:py-3.5 rounded-lg sm:rounded-xl transition-all active:scale-[0.98] disabled:opacity-70 flex items-center justify-center text-sm sm:text-base" style={{ backgroundColor: "var(--primary-500)" }}>
-                {(isLoading || isRegisterLoading) ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : (view === "login" ? t("auth.login") : t("auth.register"))}
+              <button type="submit" disabled={authLoading} className="w-full text-white font-bold py-2.5 sm:py-3.5 rounded-lg sm:rounded-xl transition-all active:scale-[0.98] disabled:opacity-70 flex items-center justify-center text-sm sm:text-base" style={{ backgroundColor: "var(--primary-500)" }}>
+                {authLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : (view === "login" ? t("auth.login") : t("auth.register"))}
               </button>
-              <GoogleButton text={t("auth.google")} onClick={() => console.log("Google login clicked")} />
+              <GoogleButton
+                text={t("auth.google")}
+                onClick={() => console.log("Google login clicked")}
+                isLoading={authLoading}
+                onSuccess={handleGoogleSuccess}
+                onError={handleGoogleError}
+              />
             </form>
             <div className="mt-4 sm:mt-6 text-center">
               <p className="text-xs sm:text-sm" style={{ color: "var(--text-secondary)" }}>

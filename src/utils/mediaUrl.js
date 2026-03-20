@@ -53,8 +53,11 @@ export const resolveMediaPreviewUrl = (
  * If it's a relative path or just a filename, prepends the base URL.
  */
 export const getMediaUrl = (url, baseUrl = import.meta.env.VITE_BASE_URL) => {
-  if (!url || url === "null" || url === "undefined") return "";
-  if (url.startsWith("http") || url.startsWith("data:")) return url;
+  const normalizedUrl = typeof url === "string" ? url.trim() : url;
+  if (!normalizedUrl || normalizedUrl === "null" || normalizedUrl === "undefined") return "";
+  if (/^https?:\/\//i.test(normalizedUrl) || normalizedUrl.startsWith("data:")) {
+    return normalizedUrl;
+  }
 
   // Fallback to API base URL if VITE_BASE_URL is not set
   const fallbackBaseUrl = "https://blog-api.bykh.org/api/v100";
@@ -63,12 +66,12 @@ export const getMediaUrl = (url, baseUrl = import.meta.env.VITE_BASE_URL) => {
   // If baseUrl is missing, try to use a safe default or just return the path
   // In many cases, if it's a relative path, it might be in the public folder or relative to the origin
   if (!finalBaseUrl) {
-    return url.startsWith("/") ? url : `/${url}`;
+    return normalizedUrl.startsWith("/") ? normalizedUrl : `/${normalizedUrl}`;
   }
 
   // Clean up the base URL and the path to ensure they join correctly
   const cleanBase = finalBaseUrl.replace(/\/+$/, "");
-  const cleanPath = url.replace(/^\/+/, "");
+  const cleanPath = normalizedUrl.replace(/^\/+/, "");
 
   return `${cleanBase}/${cleanPath}`;
 };

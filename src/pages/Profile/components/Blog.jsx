@@ -7,6 +7,7 @@ import { useEffect } from "react";
 import BlogCard from "../../../components/Card/BlogCard";
 import SkeletonCard from "../../../components/Card/Skeleton";
 import { useNavigate } from "react-router-dom";
+import { isFirebaseAuthSession } from "../../../utils/tokenUtil";
 
 export default function Blog({
   page = 0,
@@ -19,10 +20,12 @@ export default function Blog({
   const navigate = useNavigate();
   const { data: currentUserData } = useGetCurrentUserQuery();
   const currentUser = currentUserData?.data;
+  const firebaseSession = isFirebaseAuthSession();
+  const shouldFetchBackendBlogs = Boolean(currentUser?.uuid) && !firebaseSession;
 
   const { data, isLoading, isError } = useGetAllProductByCurrentUserUuidQuery(
     { userUuid: currentUser?.uuid, pageNumber: 0, pageSize: 1000 },
-    { skip: !currentUser?.uuid },
+    { skip: !shouldFetchBackendBlogs },
   );
   const { data: userData } = useGetAllUserQuery();
 
@@ -54,7 +57,25 @@ export default function Blog({
     onTotalPagesChange?.(totalPages);
   }, [onTotalPagesChange, totalPages]);
 
-  if (isLoading || !data || !currentUser) {
+  if (!currentUser) {
+    return (
+      <div className="contents">
+        {[...Array(pageSize)].map((_, i) => (
+          <SkeletonCard key={i} />
+        ))}
+      </div>
+    );
+  }
+
+  if (firebaseSession) {
+    return (
+      <div className="col-span-full py-10 text-center text-gray-500 text-lg">
+        Your Firebase profile is ready. No blogs have been linked yet.
+      </div>
+    );
+  }
+
+  if (isLoading || !data) {
     return (
       <div className="contents">
         {[...Array(pageSize)].map((_, i) => (
@@ -69,6 +90,13 @@ export default function Blog({
   }
 
   if (sortedPublishedBlogs.length === 0) {
+    if (firebaseSession) {
+      return (
+        <div className="col-span-full py-10 text-center text-gray-500 text-lg">
+          Your Firebase profile is ready. No blogs have been linked yet.
+        </div>
+      );
+    }
     return (
       <div className="col-span-full py-10 text-center text-gray-500 text-lg">
         You haven't published any blogs yet.

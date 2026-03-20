@@ -16,6 +16,7 @@ import { useGetCurrentUserQuery } from "../../app/features/auth/auth";
 import { clearTokens, hasAuthToken } from "../../utils/tokenUtil";
 import { useI18n } from "../../i18n/useI18n";
 import { getMediaUrl } from "../../utils/mediaUrl";
+import { signOutFirebaseUser } from "../../app/firebase/authService";
 
 export default function NavbarComponent() {
   const [isDark, setIsDark] = useState(() => {
@@ -29,6 +30,7 @@ export default function NavbarComponent() {
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [showLanguageMenu, setShowLanguageMenu] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [failedAvatarUrl, setFailedAvatarUrl] = useState("");
   const { t, language, setLanguage } = useI18n();
   const navigate = useNavigate();
   const profileMenuRef = useRef(null);
@@ -40,6 +42,7 @@ export default function NavbarComponent() {
   });
 
   const user = userData?.data;
+  const profileImageUrl = getMediaUrl(user?.profileUrl);
 
   useEffect(() => {
     if (isDark) {
@@ -78,7 +81,8 @@ export default function NavbarComponent() {
     setShowLogoutModal(true);
   };
 
-  const handleConfirmLogout = () => {
+  const handleConfirmLogout = async () => {
+    await signOutFirebaseUser().catch(() => {});
     clearTokens();
     window.location.reload(); // Refresh to clear state
   };
@@ -233,11 +237,13 @@ export default function NavbarComponent() {
                   className="flex items-center gap-2 focus:outline-none"
                 >
                   <div className="w-10 h-10 rounded-full border-2 border-primary-orange overflow-hidden bg-orange-50 flex items-center justify-center">
-                    {getMediaUrl(user.profileUrl) ? (
+                    {profileImageUrl && failedAvatarUrl !== profileImageUrl ? (
                       <img
-                        src={getMediaUrl(user.profileUrl)}
+                        src={profileImageUrl}
                         alt={user.fullName}
                         className="w-full h-full object-cover"
+                        referrerPolicy="no-referrer"
+                        onError={() => setFailedAvatarUrl(profileImageUrl)}
                       />
                     ) : (
                       <User className="text-primary-orange" size={20} />
