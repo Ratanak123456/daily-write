@@ -1,14 +1,15 @@
 import React from "react";
 import { useI18n } from "../../i18n/useI18n";
-import student1 from "../../../public/Team/Saren Ratanak.jpg";
-import student2 from "../../../public/Team/rosa.jpg";
-import student3 from "../../../public/Team/photo_2026-02-17_21-02-08.jpg";
-import student4 from "../../../public/Team/photo_2026-02-19_00-24-53.jpg";
-import student5 from "../../../public/Team/image_2024-01-22_14-24-14.png";
-import student6 from "../../../public/Team/_MG_8835.jpg";
-import student7 from "../../../public/Team/IMG_4905.jpg";
-import mentor1 from "../../../public/Mentor/teacher.jpg";
-import mentor2 from "../../../public/Mentor/Chhaya.jpg";
+
+const student1 = "/Team/Saren Ratanak.jpg";
+const student2 = "/Team/rosa.jpg";
+const student3 = "/Team/photo_2026-02-17_21-02-08.jpg";
+const student4 = "/Team/photo_2026-02-19_00-24-53.jpg";
+const student5 = "/Team/image_2024-01-22_14-24-14.png";
+const student6 = "/Team/_MG_8835.jpg";
+const student7 = "/Team/IMG_4905.jpg";
+const mentor1 = "/Mentor/teacher.jpg";
+const mentor2 = "/Mentor/Chhaya.jpg";
 
 // Social icons component
 const SocialIcons = ({ variant = "default" }) => (

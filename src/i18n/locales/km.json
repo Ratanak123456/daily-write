@@ -201,7 +201,7 @@
         "uploadingImage": "កំពុងផ្ទុករូបភាព...",
         "uploadToGallery": "ផ្ទុករូបភាពទៅវិចិត្រសាល",
         "dragDrop": "អូសទម្លាក់រូបភាព ឬចុចដើម្បីជ្រើស",
-        "fileHint": "PNG, JPG, GIF ដល់ 5MB (បានតែ 1 ឯកសារ)",
+        "fileHint": "PNG, JPG, GIF ដល់ 1MB (បានតែ 1 ឯកសារ)",
         "selectImages": "ជ្រើសរូបភាព",
         "changeImage": "ប្ដូររូបភាព",
         "removeImage": "លុបរូបភាព",

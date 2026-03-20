@@ -3,7 +3,7 @@ import Button from "../Button/Button";
 
 export default function HeroSection() {
   return (
-    <section className="bg-[#FFF8ED] dark:bg-black relative min-h-screen overflow-hidden flex items-center">
+    <section className="bg-bg-main relative min-h-screen overflow-hidden flex items-center">
       {/* Animated background orb */}
       <div className="absolute -top-80 -left-80 w-200 h-200 rounded-full opacity-40 pointer-events-none animate-spin-slow bg-[radial-gradient(circle_at_center,#F48024_0%,transparent_70%)]" />
 

@@ -1,11 +1,11 @@
 import { Link } from "react-router-dom";
-import ListCard, { SideBar } from "./components/homepage/BlogSection/ListCard";
-import EncourageSection from "./components/homepage/EncourageSection/EncourageSection";
-import ImageSide from "./components/homepage/HeroSection/ImageSide";
-import Information from "./components/homepage/HeroSection/Information";
-import FAQ from "./components/homepage/FAQ/FAQ";
-import ReviewSection from "./components/homepage/ReviewSection/ReviewSection";
-import ShareFeedback from "./components/homepage/ShareFeedBack/ShareFeedback";
+import ListCard, { SideBar } from "./components/Homepage/BlogSection/ListCard";
+import EncourageSection from "./components/Homepage/EncourageSection/EncourageSection";
+import ImageSide from "./components/Homepage/HeroSection/ImageSide";
+import Information from "./components/Homepage/HeroSection/Information";
+import FAQ from "./components/Homepage/FAQ/FAQ";
+import ReviewSection from "./components/Homepage/ReviewSection/ReviewSection";
+import ShareFeedback from "./components/Homepage/ShareFeedBack/ShareFeedback";
 import { useI18n } from "./i18n/useI18n";
 
 function App() {
@@ -14,7 +14,7 @@ function App() {
   return (
     <main>
       {/* Hero Section */}
-      <section className="bg-[#FFF8ED] dark:bg-black relative overflow-hidden min-h-screen lg:min-h-0 py-12 lg:py-0 flex items-center">
+      <section className="bg-bg-mainrelative overflow-hidden min-h-screen lg:min-h-0 py-12 lg:py-0 flex items-center">
         {/* Animated background elements - optimized for mobile */}
         <div className="absolute -top-20 -left-20 sm:-top-40 sm:-left-40 md:-top-80 md:-left-80 w-64 h-64 sm:w-100 sm:h-100 md:w-200 md:h-200 rounded-full opacity-30 sm:opacity-40 pointer-events-none animate-spin-slow bg-[radial-gradient(circle_at_center,#F48024_0%,transparent_70%)]" />
 

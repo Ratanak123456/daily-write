@@ -201,7 +201,7 @@
         "uploadingImage": "Uploading image...",
         "uploadToGallery": "Upload images to gallery",
         "dragDrop": "Drag and drop images here or click to browse",
-        "fileHint": "PNG, JPG, GIF up to 5MB (1 file only)",
+        "fileHint": "PNG, JPG, GIF up to 1MB (1 file only)",
         "selectImages": "Select images",
         "changeImage": "Change image",
         "removeImage": "Remove image",

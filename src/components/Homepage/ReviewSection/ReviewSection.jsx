@@ -1,11 +1,12 @@
 import { useState, useEffect, useRef } from "react";
-import student1 from "../../../../public/Team/Saren Ratanak.jpg";
-import student2 from "../../../../public/Team/IMG_4905.jpg";
-import student3 from "../../../../public/Team/photo_2026-02-19_00-24-53.jpg";
-import student4 from "../../../../public/Team/image_2024-01-22_14-24-14.png";
-import student5 from "../../../../public/Team/rosa.jpg";
-import student6 from "../../../../public/Team/_MG_8835.jpg";
-import student7 from "../../../../public/Team/photo_2026-02-17_21-02-08.jpg";
+
+const student1 = "/Team/Saren Ratanak.jpg";
+const student2 = "/Team/IMG_4905.jpg";
+const student3 = "/Team/photo_2026-02-19_00-24-53.jpg";
+const student4 = "/Team/image_2024-01-22_14-24-14.png";
+const student5 = "/Team/rosa.jpg";
+const student6 = "/Team/_MG_8835.jpg";
+const student7 = "/Team/photo_2026-02-17_21-02-08.jpg";
 
 export default function ReviewSection() {
   const [currentIndex, setCurrentIndex] = useState(0);
