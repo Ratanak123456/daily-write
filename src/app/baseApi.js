@@ -13,7 +13,7 @@ const customBaseQuery = fetchBaseQuery({
   baseUrl: import.meta.env.VITE_BASE_URL,
   prepareHeaders: (header) => {
     const accessToken = getDecryptedAccessToken();
-    if (accessToken && !header.has("Authorization")) {
+    if (accessToken && !isFirebaseAuthSession() && !header.has("Authorization")) {
       header.set("Authorization", `Bearer ${accessToken}`);
     }
     return header;
@@ -27,8 +27,8 @@ const tokenRefreshBaseQuery = async (args, api, extraOptions) => {
   // First, try the original request
   const result = await customBaseQuery(args, api, extraOptions);
 
-  // If we get a 401, try to refresh the token
-  if (result.error?.status === 401) {
+  // If we get 401/403, try to refresh the token
+  if (result.error?.status === 401 || result.error?.status === 403) {
     if (isFirebaseAuthSession()) {
       return result;
     }

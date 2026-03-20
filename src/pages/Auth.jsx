@@ -17,9 +17,9 @@ import BackToHome from "../components/Button/BackHome";
 import { useI18n } from "../i18n/useI18n";
 import GoogleButton from "../components/Button/Google";
 import {
-  loginWithEmailPassword,
-  registerWithEmailPassword,
-} from "../app/firebase/authService";
+  useUserLoginMutation,
+  useUserRegisterMutation,
+} from "../app/features/auth/auth";
 
 // Reusable error message
 const ErrorMessage = ({ error }) =>
@@ -91,6 +91,8 @@ const LoginPage = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [authLoading, setAuthLoading] = useState(false);
   const navigate = useNavigate();
+  const [userLogin] = useUserLoginMutation();
+  const [userRegister] = useUserRegisterMutation();
 
   // Login form
   const {
@@ -119,12 +121,21 @@ const LoginPage = () => {
     },
   });
 
-  const persistAuth = (accessToken, refreshToken) => {
+  const persistAuth = (accessToken, refreshToken, provider = "backend") => {
     storeAccessToken(accessToken);
     if (refreshToken) {
       storeRefreshToken(refreshToken);
     }
-    storeAuthProvider("firebase");
+    storeAuthProvider(provider);
+  };
+
+  const extractTokens = (response) => {
+    const payload = response?.data || response || {};
+    const accessToken =
+      payload.accessToken || payload.token || payload.idToken || null;
+    const refreshToken = payload.refreshToken || payload.refresh_token || null;
+
+    return { accessToken, refreshToken };
   };
 
   const displayError = error;
@@ -134,14 +145,25 @@ const LoginPage = () => {
     setSuccessMessage("");
     setAuthLoading(true);
     try {
-      const { accessToken, refreshToken } = await loginWithEmailPassword(
-        data.email,
-        data.password,
-      );
-      persistAuth(accessToken, refreshToken);
+      const loginResponse = await userLogin({
+        email: data.email,
+        password: data.password,
+      }).unwrap();
+      const { accessToken, refreshToken } = extractTokens(loginResponse);
+
+      if (!accessToken) {
+        throw new Error("No access token returned from login API.");
+      }
+
+      persistAuth(accessToken, refreshToken, "backend");
       navigate("/", { replace: true });
     } catch (err) {
-      setError(err?.message || "Login failed. Try again.");
+      setError(
+        err?.data?.message ||
+          err?.data?.error ||
+          err?.message ||
+          "Login failed. Try again.",
+      );
     } finally {
       setAuthLoading(false);
     }
@@ -152,17 +174,30 @@ const LoginPage = () => {
     setSuccessMessage("");
     setAuthLoading(true);
     try {
-      const { accessToken, refreshToken } = await registerWithEmailPassword(
-        data.email,
-        data.password,
-        `${data.firstName} ${data.lastName}`.trim(),
-      );
-      persistAuth(accessToken, refreshToken);
+      const registerResponse = await userRegister({
+        fullName: `${data.firstName} ${data.lastName}`.trim(),
+        firstName: data.firstName,
+        lastName: data.lastName,
+        email: data.email,
+        password: data.password,
+      }).unwrap();
+      const { accessToken, refreshToken } = extractTokens(registerResponse);
+
+      if (!accessToken) {
+        throw new Error("No access token returned from register API.");
+      }
+
+      persistAuth(accessToken, refreshToken, "backend");
       setSuccessMessage("Registration successful. You are now logged in.");
       resetRegisterForm();
       navigate("/", { replace: true });
     } catch (err) {
-      setError(err?.message || "Registration failed. Try again.");
+      setError(
+        err?.data?.message ||
+          err?.data?.error ||
+          err?.message ||
+          "Registration failed. Try again.",
+      );
     } finally {
       setAuthLoading(false);
     }
@@ -191,7 +226,7 @@ const LoginPage = () => {
       return;
     }
 
-    persistAuth(firebaseIdToken, firebaseRefreshToken);
+    persistAuth(firebaseIdToken, firebaseRefreshToken, "firebase");
     setError("");
     setSuccessMessage("Google login successful.");
     navigate("/", { replace: true });
