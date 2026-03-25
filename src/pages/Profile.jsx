@@ -87,7 +87,6 @@ const Profile = () => {
       await deleteBlog(blogToDelete.uuid).unwrap();
       setBlogToDelete(null);
     } catch (error) {
-      console.error("Delete blog failed", error);
     }
   };
 

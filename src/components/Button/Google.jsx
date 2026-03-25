@@ -19,7 +19,6 @@ const GoogleButton = ({
     } catch (error) {
       onError?.(error);
       // Keep a visible trace while integration is in progress.
-      console.error("Google sign-in failed:", error);
     }
   };
 

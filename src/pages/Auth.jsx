@@ -216,9 +216,6 @@ const LoginPage = () => {
       : null;
     const firebaseRefreshToken = googleUser?.stsTokenManager?.refreshToken || null;
 
-    console.log("Google login result:", result);
-    console.log("Google login user:", googleUser);
-    console.log("Firebase ID token:", firebaseIdToken);
 
     if (!firebaseIdToken) {
       setSuccessMessage("");
@@ -233,7 +230,6 @@ const LoginPage = () => {
   };
 
   const handleGoogleError = (googleError) => {
-    console.error("Google login error:", googleError);
     setSuccessMessage("");
     setError("Google login failed. Check the browser console.");
   };
@@ -323,7 +319,7 @@ const LoginPage = () => {
               </button>
               <GoogleButton
                 text={t("auth.google")}
-                onClick={() => console.log("Google login clicked")}
+                onClick={() => {}}
                 isLoading={authLoading}
                 onSuccess={handleGoogleSuccess}
                 onError={handleGoogleError}

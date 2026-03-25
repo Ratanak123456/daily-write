@@ -77,7 +77,6 @@ export default function About({
       }));
       showToast(`${type === "profile" ? "Profile" : "Cover"} image uploaded!`);
     } catch (error) {
-      console.error("FULL ERROR RESPONSE:", error);
       const message =
         error?.data?.message ||
         (typeof error?.data === "string" ? error.data : "") ||
@@ -105,24 +104,18 @@ export default function About({
       return;
     }
 
-    console.log("DEBUG: Saving profile for UUID:", uuid);
-    console.log("DEBUG: Payload:", JSON.stringify(formData, null, 2));
     
     try {
       const response = await patchUser({
         uuid,
         payload: formData,
       }).unwrap();
-      console.log("DEBUG: Profile update success:", JSON.stringify(response, null, 2));
       setIsEditing(false);
       showToast("Profile updated successfully!");
     } catch (error) {
-      console.error("DEBUG: Failed to update profile:", error);
       
       if (error?.data) {
-        console.error("DEBUG: Server error data (stringified):", JSON.stringify(error.data, null, 2));
       } else if (error?.status) {
-        console.error("DEBUG: Error status:", error.status);
       }
       
       showToast("Failed to update profile. Please try again.", "error");
