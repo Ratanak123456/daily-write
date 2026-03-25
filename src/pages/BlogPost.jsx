@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { ArrowLeft, ChevronDown, ImagePlus, Loader2, X, Check, AlertCircle } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import Quill from "quill";
@@ -11,7 +11,7 @@ import {
 } from "../app/features/services/productApi";
 import { buildCreateBlogPayload } from "../app/features/services/blogPayload";
 import { useI18n } from "../i18n/useI18n";
-import { resolveMediaPreviewUrl } from "../utils/mediaUrl";
+import { resolveMediaPreviewUrl, getMediaUrl } from "../utils/mediaUrl";
 import PageSkeleton from "../components/PageSkeleton";
 
 const EDITOR_TOOLBAR_OPTIONS = [
@@ -141,6 +141,40 @@ export default function BlogPost() {
     }
   };
 
+  const imageHandler = useCallback(() => {
+    const input = document.createElement("input");
+    input.setAttribute("type", "file");
+    input.setAttribute("accept", "image/*");
+    input.click();
+
+    input.onchange = async () => {
+      const file = input.files[0];
+      if (file) {
+        const formData = new FormData();
+        formData.append("files", file);
+
+        try {
+          const res = await uploadMedia(formData).unwrap();
+          const url = resolveMediaPreviewUrl(res, file.name);
+          
+          const quill = quillInstanceRef.current;
+          if (quill) {
+            const range = quill.getSelection();
+            if (range) {
+              quill.insertEmbed(range.index, "image", url);
+              quill.setSelection(range.index + 1);
+            } else {
+              quill.insertEmbed(quill.getLength(), "image", url);
+            }
+          }
+        } catch (err) {
+          console.error("Image upload failed", err);
+          setErrorMessage(t("blogPost.uploadImageFailed") || "Failed to upload image to content.");
+        }
+      }
+    };
+  }, [uploadMedia, t]);
+
   // Initialize Quill once
   useEffect(() => {
     if (
@@ -154,7 +188,12 @@ export default function BlogPost() {
       theme: "snow",
       placeholder: t("blogPost.editorPlaceholder"),
       modules: {
-        toolbar: EDITOR_TOOLBAR_OPTIONS,
+        toolbar: {
+          container: EDITOR_TOOLBAR_OPTIONS,
+          handlers: {
+            image: imageHandler,
+          },
+        },
       },
     });
     setIsEditorReady(true);
@@ -171,7 +210,7 @@ export default function BlogPost() {
       quillInstanceRef.current = null;
       setIsEditorReady(false);
     };
-  }, [uuid, isFetching, t]);
+  }, [uuid, isFetching, t, imageHandler]);
 
   // Update editor placeholder on language change
   useEffect(() => {
@@ -293,7 +332,7 @@ export default function BlogPost() {
               {coverPreview ? (
                 <div className="relative group">
                   <img
-                    src={coverPreview}
+                    src={getMediaUrl(coverPreview)}
                     alt="Cover preview"
                     className="w-full h-64 object-cover rounded-xl shadow-lg"
                   />

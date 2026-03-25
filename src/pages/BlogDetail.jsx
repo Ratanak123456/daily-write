@@ -142,7 +142,19 @@ export default function BlogDetail() {
           </div>
 
           <article className="prose prose-sm mt-8 max-w-none text-(--text-primary) sm:prose-base">
-            {parse(blog.content || "")}
+            {parse(blog.content || "", {
+              replace: (domNode) => {
+                if (domNode.name === "img" && domNode.attribs) {
+                  const { src, ...attribs } = domNode.attribs;
+                  return (
+                    <img
+                      src={getMediaUrl(src)}
+                      {...attribs}
+                    />
+                  );
+                }
+              },
+            })}
           </article>
 
           <div className="mt-8 border-t border-(--border-color) pt-6">
