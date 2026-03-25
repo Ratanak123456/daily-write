@@ -20,6 +20,7 @@ import {
   useUserLoginMutation,
   useUserRegisterMutation,
 } from "../app/features/auth/auth";
+import { usePatchUserMutation } from "../app/features/services/productApi";
 
 // Reusable error message
 const ErrorMessage = ({ error }) =>
@@ -93,6 +94,7 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const [userLogin] = useUserLoginMutation();
   const [userRegister] = useUserRegisterMutation();
+  const [patchUser] = usePatchUserMutation();
 
   // Login form
   const {
@@ -174,23 +176,21 @@ const LoginPage = () => {
     setSuccessMessage("");
     setAuthLoading(true);
     try {
-      const registerResponse = await userRegister({
+      await userRegister({
         fullName: `${data.firstName} ${data.lastName}`.trim(),
         firstName: data.firstName,
         lastName: data.lastName,
         email: data.email,
         password: data.password,
       }).unwrap();
-      const { accessToken, refreshToken } = extractTokens(registerResponse);
 
-      if (!accessToken) {
-        throw new Error("No access token returned from register API.");
-      }
-
-      persistAuth(accessToken, refreshToken, "backend");
-      setSuccessMessage("Registration successful. You are now logged in.");
+      setSuccessMessage("Registration successful! Please check your email to verify your account then log in.");
       resetRegisterForm();
-      navigate("/", { replace: true });
+      
+      setTimeout(() => {
+        setView("login");
+      }, 3000);
+
     } catch (err) {
       setError(
         err?.data?.message ||
@@ -211,27 +211,107 @@ const LoginPage = () => {
 
   const handleGoogleSuccess = async (result) => {
     const googleUser = result?.user ?? null;
-    const firebaseIdToken = googleUser
-      ? await googleUser.getIdToken()
-      : null;
-    const firebaseRefreshToken = googleUser?.stsTokenManager?.refreshToken || null;
-
-
-    if (!firebaseIdToken) {
-      setSuccessMessage("");
-      setError("Google sign-in succeeded, but no Firebase token was returned.");
+    if (!googleUser) {
+      setError("Google sign-in succeeded, but no user data was returned.");
       return;
     }
 
-    persistAuth(firebaseIdToken, firebaseRefreshToken, "firebase");
+    const email = googleUser.email;
+    const fullName = googleUser.displayName || email.split("@")[0];
+    const nameParts = fullName.split(" ");
+    const firstName = nameParts[0] || "Google";
+    const lastName = nameParts.slice(1).join(" ") || "User";
+    const GOOGLE_DUMMY_PASSWORD = googleUser.uid;
+
+    setAuthLoading(true);
     setError("");
-    setSuccessMessage("Google login successful.");
-    navigate("/", { replace: true });
+    setSuccessMessage("");
+
+    try {
+      if (view === "register") {
+        // --- GOOGLE REGISTER FLOW ---
+        try {
+          await userRegister({
+            uuid: googleUser.uid,
+            fullName: fullName,
+            firstName: firstName,
+            lastName: lastName,
+            email: email,
+            password: GOOGLE_DUMMY_PASSWORD,
+            profileUrl: googleUser.photoURL || "",
+          }).unwrap();
+          
+          setSuccessMessage("Account created via Google! Please check your email to verify your account before logging in.");
+          resetRegisterForm();
+          
+          // Redirect to login view after successful registration
+          setTimeout(() => {
+            setView("login");
+          }, 3000);
+        } catch (regErr) {
+          const regStatus = regErr.status === "PARSING_ERROR" ? regErr.originalStatus : regErr.status;
+          const regData = regErr.data || "";
+          const regMsg = typeof regData === "string" ? regData : regData?.message || "";
+
+          if (regStatus === 400 || regMsg.includes("existed") || regMsg.includes("already")) {
+            setError("This email is already registered. Please switch to Login.");
+          } else {
+            throw regErr;
+          }
+        }
+      } else {
+        // --- GOOGLE LOGIN FLOW ---
+        try {
+          const loginResponse = await userLogin({
+            email: email,
+            password: GOOGLE_DUMMY_PASSWORD,
+          }).unwrap();
+
+          const { accessToken, refreshToken } = extractTokens(loginResponse);
+          if (accessToken) {
+            persistAuth(accessToken, refreshToken, "backend");
+            
+            // Sync Google profile data with backend after successful login
+            try {
+              await patchUser({
+                uuid: googleUser.uid,
+                payload: {
+                  fullName: fullName,
+                  firstName: firstName,
+                  lastName: lastName,
+                  profileUrl: googleUser.photoURL || "",
+                }
+              }).unwrap();
+            } catch (patchErr) {
+              // We don't block login if the patch fails
+            }
+
+            setSuccessMessage("Google login successful.");
+            navigate("/", { replace: true });
+          }
+        } catch (loginErr) {
+          const logStatus = loginErr.status === "PARSING_ERROR" ? loginErr.originalStatus : loginErr.status;
+          const logData = loginErr.data || "";
+          
+          if (typeof logData === "string" && (logData.includes("verify") || logData.includes("verification"))) {
+            setError("Your account is not verified. Please check your email for the verification link.");
+          } else if (logStatus === 401 || logStatus === 404 || (typeof logData === "string" && logData.includes("credentials"))) {
+            setError("No account found for this Google user. Please register first.");
+          } else {
+            throw loginErr;
+          }
+        }
+      }
+    } catch (err) {
+      setError(err?.data?.message || err?.message || "Failed to complete Google sign-in.");
+    } finally {
+      setAuthLoading(false);
+    }
   };
 
   const handleGoogleError = (googleError) => {
     setSuccessMessage("");
-    setError("Google login failed. Check the browser console.");
+    setError("Google login failed. Please try again.");
   };
 
   const getInputClassName = () =>

@@ -29,6 +29,8 @@ const tokenRefreshBaseQuery = async (args, api, extraOptions) => {
 
   // If we get 401/403, try to refresh the token
   if (result.error?.status === 401 || result.error?.status === 403) {
+    // Firebase handles its own token refreshing via the SDK, 
+    // so we don't use the backend refresh endpoint for Firebase sessions.
     if (isFirebaseAuthSession()) {
       return result;
     }

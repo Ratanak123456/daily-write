@@ -27,7 +27,7 @@ const withRouteLoader = (element, variant = "default") => {
   );
 };
 
-const router = createBrowserRouter([
+const routes = [
   {
     path: "/",
     element: <Layout />,
@@ -82,7 +82,14 @@ const router = createBrowserRouter([
     path: "*",
     element: withRouteLoader(<NotFoundPage />, "notFound"),
   },
-]);
+];
+
+const router = createBrowserRouter(routes, {
+  future: {
+    v7_startTransition: true,
+  },
+});
+
 ReactDOM.createRoot(document.getElementById("root")).render(
   <Provider store={store}>
     <I18nProvider>
