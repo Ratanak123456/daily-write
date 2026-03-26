@@ -97,7 +97,13 @@ export default function BlogDetail() {
     .trim()
     .substring(0, 160);
 
-  const thumbnailUrl = getMediaUrl(blog.thumbnailUrl);
+  let thumbnailUrl = getMediaUrl(blog.thumbnailUrl);
+  // Ensure the URL is absolute for Open Graph
+  if (thumbnailUrl && !thumbnailUrl.startsWith("http")) {
+    const origin = window.location.origin.replace(/\/+$/, "");
+    thumbnailUrl = `${origin}/${thumbnailUrl.replace(/^\/+/, "")}`;
+  }
+  
   const currentUrl = window.location.href;
 
   return (
