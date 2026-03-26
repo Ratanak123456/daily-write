@@ -3,6 +3,7 @@ import { Clock3, Eye, Link2, User, Check } from "lucide-react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import parse from "html-react-parser";
 import { Helmet } from "react-helmet-async";
+import { Icon } from "@iconify/react";
 import {
   useGetBlogByUuidQuery,
   useGetAllUserQuery,
@@ -70,6 +71,31 @@ export default function BlogDetail() {
       }, 2000);
     } catch (err) {
     }
+  };
+
+  const handleSocialShare = (platform) => {
+    const url = encodeURIComponent(window.location.href);
+    const title = encodeURIComponent(blog?.title || "");
+    let shareUrl = "";
+
+    switch (platform) {
+      case "facebook":
+        shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
+        break;
+      case "twitter":
+        shareUrl = `https://twitter.com/intent/tweet?url=${url}&text=${title}`;
+        break;
+      case "linkedin":
+        shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${url}`;
+        break;
+      case "telegram":
+        shareUrl = `https://t.me/share/url?url=${url}&text=${title}`;
+        break;
+      default:
+        return;
+    }
+
+    window.open(shareUrl, "_blank", "width=600,height=400");
   };
 
   if (loading) {
@@ -216,6 +242,43 @@ export default function BlogDetail() {
                   </>
                 )}
               </button>
+
+              <div className="h-6 w-px bg-(--border-color) mx-1 hidden sm:block"></div>
+
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => handleSocialShare("facebook")}
+                  className="p-2 rounded-full border border-(--border-color) text-[#1877F2] hover:bg-[#1877F2] hover:text-white transition-all duration-300"
+                  title="Share on Facebook"
+                >
+                  <Icon icon="fa6-brands:facebook-f" className="text-lg" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleSocialShare("twitter")}
+                  className="p-2 rounded-full border border-(--border-color) text-black dark:text-white hover:bg-black dark:hover:bg-white dark:hover:text-black hover:text-white transition-all duration-300"
+                  title="Share on X (Twitter)"
+                >
+                  <Icon icon="fa6-brands:x-twitter" className="text-lg" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleSocialShare("linkedin")}
+                  className="p-2 rounded-full border border-(--border-color) text-[#0A66C2] hover:bg-[#0A66C2] hover:text-white transition-all duration-300"
+                  title="Share on LinkedIn"
+                >
+                  <Icon icon="fa6-brands:linkedin-in" className="text-lg" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleSocialShare("telegram")}
+                  className="p-2 rounded-full border border-(--border-color) text-[#24A1DE] hover:bg-[#24A1DE] hover:text-white transition-all duration-300"
+                  title="Share on Telegram"
+                >
+                  <Icon icon="fa6-brands:telegram" className="text-lg" />
+                </button>
+              </div>
             </div>
           </div>
 
