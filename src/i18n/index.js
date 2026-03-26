@@ -27,13 +27,19 @@ export const toggleLanguage = (currentLanguage) => {
   return nextLanguage;
 };
 
-export const t = (path, language = FALLBACK_LANGUAGE) => {
-  const value = getValueByPath(dictionaries[language], path);
+export const t = (path, language = FALLBACK_LANGUAGE, params = {}) => {
+  let value = getValueByPath(dictionaries[language], path);
 
-  if (typeof value === "string") {
-    return value;
+  if (typeof value !== "string") {
+    value = getValueByPath(dictionaries[FALLBACK_LANGUAGE], path);
   }
 
-  const fallbackValue = getValueByPath(dictionaries[FALLBACK_LANGUAGE], path);
-  return typeof fallbackValue === "string" ? fallbackValue : path;
+  if (typeof value !== "string") {
+    return path;
+  }
+
+  // Support placeholders like {{name}}
+  return Object.entries(params).reduce((acc, [key, val]) => {
+    return acc.replace(new RegExp(`{{${key}}}`, "g"), val);
+  }, value);
 };

@@ -176,7 +176,7 @@
         "loadError": "Failed to load blog detail.",
         "notFound": "Blog not found.",
         "backToBlogs": "Back to Blogs",
-        "minRead": "10 min read",
+        "minRead": "{{minutes}} min read",
         "views": "views",
         "copyLink": "Copy link",
         "latestInTopic": "Latest in This Topic"

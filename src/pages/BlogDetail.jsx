@@ -69,8 +69,7 @@ export default function BlogDetail() {
       setTimeout(() => {
         setCopied(false);
       }, 2000);
-    } catch (err) {
-    }
+    } catch (err) {}
   };
 
   const handleSocialShare = (platform) => {
@@ -129,7 +128,7 @@ export default function BlogDetail() {
     const origin = window.location.origin.replace(/\/+$/, "");
     thumbnailUrl = `${origin}/${thumbnailUrl.replace(/^\/+/, "")}`;
   }
-  
+
   const currentUrl = window.location.href;
 
   return (
@@ -196,7 +195,10 @@ export default function BlogDetail() {
               </div>
             </Link>
             <span className="flex items-center gap-1 text-xs sm:text-sm text-(--text-secondary)">
-              <Clock3 size={14} /> {t("blogDetail.minRead")}
+              <Clock3 size={14} />{" "}
+              {t("blogDetail.minRead", {
+                minutes: Math.ceil((blog.content?.length || 0) / 1000),
+              })}
             </span>
             <span className="flex items-center gap-1 text-xs sm:text-sm text-(--text-secondary)">
               <Eye size={14} /> {blog.view} {t("blogDetail.views")}
@@ -208,12 +210,7 @@ export default function BlogDetail() {
               replace: (domNode) => {
                 if (domNode.name === "img" && domNode.attribs) {
                   const { src, ...attribs } = domNode.attribs;
-                  return (
-                    <img
-                      src={getMediaUrl(src)}
-                      {...attribs}
-                    />
-                  );
+                  return <img src={getMediaUrl(src)} {...attribs} />;
                 }
               },
             })}
@@ -300,23 +297,88 @@ export default function BlogDetail() {
                 <article
                   key={item.uuid}
                   onClick={() => navigate(`/blogs/${item.uuid}`)}
-                  className="flex min-h-32 cursor-pointer overflow-hidden rounded-2xl border border-(--border-color) bg-(--bg-primary) hover:bg-(--bg-secondary) transition-colors"
+                  className="group relative flex min-h-32 cursor-pointer overflow-hidden rounded-2xl border border-(--border-color) bg-(--bg-primary) transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:bg-(--bg-secondary) dark:border-gray-700 dark:hover:shadow-gray-900/50"
                 >
-                  <img
-                    src={getMediaUrl(item.thumbnailUrl)}
-                    alt={item.title}
-                    className="h-full w-32 shrink-0 object-cover sm:w-40"
-                  />
-                  <div className="flex flex-1 flex-col justify-center p-3">
-                    <h4 className="text-sm font-semibold text-(--text-primary) sm:text-base">
+                  {/* Image Container with Overlay Effect */}
+                  <div className="relative h-full w-32 shrink-0 overflow-hidden sm:w-40">
+                    <img
+                      src={getMediaUrl(item.thumbnailUrl)}
+                      alt={item.title}
+                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                  </div>
+
+                  <div className="flex flex-1 flex-col justify-center p-4 sm:p-5">
+                    {/* Title with Hover Effect */}
+                    <h4 className="text-sm font-semibold text-(--text-primary) transition-colors group-hover:text-(--accent-color) sm:text-base dark:text-gray-100">
                       {item.title}
                     </h4>
-                    <p className="mt-1 line-clamp-3 text-xs text-(--text-secondary) sm:text-sm">
+
+                    {/* Metadata Row (Optional - Add if you have metadata) */}
+                    <div className="mt-1 flex items-center gap-2 text-xs text-(--text-secondary) dark:text-gray-400">
+                      <span className="flex items-center gap-1">
+                        <svg
+                          className="h-3 w-3"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                          />
+                        </svg>
+                        {new Date(item.createdAt).toLocaleDateString()}
+                      </span>
+                      <span className="h-1 w-1 rounded-full bg-(--border-color) dark:bg-gray-600" />
+                      <span className="flex items-center gap-1">
+                        <svg
+                          className="h-3 w-3"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                          />
+                        </svg>
+                        {t("blogDetail.minRead", {
+                          minutes: Math.ceil((item.content?.length || 0) / 1000),
+                        })}
+                      </span>
+                    </div>
+
+                    {/* Description with Enhanced Styling */}
+                    <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-(--text-secondary) transition-colors sm:text-sm dark:text-gray-300">
                       {(item.content || "")
                         .replace(/<[^>]+>/g, " ")
                         .replace(/\s+/g, " ")
                         .trim()}
                     </p>
+
+                    {/* Read More Link */}
+                    <div className="mt-3 flex items-center text-xs font-medium text-(--accent-color) opacity-0 transition-all duration-300 group-hover:opacity-100 dark:text-blue-400">
+                      Read more
+                      <svg
+                        className="ml-1 h-3 w-3 transition-transform duration-300 group-hover:translate-x-1"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 5l7 7-7 7"
+                        />
+                      </svg>
+                    </div>
                   </div>
                 </article>
               ))}

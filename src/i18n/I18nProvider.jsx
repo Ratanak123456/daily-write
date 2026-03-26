@@ -15,7 +15,7 @@ export function I18nProvider({ children }) {
       language,
       setLanguage,
       toggleLanguage: () => setLanguage((current) => toggleLanguage(current)),
-      t: (path) => translate(path, language),
+      t: (path, params) => translate(path, language, params),
     };
   }, [language]);
 
