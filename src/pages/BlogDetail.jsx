@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Clock3, Eye, Link2, User, Check } from "lucide-react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import parse from "html-react-parser";
+import { Helmet } from "react-helmet-async";
 import {
   useGetBlogByUuidQuery,
   useGetAllUserQuery,
@@ -89,8 +90,37 @@ export default function BlogDetail() {
     year: "numeric",
   });
 
+  // Prepare meta description by stripping HTML tags and limiting length
+  const metaDescription = (blog.content || "")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .substring(0, 160);
+
+  const thumbnailUrl = getMediaUrl(blog.thumbnailUrl);
+  const currentUrl = window.location.href;
+
   return (
     <section className="bg-(--bg-primary) px-4 py-3 text-(--text-primary) sm:px-6 lg:px-10">
+      <Helmet>
+        <title>{blog.title} | DailyWrite</title>
+        <meta name="description" content={metaDescription} />
+
+        {/* Open Graph Tags */}
+        <meta property="og:title" content={blog.title} />
+        <meta property="og:description" content={metaDescription} />
+        <meta property="og:image" content={thumbnailUrl} />
+        <meta property="og:url" content={currentUrl} />
+        <meta property="og:type" content="article" />
+        <meta property="og:site_name" content="DailyWrite" />
+
+        {/* Twitter Card Tags */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={blog.title} />
+        <meta name="twitter:description" content={metaDescription} />
+        <meta name="twitter:image" content={thumbnailUrl} />
+      </Helmet>
+
       <div className="mx-auto max-w-6xl">
         <div className="relative overflow-hidden rounded-sm">
           <img

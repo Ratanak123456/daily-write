@@ -8,6 +8,7 @@ import { Provider } from "react-redux";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import { I18nProvider } from "./i18n/I18nProvider.jsx";
 import PageSkeleton from "./components/PageSkeleton.jsx";
+import { HelmetProvider } from "react-helmet-async";
 
 const AppPage = lazy(() => import("./App.jsx"));
 const AboutPage = lazy(() => import("./pages/About.jsx"));
@@ -92,8 +93,10 @@ const router = createBrowserRouter(routes, {
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <Provider store={store}>
-    <I18nProvider>
-      <RouterProvider router={router} />
-    </I18nProvider>
+    <HelmetProvider>
+      <I18nProvider>
+        <RouterProvider router={router} />
+      </I18nProvider>
+    </HelmetProvider>
   </Provider>,
 );
