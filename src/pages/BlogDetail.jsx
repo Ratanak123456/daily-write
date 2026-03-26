@@ -203,7 +203,7 @@ export default function BlogDetail() {
             </span>
           </div>
 
-          <article className="prose prose-sm mt-8 max-w-none text-(--text-primary) sm:prose-base">
+          <article className="prose blog-content prose-sm mt-8 max-w-none text-(--text-primary) sm:prose-base">
             {parse(blog.content || "", {
               replace: (domNode) => {
                 if (domNode.name === "img" && domNode.attribs) {

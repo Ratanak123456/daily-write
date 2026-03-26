@@ -413,3 +413,30 @@ html[data-lang="km"] h6 {
   color: var(--text-primary);
   font-family: inherit;
 }
+
+/* Blog content text color fix for dark mode */
+.prose, .ql-editor, .blog-content {
+  color: var(--text-primary) !important;
+}
+
+.prose p, 
+.prose span, 
+.prose h1, 
+.prose h2, 
+.prose h3, 
+.prose h4, 
+.prose h5, 
+.prose h6, 
+.prose li, 
+.prose strong, 
+.prose em,
+.ql-editor p,
+.ql-editor span,
+.blog-content p,
+.blog-content span {
+  color: inherit !important;
+}
+
+.prose a, .ql-editor a, .blog-content a {
+  color: var(--primary-500) !important;
+}

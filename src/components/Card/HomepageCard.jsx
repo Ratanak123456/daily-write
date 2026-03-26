@@ -70,7 +70,7 @@ export function Card({
 
         {/* Description with fade effect */}
         <p
-          className={`text-xl mb-8 text-text-sub line-clamp-1 transition-all duration-700 delay-300 transform ${
+          className={`blog-content text-xl mb-8 text-text-sub line-clamp-1 transition-all duration-700 delay-300 transform ${
             isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
           }`}
         >
