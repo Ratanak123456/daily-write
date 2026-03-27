@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { User } from "lucide-react";
+import { User, ChevronLeft, ChevronRight } from "lucide-react";
 import BlogCard from "../components/Card/BlogCard";
 import SkeletonCard from "../components/Card/Skeleton";
 import { getMediaUrl } from "../utils/mediaUrl";
@@ -13,6 +13,18 @@ import {
 export default function Blogger() {
   const { uuid } = useParams();
   const [activeTab, setActiveTab] = React.useState("blogs");
+  const [page, setPage] = useState(0);
+  const pageSize = 6;
+
+  const getCollection = (result) => {
+    if (Array.isArray(result)) return result;
+    if (Array.isArray(result?.data?.content)) return result.data.content;
+    if (Array.isArray(result?.data)) return result.data;
+    if (Array.isArray(result?.content)) return result.content;
+    return [];
+  };
+
+  const getPaginationMeta = (result) => result?.data || result || {};
 
   // Fetch all users (as a fallback or for lists)
   const { data: usersResult, isLoading: usersLoading } = useGetAllUserQuery();
@@ -25,14 +37,74 @@ export default function Blogger() {
     },
   );
 
-  // Fetch blogs by this specific author
+  // Fetch this author's blogs page by page so pagination metadata stays accurate
   const { data: blogsResult, isLoading: blogsLoading } =
-    useGetAllProductByCurrentUserUuidQuery({ userUuid: uuid });
+    useGetAllProductByCurrentUserUuidQuery({
+      userUuid: uuid,
+      pageNumber: page,
+      pageSize,
+    }, {
+      skip: !uuid,
+    });
 
   // Handle both direct blog return and wrapped response
-  const users = usersResult?.data?.content || [];
-  const blogger = userResult?.data || users.find((u) => u.uuid === uuid);
-  const blogs = blogsResult?.data?.content || blogsResult || [];
+  const users = getCollection(usersResult);
+  const blogger =
+    userResult?.data || userResult || users.find((u) => u.uuid === uuid) || null;
+
+  const blogs = getCollection(blogsResult);
+  const blogsMeta = getPaginationMeta(blogsResult);
+
+  const totalPosts = blogsMeta.totalElements || blogs.length;
+  const totalPages = Math.max(
+    blogsMeta.totalPages || 0,
+    Math.ceil(totalPosts / pageSize),
+  );
+
+  useEffect(() => {
+    setPage(0);
+  }, [uuid, activeTab]);
+
+  useEffect(() => {
+    if (totalPages === 0 && page !== 0) {
+      setPage(0);
+      return;
+    }
+
+    if (page > totalPages - 1) {
+      setPage(Math.max(0, totalPages - 1));
+    }
+  }, [page, totalPages]);
+
+  const handlePageChange = (newPage) => {
+    setPage(newPage);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const getPageNumbers = () => {
+    const pages = [];
+    const visibleTotalPages = Math.max(totalPages, 1);
+    if (visibleTotalPages <= 7) {
+      for (let i = 0; i < visibleTotalPages; i++) pages.push(i);
+    } else {
+      if (page < 4) {
+        for (let i = 0; i < 5; i++) pages.push(i);
+        pages.push("...");
+        pages.push(visibleTotalPages - 1);
+      } else if (page > visibleTotalPages - 5) {
+        pages.push(0);
+        pages.push("...");
+        for (let i = visibleTotalPages - 5; i < visibleTotalPages; i++) pages.push(i);
+      } else {
+        pages.push(0);
+        pages.push("...");
+        for (let i = page - 1; i <= page + 1; i++) pages.push(i);
+        pages.push("...");
+        pages.push(visibleTotalPages - 1);
+      }
+    }
+    return pages;
+  };
 
   if (usersLoading || userLoading || blogsLoading) {
     return (
@@ -82,7 +154,7 @@ export default function Blogger() {
         <div className="flex items-center gap-2 text-sm">
           <span className="text-[var(--text-secondary)]">Total:</span>
           <span className="font-bold text-[var(--primary-500)]">
-            {blogs.length} Posts
+            {totalPosts} Posts
           </span>
         </div>
       </div>
@@ -130,7 +202,10 @@ export default function Blogger() {
 
             <div className="w-full space-y-3">
               <button
-                onClick={() => setActiveTab("blogs")}
+                onClick={() => {
+                  setActiveTab("blogs");
+                  setPage(0);
+                }}
                 className={`w-full rounded-xl py-3 px-4 flex items-center justify-center gap-2 font-medium shadow-sm transition-colors ${
                   activeTab === "blogs"
                     ? "text-white bg-[var(--primary-500)]"
@@ -171,47 +246,106 @@ export default function Blogger() {
           {activeTab === "blogs" ? (
             <>
               {blogs.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-10">
-                  {blogs.map((blog) => (
-                    <BlogCard
-                      key={blog.uuid}
-                      image={blog.thumbnailUrl}
-                      author={blogger.fullName}
-                      tag={blog.blogCategory}
-                      title={blog.title}
-                      summary={blog.content}
-                      views={blog.view}
-                      time={new Date(blog.createdAt).toLocaleDateString()}
-                      userImage={blogger.profileUrl}
-                      uuid={blog.uuid}
-                    />
-                  ))}
-                </div>
+                <>
+                  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-10">
+                    {blogs.map((blog) => (
+                      <BlogCard
+                        key={blog.uuid}
+                        image={blog.thumbnailUrl}
+                        author={blogger.fullName}
+                        tag={blog.blogCategory}
+                        title={blog.title}
+                        summary={blog.content}
+                        views={blog.view}
+                        time={new Date(blog.createdAt).toLocaleDateString()}
+                        userImage={blogger.profileUrl}
+                        uuid={blog.uuid}
+                      />
+                    ))}
+                  </div>
+
+                  {/* Pagination Controls */}
+                  <div className="mt-8 flex items-center justify-center gap-2 text-sm">
+                    <button
+                      onClick={() => handlePageChange(Math.max(0, page - 1))}
+                      disabled={page === 0}
+                      className="rounded-md border border-border-main px-2 py-1 text-[#a5aaae] hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <ChevronLeft size={16} />
+                    </button>
+                    {getPageNumbers().map((pageNum, idx) =>
+                      pageNum === "..." ? (
+                        <span key={idx} className="px-2 text-[#a5aaae]">
+                          ...
+                        </span>
+                      ) : (
+                        <button
+                          key={idx}
+                          onClick={() => handlePageChange(pageNum)}
+                          className={`rounded-md px-3 py-1 ${
+                            page === pageNum
+                              ? "bg-[var(--primary-500)] text-white"
+                              : "border border-border-main text-[#5e6569] hover:bg-gray-100"
+                          }`}
+                        >
+                          {pageNum + 1}
+                        </button>
+                      ),
+                    )}
+                    <button
+                      onClick={() => handlePageChange(page + 1)}
+                      disabled={page >= Math.max(totalPages, 1) - 1}
+                      className="rounded-md border border-border-main px-2 py-1 text-[#a5aaae] hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <ChevronRight size={16} />
+                    </button>
+                  </div>
+                </>
               ) : (
-                <div className="rounded-2xl p-12 text-center border border-dashed bg-[var(--bg-primary)] border-[var(--border-color)]">
-                  <svg
-                    className="mx-auto h-12 w-12 mb-4 text-[var(--text-secondary)]"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={1}
-                      d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10l4 4v10a2 2 0 01-2 2z"
-                    />
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={1}
-                      d="M14 4v4h4"
-                    />
-                  </svg>
-                  <p className="font-medium text-[var(--text-secondary)]">
-                    This author hasn't published any blogs yet.
-                  </p>
-                </div>
+                <>
+                  <div className="rounded-2xl p-12 text-center border border-dashed bg-[var(--bg-primary)] border-[var(--border-color)]">
+                    <svg
+                      className="mx-auto h-12 w-12 mb-4 text-[var(--text-secondary)]"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={1}
+                        d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10l4 4v10a2 2 0 01-2 2z"
+                      />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={1}
+                        d="M14 4v4h4"
+                      />
+                    </svg>
+                    <p className="font-medium text-[var(--text-secondary)]">
+                      This author hasn't published any blogs yet.
+                    </p>
+                  </div>
+
+                  <div className="mt-8 flex items-center justify-center gap-2 text-sm">
+                    <button
+                      disabled
+                      className="rounded-md border border-border-main px-2 py-1 text-[#a5aaae] disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <ChevronLeft size={16} />
+                    </button>
+                    <button className="rounded-md bg-[var(--primary-500)] px-3 py-1 text-white">
+                      1
+                    </button>
+                    <button
+                      disabled
+                      className="rounded-md border border-border-main px-2 py-1 text-[#a5aaae] disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <ChevronRight size={16} />
+                    </button>
+                  </div>
+                </>
               )}
             </>
           ) : (

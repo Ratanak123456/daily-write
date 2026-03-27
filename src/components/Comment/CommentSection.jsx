@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import {
   useCreateCommentMutation,
   useGetCommentsByBlogQuery,
@@ -12,6 +13,8 @@ export default function CommentSection({ blogUuid }) {
   const hasToken = Boolean(getDecryptedAccessToken());
   const [content, setContent] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [page, setPage] = useState(0);
+  const pageSize = 5;
 
   const { data: currentUserResponse } = useGetCurrentUserQuery(undefined, {
     skip: !hasToken,
@@ -24,14 +27,16 @@ export default function CommentSection({ blogUuid }) {
     isLoading: commentsLoading,
     isError: commentsError,
   } = useGetCommentsByBlogQuery(
-    { blogUuid, pageNumber: 0, pageSize: 20 },
+    { blogUuid, pageNumber: 0, pageSize: 100 },
     { skip: !blogUuid },
   );
 
   const [createComment, { isLoading: creatingComment }] =
     useCreateCommentMutation();
 
-  const comments = commentsResponse?.data?.content || [];
+  const allComments = commentsResponse?.data?.content || commentsResponse?.data || [];
+  const totalPages = Math.ceil(allComments.length / pageSize);
+  const comments = allComments.slice(page * pageSize, (page + 1) * pageSize);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -55,6 +60,7 @@ export default function CommentSection({ blogUuid }) {
         content: trimmed,
       }).unwrap();
       setContent("");
+      setPage(0); // Reset to first page to see the new comment
     } catch (error) {
       const message =
         error?.data?.message ||
@@ -64,9 +70,40 @@ export default function CommentSection({ blogUuid }) {
     }
   };
 
+  const getPageNumbers = () => {
+    const pages = [];
+    if (totalPages <= 5) {
+      for (let i = 0; i < totalPages; i++) pages.push(i);
+    } else {
+      if (page < 3) {
+        for (let i = 0; i < 4; i++) pages.push(i);
+        pages.push("...");
+        pages.push(totalPages - 1);
+      } else if (page > totalPages - 4) {
+        pages.push(0);
+        pages.push("...");
+        for (let i = totalPages - 4; i < totalPages; i++) pages.push(i);
+      } else {
+        pages.push(0);
+        pages.push("...");
+        for (let i = page - 1; i <= page + 1; i++) pages.push(i);
+        pages.push("...");
+        pages.push(totalPages - 1);
+      }
+    }
+    return pages;
+  };
+
   return (
     <section className="mt-10">
-      <h3 className="text-2xl font-semibold text-[var(--primary-700)]">Comments</h3>
+      <div className="flex items-center justify-between">
+        <h3 className="text-2xl font-semibold text-[var(--primary-700)]">
+          Comments
+        </h3>
+        <span className="text-sm font-medium text-[var(--text-secondary)]">
+          {allComments.length} comments
+        </span>
+      </div>
 
       <form onSubmit={handleSubmit} className="mt-4 space-y-3">
         <textarea
@@ -105,14 +142,16 @@ export default function CommentSection({ blogUuid }) {
 
       <div className="mt-6 space-y-4">
         {commentsLoading && (
-          <p className="text-sm text-[var(--text-primary)]">Loading comments...</p>
+          <p className="text-sm text-[var(--text-primary)]">
+            Loading comments...
+          </p>
         )}
 
         {commentsError && (
           <p className="text-sm text-red-600">Failed to load comments.</p>
         )}
 
-        {!commentsLoading && !commentsError && comments.length === 0 && (
+        {!commentsLoading && !commentsError && allComments.length === 0 && (
           <p className="text-sm text-[var(--text-primary)]">No comments yet.</p>
         )}
 
@@ -167,6 +206,45 @@ export default function CommentSection({ blogUuid }) {
           );
         })}
       </div>
+
+      {/* Pagination Controls */}
+      {totalPages > 1 && (
+        <div className="mt-8 flex items-center justify-center gap-2 text-sm">
+          <button
+            onClick={() => setPage((p) => Math.max(0, p - 1))}
+            disabled={page === 0}
+            className="rounded-md border border-[var(--border-color)] px-2 py-1 text-[var(--text-secondary)] hover:bg-[var(--bg-secondary)] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            <ChevronLeft size={16} />
+          </button>
+          {getPageNumbers().map((pageNum, idx) =>
+            pageNum === "..." ? (
+              <span key={idx} className="px-2 text-[var(--text-secondary)]">
+                ...
+              </span>
+            ) : (
+              <button
+                key={idx}
+                onClick={() => setPage(pageNum)}
+                className={`rounded-md px-3 py-1 transition-colors ${
+                  page === pageNum
+                    ? "bg-[var(--primary-500)] text-white"
+                    : "border border-[var(--border-color)] text-[var(--text-secondary)] hover:bg-[var(--bg-secondary)]"
+                }`}
+              >
+                {pageNum + 1}
+              </button>
+            ),
+          )}
+          <button
+            onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
+            disabled={page >= totalPages - 1}
+            className="rounded-md border border-[var(--border-color)] px-2 py-1 text-[var(--text-secondary)] hover:bg-[var(--bg-secondary)] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            <ChevronRight size={16} />
+          </button>
+        </div>
+      )}
     </section>
   );
 }

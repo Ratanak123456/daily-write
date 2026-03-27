@@ -81,7 +81,7 @@ const IntroSection = () => {
               className="h-1 sm:h-1.5 w-24 sm:w-32 mt-2 rounded-full"
               style={{ backgroundColor: "var(--primary-500)" }}
               initial={{ width: "0%" }}
-              animate={{ width: "100%" }}
+              animate={{ width: "55%" }}
               transition={{ duration: 1, delay: 0.5 }}
             />
           </Motion.div>
