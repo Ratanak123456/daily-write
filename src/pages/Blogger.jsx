@@ -146,22 +146,22 @@ export default function Blogger() {
   }
 
   return (
-    <div className="min-h-screen p-6 md:p-12 font-sans relative overflow-hidden bg-bg-main">
-      <div className="flex justify-between w-[70%] items-center mb-8 m-auto">
-        <h1 className="text-3xl font-bold text-[var(--primary-500)] text-right w-[60%]">
+    <div className="min-h-screen bg-bg-main px-4 py-6 font-sans sm:px-6 md:px-8 md:py-10 xl:px-12">
+      <div className="mx-auto mb-6 max-w-7xl sm:mb-8">
+        <h1 className="text-center text-2xl font-bold text-[var(--primary-500)] sm:text-3xl md:text-4xl">
           Blogs by {blogger.fullName.split(" ")[0]}
         </h1>
-        <div className="flex items-center gap-2 text-sm">
+        <div className="mt-3 flex items-center justify-end gap-2 text-sm">
           <span className="text-[var(--text-secondary)]">Total:</span>
           <span className="font-bold text-[var(--primary-500)]">
             {totalPosts} Posts
           </span>
         </div>
       </div>
-      <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-8 relative z-10">
+      <div className="relative z-10 mx-auto flex max-w-7xl flex-col gap-6 lg:flex-row lg:gap-8">
         {/* Sidebar: Blogger Profile */}
         <aside className="w-full lg:w-1/4">
-          <div className="rounded-2xl shadow-sm p-8 flex flex-col items-center text-center bg-[var(--bg-primary)] border border-[var(--border-color)]">
+          <div className="flex flex-col items-center rounded-2xl border border-[var(--border-color)] bg-[var(--bg-primary)] p-5 text-center shadow-sm sm:p-6 md:p-8">
             <div className="relative mb-4">
               <div className="w-24 h-24 rounded-full border-4 border-[var(--primary-500)] overflow-hidden flex items-center justify-center bg-[var(--bg-secondary)]">
                 {getMediaUrl(blogger.profileUrl) ? (
@@ -200,7 +200,7 @@ export default function Blogger() {
               </p>
             </div>
 
-            <div className="w-full space-y-3">
+            <div className="grid w-full grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-1">
               <button
                 onClick={() => {
                   setActiveTab("blogs");
@@ -247,7 +247,7 @@ export default function Blogger() {
             <>
               {blogs.length > 0 ? (
                 <>
-                  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-10">
+                  <div className="mb-8 grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
                     {blogs.map((blog) => (
                       <BlogCard
                         key={blog.uuid}
@@ -265,7 +265,7 @@ export default function Blogger() {
                   </div>
 
                   {/* Pagination Controls */}
-                  <div className="mt-8 flex items-center justify-center gap-2 text-sm">
+                  <div className="mt-6 flex flex-wrap items-center justify-center gap-2 text-sm sm:mt-8">
                     <button
                       onClick={() => handlePageChange(Math.max(0, page - 1))}
                       disabled={page === 0}
@@ -282,7 +282,7 @@ export default function Blogger() {
                         <button
                           key={idx}
                           onClick={() => handlePageChange(pageNum)}
-                          className={`rounded-md px-3 py-1 ${
+                          className={`min-w-9 rounded-md px-3 py-1 ${
                             page === pageNum
                               ? "bg-[var(--primary-500)] text-white"
                               : "border border-border-main text-[#5e6569] hover:bg-gray-100"
@@ -303,7 +303,7 @@ export default function Blogger() {
                 </>
               ) : (
                 <>
-                  <div className="rounded-2xl p-12 text-center border border-dashed bg-[var(--bg-primary)] border-[var(--border-color)]">
+                  <div className="rounded-2xl border border-dashed border-[var(--border-color)] bg-[var(--bg-primary)] p-8 text-center sm:p-12">
                     <svg
                       className="mx-auto h-12 w-12 mb-4 text-[var(--text-secondary)]"
                       fill="none"
@@ -328,7 +328,7 @@ export default function Blogger() {
                     </p>
                   </div>
 
-                  <div className="mt-8 flex items-center justify-center gap-2 text-sm">
+                  <div className="mt-6 flex flex-wrap items-center justify-center gap-2 text-sm sm:mt-8">
                     <button
                       disabled
                       className="rounded-md border border-border-main px-2 py-1 text-[#a5aaae] disabled:opacity-50 disabled:cursor-not-allowed"
@@ -349,8 +349,8 @@ export default function Blogger() {
               )}
             </>
           ) : (
-            <section className="rounded-2xl shadow-sm p-6 md:p-8 bg-[var(--bg-primary)] border border-[var(--border-color)]">
-              <h2 className="text-2xl font-bold mb-6 text-[var(--primary-500)]">
+            <section className="rounded-2xl border border-[var(--border-color)] bg-[var(--bg-primary)] p-5 shadow-sm sm:p-6 md:p-8">
+              <h2 className="mb-5 text-xl font-bold text-[var(--primary-500)] sm:mb-6 sm:text-2xl">
                 About {blogger.fullName}
               </h2>
 
