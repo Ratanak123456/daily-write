@@ -131,29 +131,38 @@ export default function CommentSection({ blogUuid }) {
               className="rounded-xl border border-[var(--border-color)] bg-[var(--bg-primary)] p-4 hover:bg-[var(--bg-secondary)] transition-colors"
             >
               <div className="flex items-center gap-2">
-                {getMediaUrl(item?.user?.profileUrl) ? (
-                  <img
-                    src={getMediaUrl(item.user.profileUrl)}
-                    alt={item?.user?.fullName || "User"}
-                    className="h-8 w-8 rounded-full object-cover border border-[var(--border-color)]"
-                  />
-                ) : (
-                  <div className="h-8 w-8 rounded-full bg-[var(--primary-500)] text-white flex items-center justify-center text-xs font-semibold uppercase">
-                    {(item?.user?.fullName || "U").charAt(0)}
-                  </div>
-                )}
-
-                <div>
-                  <p className="text-sm font-semibold text-[var(--text-primary)]">
-                    {item?.user?.fullName || "Unknown User"}
-                  </p>
-                  {commentedDate && (
-                    <p className="text-xs text-[var(--text-secondary)]">{commentedDate}</p>
+                <Link
+                  to={`/bloggers/${item?.user?.uuid}`}
+                  className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+                >
+                  {getMediaUrl(item?.user?.profileUrl) ? (
+                    <img
+                      src={getMediaUrl(item.user.profileUrl)}
+                      alt={item?.user?.fullName || "User"}
+                      className="h-8 w-8 rounded-full object-cover border border-[var(--border-color)]"
+                    />
+                  ) : (
+                    <div className="h-8 w-8 rounded-full bg-[var(--primary-500)] text-white flex items-center justify-center text-xs font-semibold uppercase">
+                      {(item?.user?.fullName || "U").charAt(0)}
+                    </div>
                   )}
-                </div>
+
+                  <div>
+                    <p className="text-sm font-semibold text-[var(--text-primary)]">
+                      {item?.user?.fullName || "Unknown User"}
+                    </p>
+                    {commentedDate && (
+                      <p className="text-xs text-[var(--text-secondary)]">
+                        {commentedDate}
+                      </p>
+                    )}
+                  </div>
+                </Link>
               </div>
 
-              <p className="mt-3 text-sm text-[var(--text-primary)]">{item.content}</p>
+              <p className="mt-3 text-sm text-[var(--text-primary)]">
+                {item.content}
+              </p>
             </article>
           );
         })}
