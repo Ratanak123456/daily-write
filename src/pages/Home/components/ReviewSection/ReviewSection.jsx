@@ -18,58 +18,51 @@ export default function ReviewSection() {
     {
       id: 1,
       name: "Ratanak",
-      role: "Developer",
       image: student1,
       quote:
-        "Writing has become a daily habit that helped me grow personally and professionally.",
+        "I'm much more confident in my writing thanks to DailyWrite. I used to second-guess myself, but now I trust my voice.",
     },
     {
       id: 2,
       name: "Visak",
-      role: "Blogger",
-      image: student2,
+      image: student4,
       quote:
-        "This platform gave me the courage to share my stories with the world.",
+        "My writing has come a long way since I started posting on DailyWrite. Putting out content regularly has made it feel more natural and less forced.",
     },
     {
       id: 3,
       name: "Chamroeun",
-      role: "Mentor",
-      image: student3,
+      image: student6,
       quote:
-        "The community here is incredibly supportive and inspiring.",
+        "DailyWrite has leveled up my writing abilities. The variety of topics keeps me learning with every post.",
     },
     {
       id: 4,
       name: "Ousa",
-      role: "Writer",
-      image: student4,
+      image: student7,
       quote:
-        "I've improved my writing skills significantly since joining.",
+        "I've improved my writing skills significantly since joining. This has allowed me to contribute more effectively to team projects and client communications.",
     },
     {
       id: 5,
       name: "Rosa",
-      role: "Content Creator",
       image: student5,
       quote:
-        "The best platform for anyone who wants to express themselves through writing.",
+        "DailyWrite has made me a more flexible writer. One day I'm covering tech, the next I'm diving into health or culture",
     },
     {
       id: 6,
       name: "Sovan",
-      role: "Blogger",
-      image: student6,
+      image: student3,
       quote:
-        "Daily writing habit changed my life. Highly recommended!",
+        "The AI chatbot on DailyWrite has been a game-changer for my writing. It helps me brainstorm and refine until my point lands.",
     },
     {
       id: 7,
       name: "Theara",
-      role: "Freelancer",
-      image: student7,
+      image: student2,
       quote:
-        "The clean interface makes writing a pleasure.",
+        "DailyWrite has sharpened my writing craft. I've gotten better at structure, pacing, and simplifying complex ideas.",
     },
   ];
 
