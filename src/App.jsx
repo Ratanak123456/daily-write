@@ -14,13 +14,13 @@ function App() {
   return (
     <main>
       {/* Hero Section */}
-      <section className="bg-bg-mainrelative overflow-hidden min-h-screen lg:min-h-0 py-12 lg:py-0 flex items-center">
+      <section className="bg-bg-main relative overflow-hidden min-h-screen lg:min-h-0 py-12 lg:py-0 flex items-center">
         {/* Animated background elements - optimized for mobile */}
-        <div className="absolute -top-20 -left-20 sm:-top-40 sm:-left-40 md:-top-80 md:-left-80 w-64 h-64 sm:w-100 sm:h-100 md:w-200 md:h-200 rounded-full opacity-30 sm:opacity-40 pointer-events-none animate-spin-slow bg-[radial-gradient(circle_at_center,#F48024_0%,transparent_70%)]" />
+        {/* <div className="absolute -top-20 -left-20 sm:-top-40 sm:-left-40 md:-top-80 md:-left-80 w-64 h-64 sm:w-100 sm:h-100 md:w-200 md:h-200 rounded-full opacity-10 sm:opacity-10 pointer-events-none animate-spin-slow bg-[radial-gradient(circle_at_center,#F48024_0%,transparent_70%)]" /> */}
 
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-5 right-5 sm:top-10 sm:right-10 md:top-20 md:right-20 w-1.5 h-1.5 sm:w-2 sm:h-2 md:w-4 md:h-4 bg-primary-orange/20 rounded-full animate-float-slow" />
-          <div className="absolute bottom-10 left-5 sm:bottom-20 sm:left-10 md:bottom-40 md:left-20 w-2 h-2 sm:w-3 sm:h-3 md:w-6 md:h-6 bg-primary-orange/10 rounded-full animate-float-delayed" />
+          <div className="absolute top-5 right-5 sm:top-10 sm:right-10 md:top-20 md:right-20 w-1.5 h-1.5 sm:w-2 sm:h-2 md:w-4 md:h-4 bg-primary-orange/20 rounded-full" />
+          <div className="absolute bottom-10 left-5 sm:bottom-20 sm:left-10 md:bottom-40 md:left-20 w-2 h-2 sm:w-3 sm:h-3 md:w-6 md:h-6 bg-primary-orange/10 rounded-full" />
           <div className="absolute top-10 left-1/4 sm:top-20 md:top-40 w-1.5 h-1.5 sm:w-2 sm:h-2 md:w-3 md:h-3 bg-primary-orange/15 rounded-full animate-pulse-slow" />
         </div>
 
@@ -33,7 +33,6 @@ function App() {
         </div>
 
         {/* Bottom gradient element - optimized for mobile */}
-        <div className="absolute -bottom-20 -right-20 sm:-bottom-50 sm:-right-50 md:-bottom-100 md:-right-50 w-64 h-64 sm:w-100 sm:h-100 md:w-200 md:h-200 rounded-full opacity-30 sm:opacity-40 pointer-events-none animate-spin-slow bg-[radial-gradient(circle_at_center,#F48024_0%,transparent_70%)]" />
       </section>
 
       {/* Blog Section */}

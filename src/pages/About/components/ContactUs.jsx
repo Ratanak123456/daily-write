@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-// eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from "framer-motion";
 import image from "../../../assets/about/get-in-touch-cuate.svg"
 import {
@@ -11,12 +10,12 @@ import {
   Check,
   X,
 } from "lucide-react";
-import { useScrollAnimation } from "./hooks/useScrollAnimation";
+import { useScrollAnimation, animationVariants } from "../../../hooks/useScrollAnimation";
 import { useI18n } from "../../../i18n/useI18n";
 
 const ContactSection = () => {
   const [showSuccess, setShowSuccess] = useState(false);
-  const { controls, ref } = useScrollAnimation({ amount: 0.2 });
+  const { controls, ref } = useScrollAnimation({ amount: 0.2, id: 'about-contact' });
   const { t } = useI18n();
 
   const contactDetails = [
@@ -50,61 +49,8 @@ const ContactSection = () => {
     },
   ];
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.15,
-        delayChildren: 0.2,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: {
-        type: "spring",
-        stiffness: 100,
-        damping: 12,
-      },
-    },
-  };
-
-  const formVariants = {
-    hidden: { x: -30, opacity: 0 },
-    visible: {
-      x: 0,
-      opacity: 1,
-      transition: {
-        type: "spring",
-        stiffness: 100,
-        damping: 15,
-        delay: 0.2,
-      },
-    },
-  };
-
-  const illustrationVariants = {
-    hidden: { x: 30, opacity: 0, scale: 0.9 },
-    visible: {
-      x: 0,
-      opacity: 1,
-      scale: 1,
-      transition: {
-        type: "spring",
-        stiffness: 100,
-        damping: 15,
-        delay: 0.3,
-      },
-    },
-  };
-
   const cardVariants = {
-    hidden: { scale: 0.8, opacity: 0, y: 20 },
+    hidden: { scale: 0.9, opacity: 0, y: 20 },
     visible: (i) => ({
       scale: 1,
       opacity: 1,
@@ -112,8 +58,8 @@ const ContactSection = () => {
       transition: {
         type: "spring",
         stiffness: 100,
-        damping: 12,
-        delay: 0.5 + i * 0.1,
+        damping: 15,
+        delay: i * 0.1,
       },
     }),
     hover: {
@@ -153,20 +99,6 @@ const ContactSection = () => {
     },
   };
 
-  const floatingBlobVariants = {
-    animate: {
-      scale: [1, 1.2, 1],
-      x: [0, 20, 0],
-      y: [0, -20, 0],
-      rotate: [0, 30, 0],
-      transition: {
-        duration: 12,
-        repeat: Infinity,
-        ease: "easeInOut",
-      },
-    },
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
     setShowSuccess(true);
@@ -183,27 +115,40 @@ const ContactSection = () => {
       <motion.div
         className="absolute top-20 right-20 w-64 h-64 rounded-full blur-3xl opacity-10"
         style={{ backgroundColor: "var(--primary-500)" }}
-        variants={floatingBlobVariants}
-        animate="animate"
+        animate={{
+          scale: [1, 1.2, 1],
+          opacity: [0.1, 0.15, 0.1],
+        }}
+        transition={{
+          duration: 8,
+          repeat: Infinity,
+          ease: "easeInOut"
+        }}
       />
       <motion.div
         className="absolute bottom-20 left-20 w-72 h-72 rounded-full blur-3xl opacity-10"
         style={{ backgroundColor: "var(--primary-700)" }}
-        variants={floatingBlobVariants}
-        animate="animate"
-        transition={{ delay: 2 }}
+        animate={{
+          scale: [1.2, 1, 1.2],
+          opacity: [0.1, 0.15, 0.1],
+        }}
+        transition={{
+          duration: 10,
+          repeat: Infinity,
+          ease: "easeInOut"
+        }}
       />
 
       <motion.div
         className="max-w-7xl mx-auto relative z-10"
-        variants={containerVariants}
         initial="hidden"
         animate={controls}
+        variants={animationVariants.staggerContainer}
       >
         {/* Header Section */}
         <motion.div 
           className="text-center mb-12 md:mb-16"
-          variants={itemVariants}
+          variants={animationVariants.fadeInUp}
         >
           <motion.h2
             className="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-4 sm:mb-6"
@@ -220,10 +165,7 @@ const ContactSection = () => {
         </motion.div>
 
         {/* Top Section: Form and Illustration */}
-        <motion.div
-          className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 lg:gap-16 mb-12 md:mb-16 lg:mb-20 items-center"
-          variants={containerVariants}
-        >
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 lg:gap-16 mb-12 md:mb-16 lg:mb-20 items-center">
           {/* Left: Contact Form */}
           <motion.div
             className="rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 shadow-sm"
@@ -232,18 +174,14 @@ const ContactSection = () => {
               borderColor: "var(--border-color)",
               borderWidth: "1px",
             }}
-            variants={formVariants}
+            variants={animationVariants.fadeInScale}
           >
-            <motion.form
+            <form
               className="space-y-4 sm:space-y-5 md:space-y-6"
-              variants={containerVariants}
               onSubmit={handleSubmit}
             >
-              <motion.div
-                className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4"
-                variants={containerVariants}
-              >
-                <motion.div variants={itemVariants}>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                <motion.div variants={animationVariants.fadeInUp}>
                   <label
                     className="block text-xs sm:text-sm font-medium mb-1 sm:mb-2"
                     style={{ color: "var(--text-primary)" }}
@@ -264,7 +202,7 @@ const ContactSection = () => {
                     required
                   />
                 </motion.div>
-                <motion.div variants={itemVariants}>
+                <motion.div variants={animationVariants.fadeInUp}>
                   <label
                     className="block text-xs sm:text-sm font-medium mb-1 sm:mb-2"
                     style={{ color: "var(--text-primary)" }}
@@ -285,9 +223,9 @@ const ContactSection = () => {
                     required
                   />
                 </motion.div>
-              </motion.div>
+              </div>
 
-              <motion.div variants={itemVariants}>
+              <motion.div variants={animationVariants.fadeInUp}>
                 <label
                   className="block text-xs sm:text-sm font-medium mb-1 sm:mb-2"
                   style={{ color: "var(--text-primary)" }}
@@ -309,7 +247,7 @@ const ContactSection = () => {
                 />
               </motion.div>
 
-              <motion.div variants={itemVariants}>
+              <motion.div variants={animationVariants.fadeInUp}>
                 <label
                   className="block text-xs sm:text-sm font-medium mb-1 sm:mb-2"
                   style={{ color: "var(--text-primary)" }}
@@ -331,7 +269,7 @@ const ContactSection = () => {
                 />
               </motion.div>
 
-              <motion.div variants={itemVariants}>
+              <motion.div variants={animationVariants.fadeInUp}>
                 <label
                   className="block text-xs sm:text-sm font-medium mb-1 sm:mb-2"
                   style={{ color: "var(--text-primary)" }}
@@ -357,7 +295,7 @@ const ContactSection = () => {
                 type="submit"
                 className="w-full text-white font-bold py-2.5 sm:py-3 md:py-4 rounded-lg transition-all text-sm sm:text-base flex items-center justify-center gap-2"
                 style={{ backgroundColor: "var(--primary-500)" }}
-                variants={itemVariants}
+                variants={animationVariants.fadeInUp}
                 whileHover={{
                   scale: 1.02,
                   backgroundColor: "var(--primary-700)",
@@ -368,13 +306,13 @@ const ContactSection = () => {
                 <Send size={16} className="sm:w-4 sm:h-4 md:w-5 md:h-5" />
                 {t("about.contact.submit")}
               </motion.button>
-            </motion.form>
+            </form>
           </motion.div>
 
           {/* Right: Illustration */}
           <motion.div
             className="flex justify-center items-center"
-            variants={illustrationVariants}
+            variants={animationVariants.fadeInScale}
           >
             {/* Illustration Area */}
             <motion.div
@@ -390,12 +328,12 @@ const ContactSection = () => {
             </motion.div>
           </motion.div>
           
-        </motion.div>
+        </div>
 
         {/* Bottom Section: Info Cards */}
         <motion.div
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 md:gap-6"
-          variants={containerVariants}
+          variants={animationVariants.staggerContainer}
         >
           {contactDetails.map((item, idx) => (
             <motion.div
@@ -446,16 +384,7 @@ const ContactSection = () => {
                 transition={{ type: "spring", stiffness: 400 }}
               >
                 {item.link}
-                <motion.span
-                  animate={{
-                    x: [0, 3, 0],
-                  }}
-                  transition={{
-                    duration: 1.5,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }}
-                >
+                <motion.span>
                   →
                 </motion.span>
               </motion.a>

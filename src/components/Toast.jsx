@@ -14,7 +14,7 @@ export default function Toast({ message, type = "success", onClose, duration = 3
   const Icon = type === "success" ? CheckCircle : XCircle;
 
   return (
-    <div className={`fixed bottom-5 right-5 z-[100] flex items-center gap-3 px-6 py-4 rounded-2xl text-white shadow-2xl animate-in slide-in-from-right-full duration-300 ${bgColor}`}>
+    <div className={`fixed bottom-5 right-5 z-[100] flex items-center gap-3 px-6 py-4 rounded-2xl text-white shadow-2xl animate-fade-in-up duration-300 ${bgColor}`}>
       <Icon size={20} />
       <span className="font-medium">{message}</span>
       <button 

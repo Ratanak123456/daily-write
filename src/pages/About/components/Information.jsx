@@ -4,12 +4,12 @@ import {
   useScrollAnimation,
   animationVariants,
   blobAnimation,
-} from "./hooks/useScrollAnimation";
+} from "../../../hooks/useScrollAnimation";
 import { useI18n } from "../../../i18n/useI18n";
 import AboutImg from "../../../assets/about/about-us-page-cuate.svg";
 
 const AboutSection = () => {
-  const { controls, ref } = useScrollAnimation({ amount: 0.3 });
+  const { controls, ref } = useScrollAnimation({ amount: 0.3, id: 'about-info' });
   const { t } = useI18n();
 
   const containerVariants = {
@@ -18,7 +18,6 @@ const AboutSection = () => {
       opacity: 1,
       transition: {
         staggerChildren: 0.2,
-        delayChildren: 0.3,
       },
     },
   };
@@ -33,7 +32,6 @@ const AboutSection = () => {
         type: "spring",
         stiffness: 100,
         damping: 15,
-        delay: 0.4,
       },
     },
   };
@@ -53,7 +51,7 @@ const AboutSection = () => {
       <Motion.div
         className="absolute bottom-0 left-0 w-56 h-56 sm:w-72 sm:h-72 rounded-full blur-3xl opacity-20 -ml-32 -mb-32"
         style={{ backgroundColor: "var(--primary-700)" }}
-        animate={{ ...blobAnimation, scale: [1, 1.3, 1] }}
+        animate={blobAnimation}
       />
 
       <Motion.div
@@ -129,44 +127,19 @@ const AboutSection = () => {
           <Motion.div
             className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 rounded-full blur-3xl opacity-20 z-0"
             style={{ backgroundColor: "var(--primary-500)" }}
-            animate={{
-              scale: [1, 1.2, 1],
-              opacity: [0.1, 0.2, 0.1],
-            }}
-            transition={{
-              duration: 8,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
+            animate={blobAnimation}
           />
 
           {/* Floating Decorative Elements */}
           <Motion.div
             className="absolute -top-8 -right-8 w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-opacity-10 hidden md:block z-0"
             style={{ backgroundColor: "var(--primary-500)" }}
-            animate={{
-              y: [0, -20, 0],
-              x: [0, 15, 0],
-            }}
-            transition={{
-              duration: 6,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
+            animate={blobAnimation}
           />
           <Motion.div
             className="absolute -bottom-12 -left-8 w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-opacity-10 hidden md:block z-0"
             style={{ backgroundColor: "var(--primary-700)" }}
-            animate={{
-              y: [0, 20, 0],
-              x: [0, -15, 0],
-            }}
-            transition={{
-              duration: 5,
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: 1,
-            }}
+            animate={blobAnimation}
           />
 
           <Motion.img

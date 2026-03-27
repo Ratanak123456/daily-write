@@ -1,58 +1,30 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState } from "react";
 import { useI18n } from "../../../../i18n/useI18n";
+import { useScrollAnimation } from "../../../../hooks/useScrollAnimation";
 
 export default function ShareFeedback() {
-  const [isVisible, setIsVisible] = useState(false);
-  const sectionRef = useRef(null);
+  const { ref: sectionRef, isInView: isVisible } = useScrollAnimation({ amount: 0.1, id: 'home-feedback' });
   const { t } = useI18n();
-
-  // Intersection Observer for scroll in/out animations
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          setIsVisible(entry.isIntersecting);
-        });
-      },
-      {
-        threshold: 0.3, // Trigger when 30% of the section is visible
-        rootMargin: "0px",
-      },
-    );
-
-    const node = sectionRef.current;
-    if (node) observer.observe(node);
-
-    return () => {
-      if (node) observer.unobserve(node);
-    };
-  }, []);
 
   return (
     <div ref={sectionRef} className="container mx-auto">
       <div
         className={`bg-[#F38331] rounded-2xl lg:rounded-[2rem] p-8 lg:p-16 grid lg:grid-cols-2 gap-12 items-center transition-all duration-1000 ease-out transform ${
-          isVisible
-            ? "opacity-100 scale-100 rotate-0"
-            : "opacity-0 scale-95 rotate-1"
+          isVisible ? "opacity-100 scale-100 rotate-0" : "opacity-0 scale-90 rotate-1"
         }`}
       >
         {/* Left content - Text section */}
         <div className="max-w-md">
           <h2
             className={`text-4xl lg:text-5xl font-extrabold text-white leading-tight transition-all duration-700 delay-200 transform ${
-              isVisible
-                ? "opacity-100 translate-y-0"
-                : "opacity-0 -translate-y-10"
+              isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
             }`}
           >
             {t("feedback.title")}
           </h2>
           <p
             className={`mt-6 text-white text-lg opacity-90 leading-relaxed transition-all duration-700 delay-400 transform ${
-              isVisible
-                ? "opacity-90 translate-y-0"
-                : "opacity-0 translate-y-10"
+              isVisible ? "opacity-90 translate-y-0" : "opacity-0 translate-y-8"
             }`}
           >
             {t("feedback.description")}
@@ -65,9 +37,7 @@ export default function ShareFeedback() {
             {/* Name input field */}
             <div
               className={`transition-all duration-700 delay-300 transform ${
-                isVisible
-                  ? "opacity-100 translate-x-0"
-                  : "opacity-0 translate-x-20"
+                isVisible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-12"
               }`}
             >
               <input
@@ -80,9 +50,7 @@ export default function ShareFeedback() {
             {/* Textarea field */}
             <div
               className={`transition-all duration-700 delay-400 transform ${
-                isVisible
-                  ? "opacity-100 translate-x-0"
-                  : "opacity-0 translate-x-20"
+                isVisible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-12"
               }`}
             >
               <textarea
@@ -95,9 +63,7 @@ export default function ShareFeedback() {
             {/* Submit button */}
             <div
               className={`transition-all duration-700 delay-500 transform ${
-                isVisible
-                  ? "opacity-100 translate-y-0 scale-100"
-                  : "opacity-0 translate-y-10 scale-90"
+                isVisible ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-8 scale-95"
               }`}
             >
               <button
@@ -113,12 +79,12 @@ export default function ShareFeedback() {
         {/* Decorative elements - floating circles for extra flair */}
         <div
           className={`absolute top-10 left-10 w-20 h-20 bg-white/10 rounded-full blur-xl transition-all duration-1000 delay-600 ${
-            isVisible ? "opacity-100 scale-100" : "opacity-0 scale-50"
+            isVisible ? "opacity-100 scale-100" : "opacity-0 scale-0"
           }`}
         ></div>
         <div
           className={`absolute bottom-10 right-10 w-32 h-32 bg-white/10 rounded-full blur-xl transition-all duration-1000 delay-700 ${
-            isVisible ? "opacity-100 scale-100" : "opacity-0 scale-50"
+            isVisible ? "opacity-100 scale-100" : "opacity-0 scale-0"
           }`}
         ></div>
       </div>

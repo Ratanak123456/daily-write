@@ -1,19 +1,18 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
+import { useScrollAnimation } from "../../../../hooks/useScrollAnimation";
 
 const student1 = "/Team/Saren Ratanak.jpg";
-const student2 = "/Team/IMG_4905.jpg";
-const student3 = "/Team/photo_2026-02-19_00-24-53.jpg";
-const student4 = "/Team/image_2024-01-22_14-24-14.png";
+const student2 = "/Team/photo_2026-02-17_21-02-08.jpg";
+const student3 = "/Team/_MG_8835.jpg";
+const student4 = "/Team/IMG_4905.jpg";
 const student5 = "/Team/rosa.jpg";
-const student6 = "/Team/_MG_8835.jpg";
-const student7 = "/Team/photo_2026-02-17_21-02-08.jpg";
-
+const student6 = "/Team/photo_2026-02-19_00-24-53.jpg";
+const student7 = "/Team/image_2024-01-22_14-24-14.png";
 export default function ReviewSection() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState("right");
   const [isAnimating, setIsAnimating] = useState(false);
-  const [isVisible, setIsVisible] = useState(false);
-  const sectionRef = useRef(null);
+  const { ref: sectionRef, isInView: isVisible } = useScrollAnimation({ amount: 0.1, id: 'home-review-section' });
 
   const students = [
     {
@@ -102,29 +101,6 @@ export default function ReviewSection() {
     setTimeout(() => setIsAnimating(false), 500);
   };
 
-  // Intersection Observer for scroll in/out animations
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          // Set visibility state based on intersection
-          setIsVisible(entry.isIntersecting);
-        });
-      },
-      {
-        threshold: 0.2, // Trigger when 20% of the section is visible
-        rootMargin: "0px", // No margin
-      },
-    );
-
-    const node = sectionRef.current;
-    if (node) observer.observe(node);
-
-    return () => {
-      if (node) observer.unobserve(node);
-    };
-  }, []);
-
   // Auto float functionality - only when visible
   useEffect(() => {
     let interval;
@@ -163,9 +139,7 @@ export default function ReviewSection() {
       {/* Header section with pop in/out animation */}
       <div
         className={`mb-16 transition-all duration-700 ease-in-out transform ${
-          isVisible
-            ? "opacity-100 translate-y-0 scale-100"
-            : "opacity-0 translate-y-10 scale-95"
+          isVisible ? "opacity-100 scale-100" : "opacity-0 scale-90"
         }`}
       >
         <span className="text-sm font-bold text-primary-orange uppercase tracking-widest">
@@ -179,9 +153,7 @@ export default function ReviewSection() {
       {/* Main content with pop in/out animation */}
       <div
         className={`relative max-w-5xl mx-auto flex items-center justify-center transition-all duration-700 delay-200 ease-in-out transform ${
-          isVisible
-            ? "opacity-100 translate-y-0 scale-100"
-            : "opacity-0 translate-y-10 scale-95"
+          isVisible ? "opacity-100 scale-100" : "opacity-0 scale-95"
         }`}
       >
         <button
@@ -210,10 +182,10 @@ export default function ReviewSection() {
           {/* Image with pop and rotate animation */}
           <div className={`relative ${getSlideAnimation()}`}>
             <div
-              className={`w-50 h-50 bg-primary-orange rounded-[40%_60%_70%_30%/40%_50%_60%_50%] overflow-hidden flex items-start justify-start shadow-xl animate-float transition-all duration-700 delay-400 ease-out transform ${
+              className={`w-50 h-50 bg-primary-orange rounded-[40%_60%_70%_30%/40%_50%_60%_50%] overflow-hidden flex items-start justify-start shadow-xl transition-all duration-700 delay-400 ease-out transform ${
                 isVisible
                   ? "opacity-100 translate-x-0 rotate-0 scale-100"
-                  : "opacity-0 -translate-x-10 -rotate-12 scale-90"
+                  : "opacity-0 -translate-x-10 rotate-6 scale-90"
               }`}
             >
               <img
@@ -231,9 +203,7 @@ export default function ReviewSection() {
           >
             <span
               className={`absolute -top-6 -left-4 text-border-main text-6xl font-sans animate-pulse-slow transition-all duration-700 delay-500 ease-out transform ${
-                isVisible
-                  ? "opacity-100 scale-100 rotate-0"
-                  : "opacity-0 scale-50 rotate-12"
+                isVisible ? "opacity-100 scale-100 rotate-0" : "opacity-0 scale-50 rotate-12"
               }`}
             >
               “
@@ -241,19 +211,15 @@ export default function ReviewSection() {
 
             <h3
               className={`text-2xl font-bold text-text-main mb-4 transition-all duration-700 delay-600 ease-out transform ${
-                isVisible
-                  ? "opacity-100 translate-y-0"
-                  : "opacity-0 translate-y-5"
+                isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
               }`}
             >
               {currentStudent.name}
             </h3>
 
             <p
-              className={`text-text-sub text-lg leading-relaxed italic animate-fade-in-up-delay mb-4 transition-all duration-700 delay-700 ease-out transform ${
-                isVisible
-                  ? "opacity-100 translate-y-0"
-                  : "opacity-0 translate-y-5"
+              className={`text-text-sub text-lg leading-relaxed italic mb-4 transition-all duration-700 delay-700 ease-out transform ${
+                isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
               }`}
             >
               {currentStudent.quote}
@@ -261,9 +227,7 @@ export default function ReviewSection() {
 
             <span
               className={`absolute -bottom-10 right-0 text-border-main text-6xl font-sans animate-pulse-slow transition-all duration-700 delay-800 ease-out transform ${
-                isVisible
-                  ? "opacity-100 scale-100 rotate-0"
-                  : "opacity-0 scale-50 -rotate-12"
+                isVisible ? "opacity-100 scale-100 rotate-0" : "opacity-0 scale-50 -rotate-12"
               }`}
             >
               ”
@@ -297,7 +261,7 @@ export default function ReviewSection() {
       {/* Navigation dots with pop animation */}
       <div
         className={`flex justify-center gap-2 mt-8 transition-all duration-700 delay-900 ease-out transform ${
-          isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
+          isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
         }`}
       >
         {students.map((_, index) => (
@@ -318,7 +282,7 @@ export default function ReviewSection() {
       {/* Counter with pop animation */}
       <p
         className={`text-sm text-text-sub mt-4 transition-all duration-700 delay-1000 ease-out transform ${
-          isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
+          isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
         }`}
       >
         {currentIndex + 1} / {students.length}

@@ -163,17 +163,6 @@ html[data-lang="km"] h6 {
   }
 }
 
-@keyframes slideOutLeft {
-  0% {
-    opacity: 1;
-    transform: translateX(0);
-  }
-  100% {
-    opacity: 0;
-    transform: translateX(-50px);
-  }
-}
-
 @keyframes slideInRight {
   0% {
     opacity: 0;
@@ -185,17 +174,6 @@ html[data-lang="km"] h6 {
   }
 }
 
-@keyframes slideOutRight {
-  0% {
-    opacity: 1;
-    transform: translateX(0);
-  }
-  100% {
-    opacity: 0;
-    transform: translateX(50px);
-  }
-}
-
 @keyframes slideInBottom {
   0% {
     opacity: 0;
@@ -204,17 +182,6 @@ html[data-lang="km"] h6 {
   100% {
     opacity: 1;
     transform: translateY(0);
-  }
-}
-
-@keyframes slideOutBottom {
-  0% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  100% {
-    opacity: 0;
-    transform: translateY(50px);
   }
 }
 
@@ -232,36 +199,6 @@ html[data-lang="km"] h6 {
   }
   100% {
     transform: scale(1);
-  }
-}
-
-@keyframes float {
-  0%,
-  100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-20px);
-  }
-}
-
-@keyframes floatSlow {
-  0%,
-  100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-}
-
-@keyframes floatDelayed {
-  0%,
-  100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-15px);
   }
 }
 
@@ -340,40 +277,16 @@ html[data-lang="km"] h6 {
   animation: slideInLeft 0.8s ease-out forwards;
 }
 
-.animate-slide-out-left {
-  animation: slideOutLeft 0.8s ease-out forwards;
-}
-
 .animate-slide-in-right {
   animation: slideInRight 0.8s ease-out forwards;
-}
-
-.animate-slide-out-right {
-  animation: slideOutRight 0.8s ease-out forwards;
 }
 
 .animate-slide-in-bottom {
   animation: slideInBottom 0.8s ease-out forwards;
 }
 
-.animate-slide-out-bottom {
-  animation: slideOutBottom 0.8s ease-out forwards;
-}
-
 .animate-bounce-in {
   animation: bounceIn 0.8s ease-out forwards;
-}
-
-.animate-float {
-  animation: float 3s ease-in-out infinite;
-}
-
-.animate-float-slow {
-  animation: floatSlow 4s ease-in-out infinite;
-}
-
-.animate-float-delayed {
-  animation: floatDelayed 5s ease-in-out infinite;
 }
 
 .animate-bounce-subtle {
@@ -396,6 +309,54 @@ html[data-lang="km"] h6 {
 .animate-spin-slow {
   animation: spinSlow 20s linear infinite;
 }
+
+/* ========== SCROLL-TRIGGERED ANIMATIONS ========== */
+/* These animations are designed to play once when scrolling into view and stay visible */
+
+@keyframes scaleIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Scroll-triggered animation classes */
+.scroll-scale-in {
+  animation: scaleIn 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  opacity: 1 !important;
+  transform: scale(1) !important;
+}
+
+/* Enhanced existing animation classes to ensure they stay visible when used for scroll-triggered effects */
+.animate-slide-in-bottom {
+  animation: slideInBottom 0.8s ease-out forwards;
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+}
+
+.animate-slide-in-left {
+  animation: slideInLeft 0.8s ease-out forwards;
+  opacity: 1 !important;
+  transform: translateX(0) !important;
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.8s ease-out forwards;
+  opacity: 1 !important;
+  transform: translateX(0) !important;
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.8s ease-out forwards;
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+}
+
+/* ========== END SCROLL-TRIGGERED ANIMATIONS ========== */
 
 .blog-post-editor .ql-toolbar.ql-snow {
   border: 0;

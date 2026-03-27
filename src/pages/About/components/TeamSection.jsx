@@ -1,12 +1,12 @@
 import React from "react";
 import { motion as Motion } from "framer-motion";
-import { useScrollAnimation } from "./hooks/useScrollAnimation";
+import { useScrollAnimation } from "../../../hooks/useScrollAnimation";
 import { useI18n } from "../../../i18n/useI18n";
 import image from "../../../assets/about/team-page-bro.svg"
 import { Link } from "react-router-dom";
 
 const IntroSection = () => {
-  const { controls, ref } = useScrollAnimation({ amount: 0.3 });
+  const { controls, ref } = useScrollAnimation({ amount: 0.3, id: 'about-team' });
   const { t } = useI18n();
 
   const containerVariants = {
@@ -14,21 +14,20 @@ const IntroSection = () => {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.15,
-        delayChildren: 0.2,
+        staggerChildren: 0.2,
       },
     },
   };
 
   const itemVariants = {
-    hidden: { y: 30, opacity: 0 },
+    hidden: { y: 20, opacity: 0 },
     visible: {
       y: 0,
       opacity: 1,
       transition: {
         type: "spring",
         stiffness: 100,
-        damping: 12,
+        damping: 15,
       },
     },
   };
@@ -81,9 +80,9 @@ const IntroSection = () => {
             <Motion.div
               className="h-1 sm:h-1.5 w-24 sm:w-32 mt-2 rounded-full"
               style={{ backgroundColor: "var(--primary-500)" }}
-              initial={{ width: 0 }}
-              animate={controls}
-              transition={{ duration: 0.8, delay: 0.5 }}
+              initial={{ width: "0%" }}
+              animate={{ width: "100%" }}
+              transition={{ duration: 1, delay: 0.5 }}
             />
           </Motion.div>
 

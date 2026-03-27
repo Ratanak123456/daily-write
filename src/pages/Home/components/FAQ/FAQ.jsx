@@ -1,12 +1,13 @@
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import image from "../../../../assets/homepage/man-thinking-pana.svg";
 import { useI18n } from "../../../../i18n/useI18n";
+import { useScrollAnimation } from "../../../../hooks/useScrollAnimation";
 
 export default function FAQ() {
-  const headerRef = useRef(null);
-  const imageRef = useRef(null);
-  const faqItemsRef = useRef([]);
   const [openIndex, setOpenIndex] = useState(null);
+  const { ref: headerRef, isInView: isVisibleHeader } = useScrollAnimation({ amount: 0.2, id: 'home-faq-header' });
+  const { ref: imageRef, isInView: isVisibleImage } = useScrollAnimation({ amount: 0.2, id: 'home-faq-image' });
+  const { ref: faqRef, isInView: isVisibleFaq } = useScrollAnimation({ amount: 0.2, id: 'home-faq-items' });
   const { t } = useI18n();
 
   const faqItems = [
@@ -17,82 +18,14 @@ export default function FAQ() {
     { question: t("faq.q5"), answer: t("faq.a5") },
   ];
 
-  useEffect(() => {
-    const observerOptions = {
-      threshold: 0.2,
-      rootMargin: "0px",
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          // Add animation classes when element becomes visible
-          if (entry.target === headerRef.current) {
-            entry.target.classList.add("animate-fade-in-up");
-            entry.target.classList.remove("animate-fade-out");
-          } else if (entry.target === imageRef.current) {
-            entry.target.classList.add("animate-slide-in-left");
-            entry.target.classList.remove("animate-slide-out-left");
-          } else {
-            // Handle FAQ items with staggered animation
-            const index = faqItemsRef.current.indexOf(entry.target);
-            if (index !== -1) {
-              // Add delay based on index (0.2s, 0.4s, 0.6s, etc.)
-              entry.target.style.animationDelay = `${index * 0.2}s`;
-              entry.target.classList.add("animate-slide-in-bottom");
-              entry.target.classList.remove("animate-slide-out-bottom");
-            }
-          }
-        } else {
-          // Add fade out animations when element leaves viewport
-          if (entry.target === headerRef.current) {
-            entry.target.classList.remove("animate-fade-in-up");
-            entry.target.classList.add("animate-fade-out");
-          } else if (entry.target === imageRef.current) {
-            entry.target.classList.remove("animate-slide-in-left");
-            entry.target.classList.add("animate-slide-out-left");
-          } else {
-            // Handle FAQ items fade out
-            const index = faqItemsRef.current.indexOf(entry.target);
-            if (index !== -1) {
-              entry.target.classList.remove("animate-slide-in-bottom");
-              entry.target.classList.add("animate-slide-out-bottom");
-              // Reset animation delay when fading out
-              entry.target.style.animationDelay = "0s";
-            }
-          }
-        }
-      });
-    }, observerOptions);
-
-    // Observe header and image
-    const headerNode = headerRef.current;
-    const imageNode = imageRef.current;
-    if (headerNode) observer.observe(headerNode);
-    if (imageNode) observer.observe(imageNode);
-
-    // Observe all FAQ items
-    const faqNodes = faqItemsRef.current.filter(Boolean);
-    faqNodes.forEach((item) => {
-      if (item) observer.observe(item);
-    });
-
-    // Cleanup
-    return () => {
-      if (headerNode) observer.unobserve(headerNode);
-      if (imageNode) observer.unobserve(imageNode);
-      faqNodes.forEach((item) => {
-        if (item) observer.unobserve(item);
-      });
-    };
-  }, []);
-
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-20">
       {/* Header Section */}
       <div
         ref={headerRef}
-        className="text-center max-w-2xl mx-auto mb-12 md:mb-16 lg:mb-24 opacity-0"
+        className={`text-center max-w-2xl mx-auto mb-12 md:mb-16 lg:mb-24 transition-all duration-1000 ease-out transform ${
+          isVisibleHeader ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+        }`}
       >
         <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-text-main leading-tight">
           {t("faq.titleLead")}{" "}
@@ -108,25 +41,31 @@ export default function FAQ() {
         {/* Image Section - Shows first on mobile */}
         <div
           ref={imageRef}
-          className="flex justify-center order-1 lg:order-1 opacity-0"
+          className={`flex justify-center order-1 lg:order-1 transition-all duration-1000 ease-out transform ${
+            isVisibleImage ? "opacity-100 translate-x-0 scale-100" : "opacity-0 -translate-x-20 scale-90"
+          }`}
         >
           <img
             src={image}
             alt="Thinking Illustration"
-            className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-md h-auto animate-float-slow"
+            className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-md h-auto"
           />
         </div>
 
         {/* FAQ Buttons Section */}
-        <div className="space-y-3 sm:space-y-4 order-2 lg:order-2">
+        <div ref={faqRef} className="space-y-3 sm:space-y-4 order-2 lg:order-2">
           {faqItems.map((item, index) => {
             const isOpen = openIndex === index;
 
             return (
               <div
                 key={`faq-${index}`}
-                ref={(el) => (faqItemsRef.current[index] = el)}
-                className="bg-bg-main border border-border-main rounded-xl sm:rounded-2xl shadow-sm transition-all opacity-0"
+                className={`bg-bg-main border border-border-main rounded-xl sm:rounded-2xl shadow-sm transition-all duration-500 transform ${
+                  isVisibleFaq 
+                    ? "opacity-100 translate-y-0" 
+                    : "opacity-0 translate-y-8"
+                }`}
+                style={{ transitionDelay: `${index * 100}ms` }}
               >
                 <button
                   type="button"

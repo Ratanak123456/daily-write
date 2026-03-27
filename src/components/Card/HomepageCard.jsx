@@ -16,25 +16,25 @@ export function Card({
   const [isVisible, setIsVisible] = useState(false);
   const cardRef = useRef(null);
 
-  // Intersection Observer for scroll in/out animations
   useEffect(() => {
     const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          setIsVisible(entry.isIntersecting);
-        });
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.unobserve(entry.target);
+        }
       },
-      {
-        threshold: 0.2, // Trigger when 20% of the card is visible
-        rootMargin: "0px",
-      },
+      { threshold: 0.1 }
     );
 
-    const node = cardRef.current;
-    if (node) observer.observe(node);
+    if (cardRef.current) {
+      observer.observe(cardRef.current);
+    }
 
     return () => {
-      if (node) observer.unobserve(node);
+      if (cardRef.current) {
+        observer.unobserve(cardRef.current);
+      }
     };
   }, []);
 
@@ -44,7 +44,7 @@ export function Card({
       className={`transition-all duration-800 ease-out transform ${
         isVisible
           ? "opacity-100 translate-y-0 scale-100 rotate-0"
-          : "opacity-0 translate-y-16 scale-95 rotate-1"
+          : "opacity-0 translate-y-10 scale-95 rotate-1"
       }`}
     >
       <Link to={`/blogs/${uuid}`}>
@@ -53,9 +53,7 @@ export function Card({
           <img
             src={getMediaUrl(image)}
             alt={title}
-            className={`w-full h-auto object-cover transition-all duration-700 ${
-              isVisible ? "scale-100" : "scale-110"
-            } group-hover:scale-105`}
+            className="w-full h-auto object-cover transition-all duration-700 scale-100 group-hover:scale-105"
           />
         </div>
 
@@ -71,7 +69,7 @@ export function Card({
         {/* Description with fade effect */}
         <p
           className={`blog-content text-xl mb-8 text-text-sub line-clamp-1 transition-all duration-700 delay-300 transform ${
-            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
           }`}
         >
           {parse(description)}
@@ -81,7 +79,7 @@ export function Card({
       {/* Footer with slide-up and staggered children animations */}
       <div
         className={`flex items-center justify-between transition-all duration-700 delay-400 transform ${
-          isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+          isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
         }`}
       >
         <div className="flex items-center gap-4">
@@ -173,25 +171,25 @@ export function CardSidBar({
   const [isVisible, setIsVisible] = useState(false);
   const cardRef = useRef(null);
 
-  // Intersection Observer for scroll in/out animations
   useEffect(() => {
     const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          setIsVisible(entry.isIntersecting);
-        });
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.unobserve(entry.target);
+        }
       },
-      {
-        threshold: 0.3,
-        rootMargin: "0px",
-      },
+      { threshold: 0.1 }
     );
 
-    const node = cardRef.current;
-    if (node) observer.observe(node);
+    if (cardRef.current) {
+      observer.observe(cardRef.current);
+    }
 
     return () => {
-      if (node) observer.unobserve(node);
+      if (cardRef.current) {
+        observer.unobserve(cardRef.current);
+      }
     };
   }, []);
   
@@ -201,7 +199,7 @@ export function CardSidBar({
       className={`space-y-8 transition-all duration-700 ease-out transform ${
         isVisible
           ? "opacity-100 translate-x-0 scale-100"
-          : "opacity-0 -translate-x-12 scale-95"
+          : "opacity-0 translate-x-12 scale-95"
       }`}
     >
       {" "}
@@ -222,9 +220,7 @@ export function CardSidBar({
             {/* Title with slide-up and hover effect */}
             <p
               className={`font-bold text-text-main leading-snug mb-2 line-clamp-2 transition-all duration-500 delay-200 transform ${
-                isVisible
-                  ? "opacity-100 translate-y-0"
-                  : "opacity-0 translate-y-4"
+                isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
               } group-hover:underline`}
             >
               {title}
@@ -233,9 +229,7 @@ export function CardSidBar({
             {/* Meta info with staggered children */}
             <div
               className={`flex items-center gap-4 text-xs text-text-sub uppercase tracking-widest font-bold transition-all duration-500 delay-300 transform ${
-                isVisible
-                  ? "opacity-100 translate-y-0"
-                  : "opacity-0 translate-y-4"
+                isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
               }`}
             >
               <span
@@ -247,9 +241,7 @@ export function CardSidBar({
               </span>
               <span
                 className={`flex items-center gap-1 capitalize transition-all duration-500 delay-500 transform ${
-                  isVisible
-                    ? "opacity-100 translate-x-0"
-                    : "opacity-0 translate-x-4"
+                  isVisible ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-4"
                 }`}
               >
                 <div className="w-4 h-4 bg-primary-orange rounded-full flex items-center justify-center overflow-hidden bg-orange-50">
@@ -274,7 +266,7 @@ export function CardSidBar({
             className={`w-28 h-20 rounded-xl object-cover transition-all duration-700 delay-200 transform ${
               isVisible
                 ? "opacity-100 scale-100 rotate-0"
-                : "opacity-0 scale-75 rotate-3"
+                : "opacity-0 scale-50 rotate-12"
             }`}
             alt={title}
           />

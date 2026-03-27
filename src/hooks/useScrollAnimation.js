@@ -1,28 +1,58 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useInView, useAnimation } from 'framer-motion';
 
 /**
- * Custom hook for scroll-triggered animations
- * Eliminates boilerplate code for each component
+ * Custom hook for scroll-triggered animations with session persistence.
+ * @param {Object} options - Configuration options
+ * @param {boolean} options.once - Whether to trigger only once while mounted (default: true)
+ * @param {number} options.amount - Threshold of element visibility (0 to 1, default: 0.3)
+ * @param {string} options.margin - Margin for intersection observer (default: '0px')
+ * @param {string} options.id - Unique ID to persist animation state in sessionStorage
  */
 export const useScrollAnimation = (options = {}) => {
   const {
     once = true,
     amount = 0.3,
-    margin = '0px'
+    margin = '0px',
+    id = null
   } = options;
 
   const controls = useAnimation();
   const ref = useRef(null);
+
+  // Initialize state from sessionStorage if ID is provided
+  const [isVisible, setIsVisible] = useState(() => {
+    if (typeof window !== 'undefined' && id) {
+      return sessionStorage.getItem(`animated_${id}`) === 'true';
+    }
+    return false;
+  });
+
   const isInView = useInView(ref, { once, amount, margin });
 
   useEffect(() => {
+    // If already visible (from session storage), ensure controls are set
+    if (isVisible) {
+      controls.set('visible');
+      return;
+    }
+
+    // Trigger animation when in view
     if (isInView) {
       controls.start('visible');
+      setIsVisible(true);
+      if (id) {
+        sessionStorage.setItem(`animated_${id}`, 'true');
+      }
     }
-  }, [controls, isInView]);
+  }, [controls, isInView, id, isVisible]);
 
-  return { controls, ref, isInView };
+  return { 
+    controls, 
+    ref, 
+    isInView: isVisible || isInView,
+    alreadyAnimated: isVisible 
+  };
 };
 
 /**

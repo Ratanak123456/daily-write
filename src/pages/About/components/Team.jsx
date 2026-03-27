@@ -1,5 +1,7 @@
 import React from "react";
+import { motion } from "framer-motion";
 import { useI18n } from "../../../i18n/useI18n";
+import { useScrollAnimation, animationVariants } from "../../../hooks/useScrollAnimation";
 
 const student1 = "/Team/Saren Ratanak.jpg";
 const student2 = "/Team/rosa.jpg";
@@ -49,15 +51,17 @@ const SocialIcons = ({ variant = "default" }) => (
         fill="currentColor"
         viewBox="0 0 24 24"
       >
-        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
       </svg>
     </a>
   </div>
 );
 
 // Single reusable card component
-const PersonCard = ({ person }) => (
-  <div
+const PersonCard = ({ person, index }) => (
+  <motion.div
+    variants={animationVariants.staggerItem}
+    custom={index}
     className="border rounded-3xl p-8 shadow-sm text-center w-[362.66px] h-full flex flex-col justify-between"
     style={{
       backgroundColor: "var(--bg-primary)",
@@ -90,12 +94,15 @@ const PersonCard = ({ person }) => (
       </p>
     </div>
     <SocialIcons variant="default" />
-  </div>
+  </motion.div>
 );
 
 // Section header
-const SectionHeader = ({ title }) => (
-  <div className="text-center mb-12">
+const SectionHeader = ({ title, controls }) => (
+  <motion.div 
+    className="text-center mb-12"
+    variants={animationVariants.fadeInUp}
+  >
     <h2
       className="text-3xl font-bold inline-block border-b-4 pb-2"
       style={{
@@ -105,11 +112,12 @@ const SectionHeader = ({ title }) => (
     >
       {title}
     </h2>
-  </div>
+  </motion.div>
 );
 
 const PeopleSection = () => {
   const { t } = useI18n();
+  const { ref, controls } = useScrollAnimation({ amount: 0.1, id: 'about-people' });
 
   const mentors = [
     {
@@ -167,41 +175,57 @@ const PeopleSection = () => {
 
   return (
     <section
+      ref={ref}
       className="py-16 px-4"
       style={{ backgroundColor: "var(--bg-primary)" }}
     >
       {/* Mentors Section */}
-      <section className="max-w-3xl mx-auto">
+      <motion.section 
+        className="max-w-3xl mx-auto mb-16"
+        initial="hidden"
+        animate={controls}
+        variants={animationVariants.staggerContainer}
+      >
         <SectionHeader title={t("about.people.mentors")} />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 justify-items-center">
           {mentors.map((mentor, index) => (
-            <PersonCard key={`mentor-${index}`} person={mentor} />
+            <PersonCard key={`mentor-${index}`} person={mentor} index={index} />
           ))}
         </div>
-      </section>
+      </motion.section>
 
       {/* Team Section */}
-      <section className="pt-16 px-1">
+      <motion.section 
+        className="pt-16 px-1 mb-16"
+        initial="hidden"
+        animate={controls}
+        variants={animationVariants.staggerContainer}
+      >
         <div className="sm:w-[95%] lg:w-[75%] mx-auto">
           <SectionHeader title={t("about.people.team")} />
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 justify-items-center">
             {teamMembers.map((member, index) => (
-              <PersonCard key={`team-${index}`} person={member} />
+              <PersonCard key={`team-${index}`} person={member} index={index} />
             ))}
           </div>
         </div>
-      </section>
+      </motion.section>
 
       {/* Additional Team Members Section */}
-      <section className="pt-3 px-1">
+      <motion.section 
+        className="pt-3 px-1"
+        initial="hidden"
+        animate={controls}
+        variants={animationVariants.staggerContainer}
+      >
         <div className="sm:w-full mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 justify-items-center">
             {additionalMembers.map((member, index) => (
-              <PersonCard key={`additional-${index}`} person={member} />
+              <PersonCard key={`additional-${index}`} person={member} index={index + 3} />
             ))}
           </div>
         </div>
-      </section>
+      </motion.section>
     </section>
   );
 };

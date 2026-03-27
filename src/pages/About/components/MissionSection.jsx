@@ -14,11 +14,11 @@ import {
   animationVariants,
   iconVariants,
   blobAnimation,
-} from "./hooks/useScrollAnimation";
+} from "../../../hooks/useScrollAnimation";
 import { useI18n } from "../../../i18n/useI18n";
 
 const MissionSection = () => {
-  const { controls, ref, isInView } = useScrollAnimation({ amount: 0.2 });
+  const { controls, ref, isInView } = useScrollAnimation({ amount: 0.2, id: 'about-mission' });
   const { t } = useI18n();
 
   const missions = [
@@ -63,7 +63,7 @@ const MissionSection = () => {
       transition: {
         type: "spring",
         stiffness: 100,
-        damping: 12,
+        damping: 15,
         delay: i * 0.1,
       },
     }),
@@ -79,21 +79,12 @@ const MissionSection = () => {
       <motion.div
         className="absolute top-20 right-10 w-64 h-64 rounded-full blur-3xl opacity-10"
         style={{ backgroundColor: "var(--primary-500)" }}
-        animate={{
-          ...blobAnimation,
-          x: [0, 30, 0],
-          y: [0, -30, 0],
-        }}
+        animate={blobAnimation}
       />
       <motion.div
         className="absolute bottom-20 left-10 w-48 h-48 rounded-full blur-3xl opacity-10"
         style={{ backgroundColor: "var(--primary-700)" }}
-        animate={{
-          ...blobAnimation,
-          scale: [1, 1.3, 1],
-          x: [0, -20, 0],
-          y: [0, 20, 0],
-        }}
+        animate={blobAnimation}
       />
 
       <div className="max-w-7xl mx-auto relative z-10">
@@ -120,9 +111,9 @@ const MissionSection = () => {
               <motion.div
                 className="absolute -bottom-1 left-0 h-1 rounded-full"
                 style={{ backgroundColor: "var(--primary-500)" }}
-                initial={{ width: 0 }}
-                animate={isInView ? { width: "100%" } : { width: 0 }}
-                transition={{ duration: 0.8, delay: 0.5 }}
+                initial={{ width: "0%" }}
+                animate={{ width: "100%" }}
+                transition={{ duration: 1, delay: 0.5 }}
               />
             </motion.span>
           </motion.h2>
@@ -146,15 +137,13 @@ const MissionSection = () => {
           {missions.map((item, index) => (
             <motion.div
               key={index}
-              className="p-5 sm:p-6 md:p-8 rounded-xl sm:rounded-2xl flex flex-col items-center text-center cursor-pointer"
+              className="p-5 sm:p-6 md:p-8 rounded-xl sm:rounded-2xl flex flex-col items-center text-center cursor-pointer relative"
               style={{
                 backgroundColor: "var(--bg-secondary)",
               }}
               variants={cardVariants}
               custom={index}
               whileHover="hover"
-              initial="hidden"
-              animate="visible"
             >
               {/* Icon Container */}
               <motion.div
@@ -224,9 +213,9 @@ const MissionSection = () => {
         {/* Stats Section */}
         <motion.div
           className="mt-12 sm:mt-16 md:mt-20 grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6"
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8, delay: 1 }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={controls}
+          variants={animationVariants.fadeInUp}
         >
           {[
             { value: "500+", label: t("about.mission.statArticles") },
@@ -244,13 +233,7 @@ const MissionSection = () => {
               <motion.div
                 className="text-xl sm:text-2xl md:text-3xl font-bold"
                 style={{ color: "var(--primary-500)" }}
-                initial={{ scale: 0 }}
-                animate={isInView ? { scale: 1 } : {}}
-                transition={{
-                  type: "spring",
-                  stiffness: 200,
-                  delay: 1.2 + index * 0.1,
-                }}
+                initial={{ scale: 1 }}
               >
                 {stat.value}
               </motion.div>

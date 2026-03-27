@@ -1,32 +1,8 @@
-import { useState, useEffect, useRef } from "react";
 import heropic from "../../../../assets/homepage/hero-illustration.svg";
+import { useScrollAnimation } from "../../../../hooks/useScrollAnimation";
 
 export default function ImageSide() {
-  const [isVisible, setIsVisible] = useState(false);
-  const sectionRef = useRef(null);
-
-  // Intersection Observer for scroll in/out animations
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          // Set visibility state based on intersection
-          setIsVisible(entry.isIntersecting);
-        });
-      },
-      { 
-        threshold: 0.3, // Trigger when 30% of the section is visible
-        rootMargin: "0px"
-      }
-    );
-
-    const node = sectionRef.current;
-    if (node) observer.observe(node);
-
-    return () => {
-      if (node) observer.unobserve(node);
-    };
-  }, []);
+  const { ref: sectionRef, isInView: isVisible } = useScrollAnimation({ amount: 0.1, id: 'home-hero-image' });
 
   return (
     <div 
@@ -37,27 +13,23 @@ export default function ImageSide() {
         {/* Main Image Container - with pop animation */}
         <div 
           className={`relative z-0 bg-[radial-gradient(circle_at_center,#F48024_0%,transparent_70%)] rounded-full w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 lg:w-120 lg:h-120 xl:w-150 xl:h-150 flex items-center justify-center p-4 sm:p-6 md:p-8 mx-auto transition-all duration-1000 ease-out transform ${
-            isVisible 
-              ? 'opacity-100 scale-100 rotate-0 translate-y-0' 
-              : 'opacity-0 scale-50 rotate-12 translate-y-10'
+            isVisible ? "opacity-100 scale-100 rotate-0" : "opacity-0 scale-50 rotate-12"
           }`}
         >
           <img
             src={heropic}
             alt="Blogging Illustration"
-            className="w-full h-full object-contain transform transition-all duration-700 group-hover:scale-110 group-hover:rotate-3 dark:shadow-gray-800 animate-pulse-glow"
+            className="w-full h-full object-contain"
           />
         </div>
 
-        {/* Rating Card - with pop animation from right */}
+        {/* Rating Card - with pop animation */}
         <div 
-          className={`absolute -top-4 sm:-top-4 md:-top-6 right-0 sm:right-2 md:right-4 lg:right-10 bg-bg-main p-2 sm:p-3 md:p-4 rounded-xl sm:rounded-2xl shadow-xl flex items-center gap-1 sm:gap-2 md:gap-3 shadow-orange-100 dark:shadow-gray-800 dark:bg-gray-800 dark:border dark:border-gray-700 z-10 transition-all duration-700 delay-200 ease-out transform ${
-            isVisible 
-              ? 'opacity-100 translate-x-0 scale-100' 
-              : 'opacity-0 translate-x-10 scale-75'
-          } hover:scale-110`}
+          className={`absolute -top-4 sm:-top-4 md:-top-6 right-0 sm:right-2 md:right-4 lg:right-10 bg-bg-main p-2 sm:p-3 md:p-4 rounded-xl sm:rounded-2xl shadow-xl flex items-center gap-1 sm:gap-2 md:gap-3 shadow-orange-100 dark:shadow-gray-800 dark:bg-gray-800 dark:border dark:border-gray-700 z-10 transition-all duration-700 delay-300 transform ${
+            isVisible ? "opacity-100 scale-100" : "opacity-0 scale-0"
+          }`}
         >
-          <div className="text-yellow-400 text-lg sm:text-xl md:text-2xl animate-pulse-slow">
+          <div className="text-yellow-400 text-lg sm:text-xl md:text-2xl">
             ★
           </div>
           <div>
@@ -72,20 +44,18 @@ export default function ImageSide() {
 
         {/* Background Glow - with fade animation */}
         <div 
-          className={`absolute w-[120%] h-[120%] rounded-full bg-[radial-gradient(circle,rgba(255,237,213,1)_0%,rgba(255,251,247,0)_70%)] blur-xl sm:blur-2xl opacity-80 -z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 dark:bg-[radial-gradient(circle,rgba(55,65,81,0.8)_0%,rgba(31,41,55,0)_70%)] transition-all duration-1000 delay-100 ${
-            isVisible ? 'opacity-80 scale-100' : 'opacity-0 scale-90'
+          className={`absolute w-[120%] h-[120%] rounded-full bg-[radial-gradient(circle,rgba(255,237,213,1)_0%,rgba(255,251,247,0)_70%)] blur-xl sm:blur-2xl opacity-80 -z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 dark:bg-[radial-gradient(circle,rgba(55,65,81,0.8)_0%,rgba(31,41,55,0)_70%)] transition-all duration-1000 delay-500 transform ${
+            isVisible ? "opacity-80 scale-100" : "opacity-0 scale-75"
           }`}
         ></div>
 
-        {/* User Card - with pop animation from left */}
+        {/* User Card - with pop animation */}
         <div 
-          className={`absolute -bottom-4 sm:-bottom-6 md:-bottom-8 left-0 sm:left-2 md:left-4 lg:-left-6 bg-bg-main p-2 sm:p-3 md:p-4 rounded-xl sm:rounded-2xl shadow-xl flex items-center gap-2 sm:gap-3 md:gap-4 border border-border-main dark:bg-gray-800 dark:border-gray-700 z-10 transition-all duration-700 delay-300 ease-out transform ${
-            isVisible 
-              ? 'opacity-100 translate-x-0 scale-100' 
-              : 'opacity-0 -translate-x-10 scale-75'
-          } hover:scale-110`}
+          className={`absolute -bottom-4 sm:-bottom-6 md:-bottom-8 left-0 sm:left-2 md:left-4 lg:-left-6 bg-bg-main p-2 sm:p-3 md:p-4 rounded-xl sm:rounded-2xl shadow-xl flex items-center gap-2 sm:gap-3 md:gap-4 border border-border-main dark:bg-gray-800 dark:border-gray-700 z-10 transition-all duration-700 delay-400 transform ${
+            isVisible ? "opacity-100 scale-100" : "opacity-0 scale-0"
+          }`}
         >
-          <div className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 bg-primary-orange rounded-lg sm:rounded-xl flex items-center justify-center text-white animate-bounce-subtle">
+          <div className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 bg-primary-orange rounded-lg sm:rounded-xl flex items-center justify-center text-white">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6"
@@ -111,15 +81,13 @@ export default function ImageSide() {
           </div>
         </div>
 
-        {/* Courses Blog - with pop animation from right */}
+        {/* Courses Blog - with pop animation */}
         <div 
-          className={`absolute bottom-4 sm:bottom-6 md:bottom-10 -right-2 sm:right-0 md:-right-4 lg:-right-8 bg-bg-main p-2 sm:p-3 md:p-4 rounded-xl sm:rounded-2xl shadow-xl flex items-center gap-2 sm:gap-3 md:gap-4 border border-border-main dark:bg-gray-800 dark:border-gray-700 z-10 transition-all duration-700 delay-400 ease-out transform ${
-            isVisible 
-              ? 'opacity-100 translate-x-0 scale-100' 
-              : 'opacity-0 translate-x-10 scale-75'
-          } hover:scale-110`}
+          className={`absolute bottom-4 sm:bottom-6 md:bottom-10 -right-2 sm:right-0 md:-right-4 lg:-right-8 bg-bg-main p-2 sm:p-3 md:p-4 rounded-xl sm:rounded-2xl shadow-xl flex items-center gap-2 sm:gap-3 md:gap-4 border border-border-main dark:bg-gray-800 dark:border-gray-700 z-10 transition-all duration-700 delay-600 transform ${
+            isVisible ? "opacity-100 scale-100" : "opacity-0 scale-0"
+          }`}
         >
-          <div className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 bg-text-sub rounded-lg sm:rounded-xl flex items-center justify-center text-white dark:bg-gray-600 animate-spin-slow">
+          <div className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 bg-text-sub rounded-lg sm:rounded-xl flex items-center justify-center text-white dark:bg-gray-600">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6"
