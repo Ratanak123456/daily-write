@@ -161,7 +161,7 @@ export default function BlogList() {
       </div>
 
       <div className="mx-auto max-w-7xl px-4 py-6">
-        <div className="flex gap-3 overflow-x-auto pb-1 justify-center">
+        <div className="flex gap-3 overflow-x-auto pb-4 md:justify-center scrollbar-hide">
           <button
             key="all"
             onClick={() => {

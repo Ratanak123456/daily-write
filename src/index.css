@@ -310,6 +310,16 @@ html[data-lang="km"] h6 {
   animation: spinSlow 20s linear infinite;
 }
 
+/* Scrollbar Hide Utility */
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none; /* Chrome, Safari and Opera */
+}
+
 /* ========== SCROLL-TRIGGERED ANIMATIONS ========== */
 /* These animations are designed to play once when scrolling into view and stay visible */
 
